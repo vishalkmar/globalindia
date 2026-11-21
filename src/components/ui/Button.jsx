@@ -48,6 +48,7 @@ export function Button({
   ...props
 }) {
   const classes = cn(base, variants[variant], sizes[size], className);
+  props["data-btn"] = variant; // lets the theme switch primary buttons to an outline style
   const content = (
     <>
       {loading ? <LoaderCircle aria-hidden="true" className="animate-spin" strokeWidth={2} /> : null}
@@ -56,6 +57,13 @@ export function Button({
   );
 
   if (href) {
+    if (/^(tel|mailto):/i.test(href)) {
+      return (
+        <a href={href} className={classes} {...props}>
+          {content}
+        </a>
+      );
+    }
     if (external) {
       return (
         <a href={href} className={classes} target="_blank" rel="noopener noreferrer" {...props}>

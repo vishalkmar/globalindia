@@ -198,26 +198,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Tests for oversize, wrong type, URL to private IP
 
 ## Phase 8 — Site Settings, Theme Manager & Business Info
-- [ ] 01 Business info editor (name, GST, address, phones, emails, hours)
-- [ ] 02 Top bar editor (show/hide items)
-- [ ] 03 Header editor (logo light/dark, CTA text + link, sticky on/off)
-- [ ] 04 Menu builder (header, mega menu, footer columns) with nesting
-- [ ] 05 Footer editor (about text, columns, bottom bar, auto year)
-- [ ] 06 Social links editor (hidden when empty)
-- [ ] 07 Theme list: create, duplicate, rename, delete, activate
-- [ ] 08 Theme editor: colour pickers per token with contrast warning
-- [ ] 09 Theme editor: font family pickers from whitelist
-- [ ] 10 Theme editor: radius, spacing density, button style
-- [ ] 11 Light / dark mode tokens and default mode setting
-- [ ] 12 Live theme preview iframe before publish
-- [ ] 13 Preset themes: Pine & Brass (default), Navy & Copper, Graphite & Saffron
-- [ ] 14 Server injects active theme CSS variables in root layout
-- [ ] 15 Revalidate theme/settings tags on save
-- [ ] 16 Favicon and OG default image upload
-- [ ] 17 Global SEO defaults (title template, description)
-- [ ] 18 Analytics IDs field (loaded only after consent)
-- [ ] 19 Maintenance mode toggle
-- [ ] 20 Test theme switch updates whole site without redeploy
+- [x] 01 Business info editor (name, GST, address, phones, emails, hours)
+- [x] 02 Top bar editor (show/hide items)
+- [x] 03 Header editor (logo light/dark, CTA text + link, sticky on/off)
+- [x] 04 Menu builder (header, mega menu, footer columns) with nesting
+- [x] 05 Footer editor (about text, columns, bottom bar, auto year)
+- [x] 06 Social links editor (hidden when empty)
+- [x] 07 Theme list: create, duplicate, rename, delete, activate
+- [x] 08 Theme editor: colour pickers per token with contrast warning
+- [x] 09 Theme editor: font family pickers from whitelist
+- [x] 10 Theme editor: radius, spacing density, button style
+- [x] 11 Light / dark mode tokens and default mode setting
+- [x] 12 Live theme preview before publish (scoped live preview of unsaved tokens next to the editor, light and dark)
+- [x] 13 Preset themes: Pine & Brass (default), Navy & Copper, Graphite & Saffron
+- [x] 14 Server injects active theme CSS variables in root layout
+- [x] 15 Revalidate theme/settings tags on save
+- [x] 16 Favicon and OG default image upload
+- [x] 17 Global SEO defaults (title template, description)
+- [x] 18 Analytics IDs field (loaded only after consent)
+- [x] 19 Maintenance mode toggle
+- [x] 20 Test theme switch updates whole site without redeploy
 
 ## Phase 9 — Public Layout: TopBar, Header, MegaMenu, Footer
 - [ ] 01 TopBar: phone (tel), email (mailto), GST, working hours

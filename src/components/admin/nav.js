@@ -43,9 +43,9 @@ export const NAV_GROUPS = [
   {
     label: "Website",
     items: [
-      { href: "/admin/menus", label: "Menus", icon: ListTree, resource: "menus", phase: 8 },
-      { href: "/admin/theme", label: "Theme", icon: Palette, resource: "theme", phase: 8 },
-      { href: "/admin/settings", label: "Settings", icon: Settings, resource: "siteSettings", phase: 8 },
+      { href: "/admin/menus", label: "Menus", icon: ListTree, resource: "menus" },
+      { href: "/admin/theme", label: "Theme", icon: Palette, resource: "theme" },
+      { href: "/admin/settings", label: "Settings", icon: Settings, resource: "siteSettings" },
       { href: "/admin/seo", label: "SEO & redirects", icon: Search, resource: "seo", phase: 16 },
     ],
   },

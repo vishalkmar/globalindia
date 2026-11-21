@@ -30,9 +30,12 @@ function colorBlock(colors, fallbackColors) {
 
 /**
  * @param {object} tokens Theme.tokens JSON
+ * @param {string} [scope] CSS selector the variables apply to (":root" for the site, a class for live previews).
+ *   Only simple class/root selectors are accepted.
  * @returns {string} CSS text for a <style> element
  */
-export function themeToCss(tokens) {
+export function themeToCss(tokens, scope = ":root") {
+  if (!/^(:root|\.[a-z][a-z0-9-]{0,40})$/.test(scope)) scope = ":root";
   const fallback = DEFAULT_THEME.tokens;
   const t = tokens && typeof tokens === "object" ? tokens : fallback;
   const light = colorBlock(t.colors?.light, fallback.colors.light);
@@ -49,7 +52,13 @@ export function themeToCss(tokens) {
     `--r-btn:${radiusBtn}px;--r-card:${radiusCard}px;` +
     `--sy:${compact ? "64px" : "96px"};--sy-sm:${compact ? "48px" : "64px"};`;
 
-  return `:root{${shared}${light}}:root[data-theme="dark"]{${dark}color-scheme:dark;}`;
+  const darkSel = scope === ":root" ? ':root[data-theme="dark"]' : `${scope}[data-theme="dark"]`;
+  const outline =
+    t.buttonStyle === "outline"
+      ? `${scope} [data-btn="primary"]{background-color:transparent;color:var(--c-primary);}` +
+        `${scope} [data-btn="primary"]:hover{background-color:color-mix(in oklab,var(--c-primary) 8%,transparent);}`
+      : "";
+  return `${scope}{${shared}${light}}${darkSel}{${dark}color-scheme:dark;}${outline}`;
 }
 
 /** Theme mode attribute for <html data-theme>. */

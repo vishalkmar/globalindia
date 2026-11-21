@@ -60,7 +60,7 @@ describe("VIEWER cannot reach any write endpoint", () => {
           headers: { "content-type": "application/json", origin: ORIGIN },
           body: JSON.stringify({ role: "SUPER_ADMIN", name: "x", email: "x@y.in" }),
         });
-        const res = await mod[method](req, { params: Promise.resolve({ id: FAKE_ID }) });
+        const res = await mod[method](req, { params: Promise.resolve({ id: FAKE_ID, key: "header", location: "HEADER" }) });
         if (READ_ONLY_POSTS.has(`${rel}:${method}`)) expect(res.status).not.toBe(500);
         else expect(res.status).toBe(403);
       });

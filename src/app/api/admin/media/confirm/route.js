@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { invalidate, TAGS } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
 import { readIntent } from "@/lib/media/intent";
@@ -44,6 +45,7 @@ export const POST = route(async (req) => {
         },
         include: { uploadedBy: { select: { name: true, email: true } } },
       });
+      invalidate(TAGS.mediaItem(asset.id));
       await audit({ actorId: user.id, action: "media.replace", entity: "MediaAsset", entityId: asset.id, diff: { bytes: asset.bytes, format: asset.format }, ipHash });
       return json({ ok: true, asset: serializeAsset(asset) });
     }

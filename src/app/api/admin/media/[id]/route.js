@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { invalidate, TAGS } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
 import { assetUsage, serializeAsset } from "@/lib/media/service";
@@ -37,6 +38,7 @@ export const PATCH = route(async (req, ctx) => {
     data: changes,
     include: { uploadedBy: { select: { name: true, email: true } } },
   });
+  invalidate(TAGS.mediaItem(asset.id));
   await audit({ actorId: user.id, action: "media.update", entity: "MediaAsset", entityId: asset.id, diff: changes });
   return json({ ok: true, asset: serializeAsset(updated) });
 });
@@ -54,6 +56,7 @@ export const DELETE = route(async (req, ctx) => {
     throw new HttpError(409, "This file is still in use. Remove it from these places first.", { body: { usage } });
   }
   await db.mediaAsset.update({ where: { id: asset.id }, data: { deletedAt: new Date() } });
+  invalidate(TAGS.mediaItem(asset.id));
   await audit({ actorId: user.id, action: "media.delete", entity: "MediaAsset", entityId: asset.id, diff: { originalName: asset.originalName }, ipHash: hashIp(clientIp(req.headers)) });
   return json({ ok: true });
 });

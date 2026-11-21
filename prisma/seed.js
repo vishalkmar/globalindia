@@ -7,6 +7,8 @@
  */
 import { PrismaClient } from "@prisma/client";
 
+import { MENU_DEFAULTS } from "../src/lib/settings/menus.js";
+import { SETTING_DEFAULTS } from "../src/lib/settings/schemas.js";
 import { THEME_PRESETS } from "../src/lib/theme/presets.js";
 import { seedAdmin } from "./seed-admin.js";
 import { assertSeedAllowed, log, upsertSetting } from "./seed-utils.js";
@@ -28,44 +30,32 @@ async function seedThemes() {
   log("themes", THEME_PRESETS.map((p) => p.name).join(", "));
 }
 
-async function seedBusinessSettings() {
-  // Source: globalindiachem.com (docs/Memory.md §2). Email intentionally empty until the owner adds it.
-  await upsertSetting(db, "business", {
-    name: "Global India",
-    legalName: "Global INDIA",
-    tagline: "Chemical raw materials supplier, Delhi",
-    established: 2002,
-    proprietor: "Akash Rathod",
-    natureOfBusiness: "Manufacturer, Supplier and Trader",
-    teamSize: 35,
-    banker: "Kotak Mahindra Bank",
-    gst: "07BMMPA5592C1Z4",
-    address: {
-      line1: "419, Khasra No-300, Ground Floor",
-      line2: "Burari Road",
-      city: "Delhi",
-      pin: "110084",
-      state: "Delhi",
-      country: "India",
-    },
-    phones: [{ label: "Sales", number: "+91 80717 79152" }],
-    emails: [],
-    whatsapp: "",
-    hours: "Monday to Saturday, 10:00 am to 7:00 pm",
-    market: "All India; export enquiries accepted (FOB)",
-    mapUrl: "",
-  });
-  await upsertSetting(db, "security", {
-    defaultAdminEmail: process.env.SEED_ADMIN_EMAIL?.toLowerCase() ?? "",
-  });
-  log("settings", "business, security");
+async function seedSettings() {
+  // Real defaults from docs/Content.md and Memory.md. Existing admin edits are never overwritten.
+  for (const [key, value] of Object.entries(SETTING_DEFAULTS)) await upsertSetting(db, key, value);
+  await upsertSetting(db, "security", { defaultAdminEmail: process.env.SEED_ADMIN_EMAIL?.toLowerCase() ?? "" });
+  log("settings", Object.keys(SETTING_DEFAULTS).join(", "));
+}
+
+async function seedMenus() {
+  for (const [location, items] of Object.entries(MENU_DEFAULTS)) {
+    if ((await db.menuItem.count({ where: { location } })) > 0) continue;
+    for (const [i, item] of items.entries()) {
+      const parent = await db.menuItem.create({ data: { location, label: item.label, href: item.href, order: i } });
+      for (const [j, c] of (item.children ?? []).entries()) {
+        await db.menuItem.create({ data: { location, parentId: parent.id, label: c.label, href: c.href, order: j } });
+      }
+    }
+  }
+  log("menus", Object.keys(MENU_DEFAULTS).join(", "));
 }
 
 async function main() {
   assertSeedAllowed();
   console.log("Seeding Global India database...");
   await seedThemes();
-  await seedBusinessSettings();
+  await seedSettings();
+  await seedMenus();
   await seedAdmin(db);
   console.log("Seed complete.");
 }

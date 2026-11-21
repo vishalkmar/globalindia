@@ -8,7 +8,9 @@ export const GET = route(async (req) => {
   const params = new URL(req.url).searchParams;
   const entity = params.get("entity");
   const entityId = params.get("entityId");
-  if (!(entity in REVISION_ENTITIES) || !idSchema.safeParse(entityId).success) throw new HttpError(400);
+  // Records have cuid ids; settings and menus use their key / location as the id.
+  const keyLike = ["settings", "menu"].includes(entity) && /^[a-z_]{2,40}$/.test(entityId ?? "");
+  if (!Object.hasOwn(REVISION_ENTITIES, entity ?? "") || !(keyLike || idSchema.safeParse(entityId).success)) throw new HttpError(400);
   await requirePermission("read", REVISION_ENTITIES[entity]);
   const rows = await listRevisions(entity, entityId);
   return json({
