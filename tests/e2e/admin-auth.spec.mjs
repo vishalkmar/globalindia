@@ -37,6 +37,11 @@ test.afterAll(async () => {
   await db.$disconnect();
 });
 
+async function signOut(page) {
+  await page.getByRole("button", { name: /E2E Editor/ }).click();
+  await page.getByRole("menuitem", { name: "Sign out" }).click();
+}
+
 async function signIn(page, password) {
   await page.goto("/admin/login");
   await page.getByLabel("Email").fill(email);
@@ -98,10 +103,10 @@ test("full sign-in, setup, TOTP and recovery journey", async ({ page, context })
   await page.getByLabel("I have stored these codes somewhere safe").check();
   await page.getByRole("button", { name: /continue/i }).click();
   await page.getByRole("button", { name: "Go to the admin panel" }).click();
-  await expect(page.getByRole("heading", { name: `Signed in as ${email}` })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Good to see you/ })).toBeVisible();
 
   // 5. Sign out, then sign in with the authenticator app
-  await page.getByRole("button", { name: "Sign out" }).click();
+  await signOut(page);
   await page.waitForURL(/\/admin\/login/);
   await page.goto("/admin");
   await page.waitForURL(/\/admin\/login/); // back button / direct visit shows nothing after logout
@@ -111,10 +116,10 @@ test("full sign-in, setup, TOTP and recovery journey", async ({ page, context })
   while (currentStep() <= setupStep) await page.waitForTimeout(1000); // same 30 s code cannot be replayed
   await page.getByLabel("6-digit code").fill(totpCode(secret));
   await page.waitForURL((url) => url.pathname === "/admin");
-  await expect(page.getByRole("heading", { name: `Signed in as ${email}` })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Good to see you/ })).toBeVisible();
 
   // 6. Recovery code works once
-  await page.getByRole("button", { name: "Sign out" }).click();
+  await signOut(page);
   await page.waitForURL(/\/admin\/login/);
   await signIn(page, newPassword);
   await page.getByRole("radio", { name: "Recovery code" }).click();
@@ -122,7 +127,7 @@ test("full sign-in, setup, TOTP and recovery journey", async ({ page, context })
   await page.getByRole("button", { name: "Verify and sign in" }).click();
   await page.waitForURL((url) => url.pathname === "/admin");
 
-  await page.getByRole("button", { name: "Sign out" }).click();
+  await signOut(page);
   await page.waitForURL(/\/admin\/login/);
   await signIn(page, newPassword);
   await page.getByRole("radio", { name: "Recovery code" }).click();

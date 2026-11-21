@@ -31,7 +31,8 @@ export const POST = route(async (req) => {
   const { token, newPassword } = await readJson(req, resetConfirmSchema);
   const tokenHash = hmac(token, authEnv.refreshPepper);
   const row = await db.passwordResetToken.findUnique({ where: { tokenHash }, include: { user: true } });
-  if (!row || row.usedAt || row.expiresAt <= new Date() || row.user.status !== "ACTIVE") return errorResponse(400, BAD_LINK);
+  // INVITED users set their first password through the same single-use link (48 h invite token).
+  if (!row || row.usedAt || row.expiresAt <= new Date() || !["ACTIVE", "INVITED"].includes(row.user.status)) return errorResponse(400, BAD_LINK);
 
   const policy = passwordPolicyError(newPassword, { email: row.user.email });
   if (policy) return errorResponse(400, policy, { body: { fields: { newPassword: policy } } });
@@ -46,6 +47,7 @@ export const POST = route(async (req) => {
         passwordHash: await hashPassword(newPassword),
         passwordChangedAt: new Date(),
         mustChangePassword: false,
+        status: "ACTIVE",
         failedLogins: 0,
         lockedUntil: null,
       },

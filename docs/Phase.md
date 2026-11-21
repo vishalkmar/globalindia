@@ -154,26 +154,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 E2E test full login with OTP and TOTP
 
 ## Phase 6 — Admin Panel Shell & Roles
-- [ ] 01 Admin layout: sidebar, top bar, breadcrumb, user menu
-- [ ] 02 Role matrix SUPER_ADMIN / EDITOR / VIEWER documented
-- [ ] 03 Permission helper can(user, action, resource) server side
-- [ ] 04 Dashboard page: enquiries today, products count, last edits
-- [ ] 05 Reusable DataTable (search, filter, sort, paginate server-side)
-- [ ] 06 Reusable FormBuilder driven by Zod schemas
-- [ ] 07 Sticky save bar with Save draft / Publish / Preview
-- [ ] 08 Unsaved-changes guard
-- [ ] 09 Drag-and-drop reorder helper (dnd-kit)
-- [ ] 10 Rich text editor (Tiptap) with sanitised HTML output
-- [ ] 11 Preview mode (draft cookie) for pages
-- [ ] 12 Revision history for pages and products (last 20)
-- [ ] 13 Users management (invite, role change, disable) — super admin only
-- [ ] 14 Audit log viewer with filters
-- [ ] 15 Toasts and error boundary for admin
-- [ ] 16 Admin 404 and 403 pages
-- [ ] 17 Admin noindex, nofollow + X-Robots-Tag
-- [ ] 18 Keyboard shortcuts (save Ctrl+S)
-- [ ] 19 Mobile-usable admin layout
-- [ ] 20 Test: VIEWER cannot reach any write endpoint
+- [x] 01 Admin layout: sidebar, top bar, breadcrumb, user menu
+- [x] 02 Role matrix SUPER_ADMIN / EDITOR / VIEWER documented
+- [x] 03 Permission helper can(user, action, resource) server side
+- [x] 04 Dashboard page: enquiries today, products count, last edits
+- [x] 05 Reusable DataTable (search, filter, sort, paginate server-side)
+- [x] 06 Reusable FormBuilder driven by Zod schemas
+- [x] 07 Sticky save bar with Save draft / Publish / Preview
+- [x] 08 Unsaved-changes guard
+- [x] 09 Drag-and-drop reorder helper (dnd-kit)
+- [x] 10 Rich text editor (Tiptap) with sanitised HTML output
+- [x] 11 Preview mode (draft cookie) for pages
+- [x] 12 Revision history for pages and products (last 20)
+- [x] 13 Users management (invite, role change, disable) — super admin only
+- [x] 14 Audit log viewer with filters
+- [x] 15 Toasts and error boundary for admin
+- [x] 16 Admin 404 and 403 pages
+- [x] 17 Admin noindex, nofollow + X-Robots-Tag
+- [x] 18 Keyboard shortcuts (save Ctrl+S)
+- [x] 19 Mobile-usable admin layout
+- [x] 20 Test: VIEWER cannot reach any write endpoint
 
 ## Phase 7 — Media Library (Cloudinary)
 - [ ] 01 lib/cloudinary.js server-only config

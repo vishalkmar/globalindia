@@ -90,7 +90,8 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 3 Database | Done | 2026-11-21 | 28 models, migrations verified on fresh DB, idempotent seed with prod guard |
 | 4 JWT auth core | Done | 2026-11-21 | jose HS256 pinned, rotating refresh + family reuse detection, lockout, guard, proxy.js (UX only) |
 | 5 MFA + seed | Done | 2026-11-21 | Email OTP, TOTP (own RFC 6238 impl), recovery codes, MFA changes approved from default admin email, email change 3-step, reset, setup wizard, security page; 55 unit tests + Playwright E2E passing |
-| 6 Admin shell | Not started | | Ask before starting |
+| 6 Admin shell | Done | 2026-11-21 | Shell (sidebar, breadcrumb, user menu, mobile drawer), role matrix (docs/Roles.md), requirePermission, dashboard, DataTable, Zod FormBuilder, SaveBar + Ctrl+S, unsaved guard, dnd-kit reorder, Tiptap + server sanitiser, preview (draft mode + admin check), revisions, users (invite/role/disable), audit viewer, 403/404/error. 108 unit + 4 E2E passing |
+| 7 Media library | Not started | | Ask before starting |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -99,6 +100,10 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - `AdminUser.mfaSetupAt` marks first-login setup finished; `totpPendingAt` lets a pending authenticator secret be reused for 10 minutes (fixes a double-request race).
 - Default approval inbox for MFA changes = `SiteSetting security.defaultAdminEmail` (seeded from `SEED_ADMIN_EMAIL`).
 - Cache Components is on: anything reading cookies/searchParams sits inside `<Suspense>`.
+- Admin routes live in `src/app/admin/(panel)/` (shell) and `(auth)/` (sign-in). Every page calls `requirePermissionPage`, every API `requirePermission` — the layout check is not relied on.
+- Invites reuse PasswordResetToken (48 h) and the /admin/reset page; status INVITED -> ACTIVE on first password.
+- npm audit: 4 "high" findings are inside the Prisma CLI's config loader (deepmerge-ts, effect), build-time only; fixed by Prisma 7 — decide in Phase 27.
+- Public pages must show drafts only when `isPreview()` (draft cookie AND admin session) — use it from Phase 9/10.
 
 ## 8. Open questions / needs from owner
 

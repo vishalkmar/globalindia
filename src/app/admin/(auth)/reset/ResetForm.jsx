@@ -13,6 +13,7 @@ import { postJson } from "@/lib/client/api";
 export function ResetForm() {
   const params = useSearchParams();
   const token = params.get("token") ?? "";
+  const invite = params.get("invite") === "1";
   const [pw, setPw] = useState("");
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
@@ -49,8 +50,8 @@ export function ResetForm() {
 
   return (
     <AuthCard
-      title="Choose a new password"
-      description="After this, every device signed in to your account is signed out."
+      title={invite ? "Set your password" : "Choose a new password"}
+      description={invite ? "Welcome to the Global India admin panel. Choose a password, then sign in and add an authenticator app." : "After this, every device signed in to your account is signed out."}
       footer={
         <Link href="/admin/login" className="font-semibold text-primary underline underline-offset-4">
           Back to sign in

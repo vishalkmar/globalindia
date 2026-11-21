@@ -3,11 +3,13 @@ import "server-only";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
 import { HttpError } from "@/lib/http";
 
 import { COOKIE } from "./cookies";
 import { verifyAccessToken } from "./jwt";
+import { can } from "./permissions";
 import { isSessionActive } from "./session";
 
 /**
@@ -79,5 +81,30 @@ export async function requireAdminPage({ role = "VIEWER", allowSetup = false, ne
   if (!user) redirect(`/admin/login?next=${encodeURIComponent(next)}`);
   if (!allowSetup && setupPending(user)) redirect("/admin/setup");
   if (!roleAtLeast(user.role, role)) redirect("/admin/forbidden");
+  return user;
+}
+
+/**
+ * requireAdmin + permission check from the role matrix (src/lib/auth/permissions.js).
+ * Every denial is written to the audit log (Phase 21 todo 17).
+ * @param {"read"|"create"|"update"|"delete"|"publish"} action
+ * @param {string} resource
+ */
+export async function requirePermission(action, resource) {
+  const user = await requireAdmin();
+  if (!can(user, action, resource)) {
+    await audit({ actorId: user.id, action: "authz.denied", entity: resource, diff: { action, role: user.role } });
+    throw new HttpError(403, "You do not have permission to do that.");
+  }
+  return user;
+}
+
+/** Page version: redirects to /admin/forbidden instead of throwing. */
+export async function requirePermissionPage(action, resource, next = "/admin") {
+  const user = await requireAdminPage({ next });
+  if (!can(user, action, resource)) {
+    await audit({ actorId: user.id, action: "authz.denied", entity: resource, diff: { action, role: user.role, page: true } });
+    redirect("/admin/forbidden");
+  }
   return user;
 }

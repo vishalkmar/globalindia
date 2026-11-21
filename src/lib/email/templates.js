@@ -121,3 +121,20 @@ export function securityAlertEmail({ title, message, details = {} }) {
       .join("\n")}`,
   };
 }
+
+const ROLE_TEXT = { SUPER_ADMIN: "Super admin", EDITOR: "Editor", VIEWER: "Viewer (read only)" };
+
+/** Invitation to a new admin user. The link sets the first password (48 hours, single use). */
+export function inviteEmail({ token, role, invitedBy }) {
+  const href = `${siteUrl()}/admin/reset?token=${encodeURIComponent(token)}&invite=1`;
+  const body =
+    p(`${invitedBy} added you to the Global India website admin panel.`) +
+    meta([["Role", ROLE_TEXT[role] ?? role]]) +
+    button(href, "Set your password") +
+    p("The link works once and expires in 48 hours. After setting a password you will add an authenticator app to your phone.");
+  return {
+    subject: "You have been invited to the Global India admin panel",
+    html: layout({ preheader: "Set your password to start using the admin panel.", heading: "Your admin account is ready", body }),
+    text: `${invitedBy} added you to the Global India admin panel as ${ROLE_TEXT[role] ?? role}.\n\nSet your password: ${href}\n\nThe link works once and expires in 48 hours.`,
+  };
+}
