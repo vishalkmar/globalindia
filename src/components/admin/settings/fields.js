@@ -80,6 +80,8 @@ export const SETTINGS_FIELDS = {
       { name: "showCall", label: "Show a Call button next to it", type: "checkbox" },
       { name: "sticky", label: "Keep the header visible while scrolling", type: "checkbox" },
       { name: "showSearch", label: "Show product search", type: "checkbox" },
+      { name: "floatingCall", label: "Floating Call button on phones", type: "checkbox", hint: "A small button at the bottom corner of the screen on mobile." },
+      { name: "floatingWhatsApp", label: "Floating WhatsApp button", type: "checkbox", hint: "Shown only when a WhatsApp number is set in Business details." },
     ],
   },
   footer: {

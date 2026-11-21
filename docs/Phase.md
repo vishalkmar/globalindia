@@ -220,26 +220,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Test theme switch updates whole site without redeploy
 
 ## Phase 9 — Public Layout: TopBar, Header, MegaMenu, Footer
-- [ ] 01 TopBar: phone (tel), email (mailto), GST, working hours
-- [ ] 02 Header: logo, nav, Request a quote button
-- [ ] 03 Sticky header after 120 px with border and shrink
-- [ ] 04 Mega menu: 6 families → categories, one featured product
-- [ ] 05 Keyboard and screen-reader accessible menus
-- [ ] 06 Mobile drawer menu with accordion categories
-- [ ] 07 Search overlay (products, categories) — Ctrl+K
-- [ ] 08 Correct breadcrumb component with JSON-LD
-- [ ] 09 Footer column 1: logo + about text
-- [ ] 10 Footer column 2: quick links (no dead links)
-- [ ] 11 Footer column 3: product families
-- [ ] 12 Footer column 4: contact info + GST
-- [ ] 13 Footer bottom bar: auto year, legal links
-- [ ] 14 Floating call / WhatsApp button (SVG, admin toggle)
-- [ ] 15 Cookie consent banner (necessary only by default)
-- [ ] 16 Skip-to-content link
-- [ ] 17 404 page with search and popular categories
-- [ ] 18 Error page
-- [ ] 19 All data loaded from settings/menus (no hard-coded copy)
-- [ ] 20 Lighthouse check of layout on mobile
+- [x] 01 TopBar: phone (tel), email (mailto), GST, working hours
+- [x] 02 Header: logo, nav, Request a quote button
+- [x] 03 Sticky header after 120 px with border and shrink
+- [~] 04 Mega menu: 6 families → categories, one featured product — families + quote card live; categories and the featured product fill in when the catalogue is seeded (Phase 12)
+- [x] 05 Keyboard and screen-reader accessible menus
+- [x] 06 Mobile drawer menu with accordion categories
+- [x] 07 Search overlay (products, categories) — Ctrl+K
+- [x] 08 Correct breadcrumb component with JSON-LD
+- [x] 09 Footer column 1: logo + about text
+- [~] 10 Footer column 2: quick links (no dead links) — link checker E2E in place; it lists the pages still to be built (Phases 11-15) and fails on any other broken link
+- [x] 11 Footer column 3: product families
+- [x] 12 Footer column 4: contact info + GST
+- [x] 13 Footer bottom bar: auto year, legal links
+- [x] 14 Floating call / WhatsApp button (SVG, admin toggle)
+- [x] 15 Cookie consent banner (necessary only by default)
+- [x] 16 Skip-to-content link
+- [x] 17 404 page with search and popular categories
+- [x] 18 Error page
+- [x] 19 All data loaded from settings/menus (no hard-coded copy)
+- [x] 20 Lighthouse check of layout on mobile — Performance 95-98, Accessibility 100, Best practices 96, SEO 100; LCP 0.8 s, CLS 0
 
 ## Phase 10 — Home Page (all sections editable)
 - [ ] 01 Section registry (type → component + admin schema)

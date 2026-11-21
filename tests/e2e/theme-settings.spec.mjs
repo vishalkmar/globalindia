@@ -84,7 +84,7 @@ test("activate a theme, edit the header, toggle maintenance — the public site 
   await page.getByRole("button", { name: "Save and publish" }).click();
   await expect(page.getByText(/Header saved/)).toBeVisible();
   await site.reload();
-  await expect(site.getByRole("link", { name: "Get today's price" })).toBeVisible();
+  await expect(site.getByTestId("site-header").getByRole("link", { name: "Get today's price" })).toBeVisible();
 
   // Maintenance mode: visitor sees the notice, the signed-in admin still sees the site
   await page.goto("/admin/settings/maintenance");

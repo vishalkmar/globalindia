@@ -16,15 +16,18 @@ export default defineConfig({
   fullyParallel: false,
   reporter: [["list"]],
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3100",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  // A dedicated server on 3100, always started fresh by the test run, with relaxed rate limits
+  // (the suite signs in many times from one IP). The normal dev server on 3000 keeps real limits.
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000/admin/login",
-    reuseExistingServer: true,
+    command: "npx next dev --turbopack -p 3100",
+    url: "http://localhost:3100/admin/login",
+    reuseExistingServer: false,
     timeout: 180_000,
+    env: { E2E_RELAXED_LIMITS: "1", NEXT_PUBLIC_SITE_URL: "http://localhost:3100" },
   },
 });

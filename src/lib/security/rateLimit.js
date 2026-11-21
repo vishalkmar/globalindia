@@ -21,8 +21,20 @@ export const LIMITS = {
   otpResendUser: { limit: 5, windowSec: 60 * 60 },
   resetRequest: { limit: 3, windowSec: 60 * 60 },
   sensitiveUser: { limit: 10, windowSec: 60 * 60 },
+  search: { limit: 60, windowSec: 60 }, // per IP
+  consent: { limit: 30, windowSec: 60 }, // per IP
   upload: { limit: 60, windowSec: 60 * 60 }, // files per admin per hour (Phase 22 tunes this)
 };
+
+/**
+ * End-to-end tests sign in many times from one IP. Only outside production, and only when the test
+ * runner starts the server with E2E_RELAXED_LIMITS=1, limits are multiplied by 20. Never in production.
+ */
+function effectiveLimit(name) {
+  const cfg = LIMITS[name];
+  if (process.env.NODE_ENV !== "production" && process.env.E2E_RELAXED_LIMITS === "1") return { ...cfg, limit: cfg.limit * 20 };
+  return cfg;
+}
 
 let redis;
 const upstashCache = new Map();
@@ -61,7 +73,7 @@ function memoryLimit(key, { limit, windowSec }) {
  * @returns {Promise<{ success: boolean, retryAfter: number }>}
  */
 export async function rateLimit(name, identifier) {
-  const cfg = LIMITS[name];
+  const cfg = effectiveLimit(name);
   const key = `${name}:${identifier}`;
   try {
     const rl = upstash(name, cfg);

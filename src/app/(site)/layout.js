@@ -1,8 +1,11 @@
 import { MaintenanceGate } from "@/components/site/MaintenanceGate";
+import { SiteShell } from "@/components/site/SiteShell";
 
-/**
- * Public website layout. Phase 9 adds the top bar, header, mega menu and footer here.
- */
+/** Public website layout: maintenance gate around the full page frame (header, footer...). */
 export default function SiteLayout({ children }) {
-  return <MaintenanceGate>{children}</MaintenanceGate>;
+  return (
+    <MaintenanceGate>
+      <SiteShell>{children}</SiteShell>
+    </MaintenanceGate>
+  );
 }

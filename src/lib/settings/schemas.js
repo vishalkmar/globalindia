@@ -80,6 +80,8 @@ export const headerSchema = z.strictObject({
   showCall: z.boolean(),
   sticky: z.boolean(),
   showSearch: z.boolean(),
+  floatingCall: z.boolean(),
+  floatingWhatsApp: z.boolean(),
 });
 
 /* ---------- footer ---------- */
@@ -167,7 +169,7 @@ export const SETTING_DEFAULTS = {
     mapUrl: "",
   },
   topbar: { enabled: true, showPhone: true, showEmail: true, showGst: true, showHours: true, message: "Dispatch across India, usually within 7 working days" },
-  header: { logoLightId: null, logoDarkId: null, logoText: "Global India", ctaText: "Request a quote", ctaHref: "/contact#quote", showCall: true, sticky: true, showSearch: true },
+  header: { logoLightId: null, logoDarkId: null, logoText: "Global India", ctaText: "Request a quote", ctaHref: "/contact#quote", showCall: true, sticky: true, showSearch: true, floatingCall: true, floatingWhatsApp: true },
   footer: {
     aboutText:
       "Chemical raw materials from Burari Road, Delhi, since 2002. Surfactants, glycols, paraffins, food additives and soap bases in practical pack sizes, with the paperwork your buyers ask for.",

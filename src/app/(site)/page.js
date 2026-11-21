@@ -13,7 +13,7 @@ export default async function HomePage() {
   const [business, header] = await Promise.all([getSetting("business"), getSetting("header")]);
   const phone = business.phones?.[0]?.number;
   return (
-    <main id="main">
+    <>
       <Section tone="surface">
         <Container className="flex max-w-3xl flex-col items-start gap-5">
           <Eyebrow>Chemical raw materials · {business.address.city} · Since {business.established}</Eyebrow>
@@ -31,6 +31,6 @@ export default async function HomePage() {
           </div>
         </Container>
       </Section>
-    </main>
+    </>
   );
 }
