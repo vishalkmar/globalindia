@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "MediaAsset" ADD COLUMN     "driver" TEXT NOT NULL DEFAULT 'cloudinary',
+ADD COLUMN     "focalX" DOUBLE PRECISION,
+ADD COLUMN     "focalY" DOUBLE PRECISION,
+ADD COLUMN     "sha256" TEXT,
+ADD COLUMN     "version" INTEGER NOT NULL DEFAULT 1;

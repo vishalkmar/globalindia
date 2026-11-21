@@ -17,9 +17,10 @@ const nextConfig = {
   serverExternalPackages: ["@node-rs/argon2", "@prisma/client", "prisma"],
 
   images: {
-    // Only Cloudinary may be used as a remote image source (SSRF / abuse guard, Phase 26)
-    remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com", pathname: "/**" }],
-    formats: ["image/avif", "image/webp"],
+    // Images are resized and converted by Cloudinary (f_auto, q_auto) through a custom loader,
+    // so Next's own optimiser is not used and cannot be abused as an open image proxy (Phase 27).
+    loader: "custom",
+    loaderFile: "./src/lib/media/imageLoader.js",
   },
 
   turbopack: {

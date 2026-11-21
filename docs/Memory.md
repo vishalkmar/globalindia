@@ -91,7 +91,8 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 4 JWT auth core | Done | 2026-11-21 | jose HS256 pinned, rotating refresh + family reuse detection, lockout, guard, proxy.js (UX only) |
 | 5 MFA + seed | Done | 2026-11-21 | Email OTP, TOTP (own RFC 6238 impl), recovery codes, MFA changes approved from default admin email, email change 3-step, reset, setup wizard, security page; 55 unit tests + Playwright E2E passing |
 | 6 Admin shell | Done | 2026-11-21 | Shell (sidebar, breadcrumb, user menu, mobile drawer), role matrix (docs/Roles.md), requirePermission, dashboard, DataTable, Zod FormBuilder, SaveBar + Ctrl+S, unsaved guard, dnd-kit reorder, Tiptap + server sanitiser, preview (draft mode + admin check), revisions, users (invite/role/disable), audit viewer, 403/404/error. 108 unit + 4 E2E passing |
-| 7 Media library | Not started | | Ask before starting |
+| 7 Media library | Done (18/20, 2 need Cloudinary keys) | 2026-11-21 | Signed direct uploads, byte-level checks (magic bytes, SVG/markup refusal, dimension caps, PDF active-content scan incl. compressed streams), SSRF-safe URL upload, library grid + detail (alt, folder, focal point, replace, usage, delete guard), MediaPicker, product documents API, Cloudinary loader. Local dev driver until keys arrive. 171 unit + 5 E2E passing |
+| 8 Settings + themes | Not started | | Ask before starting |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -103,6 +104,8 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Admin routes live in `src/app/admin/(panel)/` (shell) and `(auth)/` (sign-in). Every page calls `requirePermissionPage`, every API `requirePermission` — the layout check is not relied on.
 - Invites reuse PasswordResetToken (48 h) and the /admin/reset page; status INVITED -> ACTIVE on first password.
 - npm audit: 4 "high" findings are inside the Prisma CLI's config loader (deepmerge-ts, effect), build-time only; fixed by Prisma 7 — decide in Phase 27.
+- Media storage: Cloudinary when CLOUDINARY_* are set, otherwise a dev-only local driver (.dev-media, served by /api/dev-media, 404 in production). Images upload as resource_type image, PDFs as raw. Uploads: sign -> direct upload -> confirm (server re-checks the stored bytes and deletes anything invalid).
+- Media delete is a soft delete; the stored file is purged by the 30-day trash job (Phase 16).
 - Public pages must show drafts only when `isPreview()` (draft cookie AND admin session) — use it from Phase 9/10.
 
 ## 8. Open questions / needs from owner

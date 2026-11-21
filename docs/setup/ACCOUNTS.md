@@ -21,6 +21,8 @@ On Neon, create a third branch `shadow` and use its direct URL as `SHADOW_DATABA
 2. Media Library → create folders `global-india/dev` and `global-india/prod`.
 3. Settings → Security: enable "Strict transformations", disable "Resource list" unsigned access.
 4. Do **not** create an unsigned upload preset. All uploads are signed by our server.
+5. PDFs are stored as `raw` files, so the "Allow delivery of PDF and ZIP files" setting is not needed.
+6. After adding the keys: upload one photo with GPS data and confirm the delivered file has no EXIF (Phase 7 todo 18), and check a cropped image follows the focal point (todo 13).
 
 ## 3. Brevo — todo 15
 1. Sign up, Senders & Domains → add the company domain, publish SPF, DKIM and DMARC records.

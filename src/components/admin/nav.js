@@ -33,7 +33,7 @@ export const NAV_GROUPS = [
       { href: "/admin/categories", label: "Categories", icon: FolderTree, resource: "categories", phase: 12 },
       { href: "/admin/industries", label: "Industries", icon: Factory, resource: "industries", phase: 15 },
       { href: "/admin/insights", label: "Insights", icon: Newspaper, resource: "insights", phase: 15 },
-      { href: "/admin/media", label: "Media", icon: Images, resource: "media", phase: 7 },
+      { href: "/admin/media", label: "Media", icon: Images, resource: "media" },
     ],
   },
   {

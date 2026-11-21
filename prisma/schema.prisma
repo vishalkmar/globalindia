@@ -562,6 +562,11 @@ model MediaAsset {
   alt          String    @default("")
   folder       String    @default("library")
   originalName String? // stored for display only, never used in paths
+  driver       String    @default("cloudinary") // "cloudinary" | "local" (development only)
+  version      Int       @default(1) // bumped on replace; cache-busts the delivery URL
+  focalX       Float? // 0..1 focal point for crops (Cloudinary gravity / CSS object-position)
+  focalY       Float?
+  sha256       String? // content hash, for duplicate detection
   sourceUrl    String? // when uploaded by URL
   uploadedById String?
   deletedAt    DateTime?

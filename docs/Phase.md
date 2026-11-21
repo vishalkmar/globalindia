@@ -176,26 +176,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Test: VIEWER cannot reach any write endpoint
 
 ## Phase 7 — Media Library (Cloudinary)
-- [ ] 01 lib/cloudinary.js server-only config
-- [ ] 02 Signed upload signature route with role + type + size checks
-- [ ] 03 Upload method 1: local file picker
-- [ ] 04 Upload method 2: drag and drop (multi-file, progress bar)
-- [ ] 05 Upload method 3: paste image/PDF URL (server fetch via safeFetch)
-- [ ] 06 Size limits: images 5 MB, PDF 10 MB (admin-editable, hard cap in code)
-- [ ] 07 MIME + magic-byte check server side
-- [ ] 08 Block SVG upload or sanitise with DOMPurify server-side
-- [ ] 09 Save MediaAsset record with dimensions, bytes, uploader
-- [ ] 10 Media library grid with search, type filter, folders
-- [ ] 11 Alt text required before asset can be used
-- [ ] 12 MediaPicker component reused in every image field
-- [ ] 13 Image crop/focal point via Cloudinary gravity
-- [ ] 14 Replace asset keeps same id across pages
-- [ ] 15 Delete with "used in" check
-- [ ] 16 next/image Cloudinary loader with f_auto,q_auto
-- [ ] 17 PDF documents (COA, SDS, TDS) upload and attach to products
-- [ ] 18 Strip EXIF/GPS metadata on upload
-- [ ] 19 Audit log for upload/delete
-- [ ] 20 Tests for oversize, wrong type, URL to private IP
+- [x] 01 lib/cloudinary.js server-only config
+- [x] 02 Signed upload signature route with role + type + size checks
+- [x] 03 Upload method 1: local file picker
+- [x] 04 Upload method 2: drag and drop (multi-file, progress bar)
+- [x] 05 Upload method 3: paste image/PDF URL (server fetch via safeFetch)
+- [x] 06 Size limits: images 5 MB, PDF 10 MB (admin-editable, hard cap in code)
+- [x] 07 MIME + magic-byte check server side
+- [x] 08 Block SVG upload or sanitise with DOMPurify server-side
+- [x] 09 Save MediaAsset record with dimensions, bytes, uploader
+- [x] 10 Media library grid with search, type filter, folders
+- [x] 11 Alt text required before asset can be used
+- [x] 12 MediaPicker component reused in every image field
+- [~] 13 Image crop/focal point via Cloudinary gravity — focal point saved + CSS crop working; g_xy_center URL unit-tested, live check needs Cloudinary keys
+- [x] 14 Replace asset keeps same id across pages
+- [x] 15 Delete with "used in" check
+- [x] 16 next/image Cloudinary loader with f_auto,q_auto
+- [x] 17 PDF documents (COA, SDS, TDS) upload and attach to products
+- [~] 18 Strip EXIF/GPS metadata on upload — signed incoming re-encode (c_limit) in place; live check needs Cloudinary keys
+- [x] 19 Audit log for upload/delete
+- [x] 20 Tests for oversize, wrong type, URL to private IP
 
 ## Phase 8 — Site Settings, Theme Manager & Business Info
 - [ ] 01 Business info editor (name, GST, address, phones, emails, hours)

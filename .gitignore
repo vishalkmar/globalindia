@@ -23,6 +23,7 @@
 
 # local dev mail outbox and local database
 /.dev-mail/
+/.dev-media/
 /.pglite/
 
 # misc

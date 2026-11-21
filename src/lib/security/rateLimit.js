@@ -21,6 +21,7 @@ export const LIMITS = {
   otpResendUser: { limit: 5, windowSec: 60 * 60 },
   resetRequest: { limit: 3, windowSec: 60 * 60 },
   sensitiveUser: { limit: 10, windowSec: 60 * 60 },
+  upload: { limit: 60, windowSec: 60 * 60 }, // files per admin per hour (Phase 22 tunes this)
 };
 
 let redis;
