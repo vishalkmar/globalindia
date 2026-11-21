@@ -1,0 +1,7 @@
+.next
+node_modules
+coverage
+playwright-report
+package-lock.json
+prisma/migrations
+*.pdf

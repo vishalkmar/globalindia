@@ -1,0 +1,748 @@
+# Phase.md — Global India Website
+
+**Rule:** Before each phase, list all 20 todos on screen and ask **"Phase N start karun?"**. Tick each todo (`[x]`) as it is done. `[~]` = code side done, blocked on something only the owner can provide (account/key/domain). After the last todo: lint, build, tests, update Memory.md, then ask before the next phase.
+
+Phases 1–16 build the site and admin · 17–29 security · 30 security testing · 31 SEO · 32 launch.
+
+## Roadmap
+
+| # | Name | Outcome |
+|---|---|---|
+| 1 | Project setup | Repo, tooling, env, accounts ready |
+| 2 | Design system | Tokens, fonts, every base UI component on a styleguide page |
+| 3 | Database | All Prisma models migrated |
+| 4 | JWT auth core | Login, rotating refresh, logout, guards, lockout |
+| 5 | MFA + seed | Email OTP, authenticator app, recovery codes, seeded super admin |
+| 6 | Admin shell | Layout, roles, tables, forms, revisions, audit viewer |
+| 7 | Media library | Cloudinary uploads by file, drag-drop and URL with limits |
+| 8 | Settings + themes | Business info, header/footer/menus, theme manager, light/dark |
+| 9 | Public layout | Top bar, sticky header, mega menu, footer, search, 404 |
+| 10 | Home page | 15 editable sections with real copy |
+| 11 | Company pages | About, Why Us, Quality, Gallery, Careers |
+| 12 | Catalogue | 22 categories, ~120 products, admin CRUD, CSV import |
+| 13 | Product template | Long buyer's-guide product pages |
+| 14 | Enquiries | Quote, sample, callback, contact forms, Brevo, inbox |
+| 15 | Content pages | Industries, insights, FAQ, legal, downloads, newsletter |
+| 16 | Admin polish | Dashboard, redirects, trash, backups, accessibility, freeze |
+| 17 | Injection | SQL, ORM, CSV, header, prototype, path injection closed |
+| 18 | CSRF | Tokens, SameSite, origin checks, Server Action origins |
+| 19 | Validation + uploads | Zod on every input, safe uploads |
+| 20 | XSS + CORS | Nonce CSP, sanitising, deny-by-default CORS |
+| 21 | Authorization | BOLA/BFLA closed, server-side permissions |
+| 22 | Rate limiting | Login, OTP, forms, search, uploads |
+| 23 | Tokens + OTP | JWT and OTP rules enforced |
+| 24 | Secrets + logs | No secrets in client, no source maps, redacted logs |
+| 25 | Passwords + MFA | argon2id, encrypted TOTP, step-up auth |
+| 26 | Webhooks + SSRF | Signed webhooks, replay protection, safeFetch |
+| 27 | Deps + edge | Patched deps, Cloudflare WAF, DDoS runbook |
+| 28 | Bots + CVEs | Bot challenge, anti-scraping, historic CVE hardening |
+| 29 | UI audit | Clickjacking, open redirect, storage, page-source review |
+| 30 | Security testing | Automated attack suites, ZAP, Nuclei, final report |
+| 31 | SEO | Metadata, JSON-LD, sitemap, robots, redirects, Web Vitals |
+| 32 | Launch | Go-live, handover, training, sign-off |
+
+---
+
+## Phase 1 — Project Setup & Tooling
+- [ ] 01 Create Next.js 16 App Router project (Turbopack) with JavaScript (no TypeScript)
+- [ ] 02 Set up src/ folder structure exactly as Architecture.md
+- [ ] 03 Install Tailwind CSS v4 and base globals.css
+- [ ] 04 Add ESLint (next/core-web-vitals) + Prettier + import sort
+- [ ] 05 Add lint rule to block emoji characters in JSX/strings
+- [ ] 06 Add jsconfig.json path aliases (@/components, @/lib)
+- [ ] 07 Install lucide-react, zod, clsx, tailwind-merge
+- [ ] 08 Create .env.example with all variable names, no values
+- [ ] 09 Add .gitignore for .env*, .next, coverage, source maps
+- [ ] 10 Initialise Git repo, main + develop branches
+- [ ] 11 Set poweredByHeader:false, productionBrowserSourceMaps:false
+- [ ] 12 Add server-only package and usage rule
+- [ ] 13 Create Neon project, main + dev branches, copy pooled URL
+- [ ] 14 Create Cloudinary account folders global-india/dev|prod
+- [ ] 15 Create Brevo account, sender, API key (server env only)
+- [ ] 16 Create Upstash Redis database for rate limiting
+- [ ] 17 Configure Vercel project with preview + production envs
+- [ ] 18 Add npm scripts: dev, build, lint, test, e2e, db:migrate, db:seed
+- [ ] 19 Copy docs folder into repo, link from README
+- [ ] 20 Verify: npm run build passes on clean clone
+
+## Phase 2 — Design System & Theme Tokens
+- [ ] 01 Define CSS variables for all colour tokens from Design.md
+- [ ] 02 Map tokens in Tailwind @theme (primary, accent, surface, ink, muted, line)
+- [ ] 03 Load Fraunces, Manrope, JetBrains Mono via next/font
+- [ ] 04 Build type scale utilities (display, h2, h3, eyebrow, body, small, data)
+- [ ] 05 Container, section, grid helpers
+- [ ] 06 Button component (primary, secondary, ghost, link; sizes; loading)
+- [ ] 07 Input, Textarea, Select, Checkbox, Radio, FileDrop base styles
+- [ ] 08 Card, Badge, Tag, Divider components
+- [ ] 09 Eyebrow with accent line component
+- [ ] 10 Dialog/Modal and Drawer (focus trap, Esc close)
+- [ ] 11 Tabs and Accordion (keyboard accessible)
+- [ ] 12 Table component for specs (zebra with surface colour)
+- [ ] 13 Icon wrapper (44 px bordered square, lucide 1.5 stroke)
+- [ ] 14 Toast/notification component
+- [ ] 15 Skeleton loaders
+- [ ] 16 Reveal-on-scroll hook respecting reduced motion
+- [ ] 17 Count-up hook with server value fallback
+- [ ] 18 Focus ring style using accent colour
+- [ ] 19 /styleguide dev-only page showing every component
+- [ ] 20 Check contrast AA for all token pairs
+
+## Phase 3 — Database Schema (Prisma + Neon)
+- [ ] 01 Install Prisma, configure DATABASE_URL + DIRECT_URL
+- [ ] 02 Model AdminUser with roles and MFA fields
+- [ ] 03 Model Session (refresh token family, rotation fields)
+- [ ] 04 Model OtpCode and PasswordResetToken (hashed, expiry, used)
+- [ ] 05 Model SiteSetting (key/value JSON)
+- [ ] 06 Model Theme (tokens JSON, active flag)
+- [ ] 07 Model Page and Section (typed sections, order, visibility)
+- [ ] 08 Model MenuItem tree (header, footer, mega menu)
+- [ ] 09 Model ProductCategory with family enum
+- [ ] 10 Model Product with specs, faqs, documents, SEO
+- [ ] 11 Model Industry, Post, Testimonial, ClientLogo, GalleryItem, Faq
+- [ ] 12 Model MediaAsset
+- [ ] 13 Model Enquiry with status pipeline
+- [ ] 14 Model AuditLog and WebhookEvent
+- [ ] 15 Add indexes (slug unique, status, categoryId, createdAt)
+- [ ] 16 Run first migration on Neon dev branch
+- [ ] 17 Create Prisma client singleton lib/db.js (server-only)
+- [ ] 18 Write seed.js skeleton with upsert helpers
+- [ ] 19 Document ER diagram in Architecture.md
+- [ ] 20 Verify migration on a fresh Neon branch
+
+## Phase 4 — JWT Auth Core
+- [ ] 01 lib/auth/password.js argon2id hash/verify
+- [ ] 02 lib/auth/jwt.js sign/verify with jose, alg whitelist, iss, aud, exp
+- [ ] 03 Access token 10 min with sub, role, tv, jti
+- [ ] 04 Opaque refresh token generator (32 random bytes) + hashing
+- [ ] 05 Session create/rotate/revoke helpers
+- [ ] 06 Refresh token family reuse detection (revoke family)
+- [ ] 07 Cookie helper: HttpOnly, Secure, SameSite=Strict, scoped paths
+- [ ] 08 POST /api/auth/login with generic error message
+- [ ] 09 POST /api/auth/refresh with rotation on every call
+- [ ] 10 POST /api/auth/logout revoke + clear cookies
+- [ ] 11 POST /api/auth/logout-all revoke all sessions
+- [ ] 12 requireAdmin(role) guard verifying token + DB tokenVersion
+- [ ] 13 Silent refresh in admin client (fetch wrapper retries once on 401)
+- [ ] 14 Proxy (middleware) redirect for /admin (UX only, not security)
+- [ ] 15 Account lockout after 5 failed logins (15 min)
+- [ ] 16 Constant-time responses to stop user enumeration
+- [ ] 17 Session list page data (device, last used)
+- [ ] 18 Unit tests for sign/verify/expired/tampered/alg-none tokens
+- [ ] 19 Unit tests for rotation and reuse detection
+- [ ] 20 Confirm no token ever touches localStorage
+
+## Phase 5 — Admin MFA (Email OTP + Authenticator) & Seed
+- [ ] 01 OTP generator (6 digits, crypto random) stored hashed with pepper
+- [ ] 02 OTP expiry 5 min, max 5 attempts, single use
+- [ ] 03 Brevo template: login OTP (no OTP in API response ever)
+- [ ] 04 POST /api/auth/verify-otp
+- [ ] 05 TOTP setup: secret encrypted (AES-256-GCM) at rest
+- [ ] 06 QR code page for authenticator app + manual key
+- [ ] 07 POST /api/auth/verify-totp with 1-step window
+- [ ] 08 Backup recovery codes (10, hashed, single use)
+- [ ] 09 MFA enable/disable requires OTP sent to default super-admin email
+- [ ] 10 Email change requires password + OTP to old email + link to new
+- [ ] 11 Password reset request (same response whether email exists or not)
+- [ ] 12 Reset token single use, 15 min, hashed; reset kills all sessions
+- [ ] 13 New-login alert email with device and time
+- [ ] 14 Forced password change + MFA setup on first login
+- [ ] 15 Seed SUPER_ADMIN from env, refuse prod seed without flag
+- [ ] 16 Admin login UI (email/password → method choice → code)
+- [ ] 17 Admin verify UI with resend timer (60 s cooldown)
+- [ ] 18 Admin security settings page (MFA, sessions, password)
+- [ ] 19 Audit log entries for every auth event
+- [ ] 20 E2E test full login with OTP and TOTP
+
+## Phase 6 — Admin Panel Shell & Roles
+- [ ] 01 Admin layout: sidebar, top bar, breadcrumb, user menu
+- [ ] 02 Role matrix SUPER_ADMIN / EDITOR / VIEWER documented
+- [ ] 03 Permission helper can(user, action, resource) server side
+- [ ] 04 Dashboard page: enquiries today, products count, last edits
+- [ ] 05 Reusable DataTable (search, filter, sort, paginate server-side)
+- [ ] 06 Reusable FormBuilder driven by Zod schemas
+- [ ] 07 Sticky save bar with Save draft / Publish / Preview
+- [ ] 08 Unsaved-changes guard
+- [ ] 09 Drag-and-drop reorder helper (dnd-kit)
+- [ ] 10 Rich text editor (Tiptap) with sanitised HTML output
+- [ ] 11 Preview mode (draft cookie) for pages
+- [ ] 12 Revision history for pages and products (last 20)
+- [ ] 13 Users management (invite, role change, disable) — super admin only
+- [ ] 14 Audit log viewer with filters
+- [ ] 15 Toasts and error boundary for admin
+- [ ] 16 Admin 404 and 403 pages
+- [ ] 17 Admin noindex, nofollow + X-Robots-Tag
+- [ ] 18 Keyboard shortcuts (save Ctrl+S)
+- [ ] 19 Mobile-usable admin layout
+- [ ] 20 Test: VIEWER cannot reach any write endpoint
+
+## Phase 7 — Media Library (Cloudinary)
+- [ ] 01 lib/cloudinary.js server-only config
+- [ ] 02 Signed upload signature route with role + type + size checks
+- [ ] 03 Upload method 1: local file picker
+- [ ] 04 Upload method 2: drag and drop (multi-file, progress bar)
+- [ ] 05 Upload method 3: paste image/PDF URL (server fetch via safeFetch)
+- [ ] 06 Size limits: images 5 MB, PDF 10 MB (admin-editable, hard cap in code)
+- [ ] 07 MIME + magic-byte check server side
+- [ ] 08 Block SVG upload or sanitise with DOMPurify server-side
+- [ ] 09 Save MediaAsset record with dimensions, bytes, uploader
+- [ ] 10 Media library grid with search, type filter, folders
+- [ ] 11 Alt text required before asset can be used
+- [ ] 12 MediaPicker component reused in every image field
+- [ ] 13 Image crop/focal point via Cloudinary gravity
+- [ ] 14 Replace asset keeps same id across pages
+- [ ] 15 Delete with "used in" check
+- [ ] 16 next/image Cloudinary loader with f_auto,q_auto
+- [ ] 17 PDF documents (COA, SDS, TDS) upload and attach to products
+- [ ] 18 Strip EXIF/GPS metadata on upload
+- [ ] 19 Audit log for upload/delete
+- [ ] 20 Tests for oversize, wrong type, URL to private IP
+
+## Phase 8 — Site Settings, Theme Manager & Business Info
+- [ ] 01 Business info editor (name, GST, address, phones, emails, hours)
+- [ ] 02 Top bar editor (show/hide items)
+- [ ] 03 Header editor (logo light/dark, CTA text + link, sticky on/off)
+- [ ] 04 Menu builder (header, mega menu, footer columns) with nesting
+- [ ] 05 Footer editor (about text, columns, bottom bar, auto year)
+- [ ] 06 Social links editor (hidden when empty)
+- [ ] 07 Theme list: create, duplicate, rename, delete, activate
+- [ ] 08 Theme editor: colour pickers per token with contrast warning
+- [ ] 09 Theme editor: font family pickers from whitelist
+- [ ] 10 Theme editor: radius, spacing density, button style
+- [ ] 11 Light / dark mode tokens and default mode setting
+- [ ] 12 Live theme preview iframe before publish
+- [ ] 13 Preset themes: Pine & Brass (default), Navy & Copper, Graphite & Saffron
+- [ ] 14 Server injects active theme CSS variables in root layout
+- [ ] 15 Revalidate theme/settings tags on save
+- [ ] 16 Favicon and OG default image upload
+- [ ] 17 Global SEO defaults (title template, description)
+- [ ] 18 Analytics IDs field (loaded only after consent)
+- [ ] 19 Maintenance mode toggle
+- [ ] 20 Test theme switch updates whole site without redeploy
+
+## Phase 9 — Public Layout: TopBar, Header, MegaMenu, Footer
+- [ ] 01 TopBar: phone (tel), email (mailto), GST, working hours
+- [ ] 02 Header: logo, nav, Request a quote button
+- [ ] 03 Sticky header after 120 px with border and shrink
+- [ ] 04 Mega menu: 6 families → categories, one featured product
+- [ ] 05 Keyboard and screen-reader accessible menus
+- [ ] 06 Mobile drawer menu with accordion categories
+- [ ] 07 Search overlay (products, categories) — Ctrl+K
+- [ ] 08 Correct breadcrumb component with JSON-LD
+- [ ] 09 Footer column 1: logo + about text
+- [ ] 10 Footer column 2: quick links (no dead links)
+- [ ] 11 Footer column 3: product families
+- [ ] 12 Footer column 4: contact info + GST
+- [ ] 13 Footer bottom bar: auto year, legal links
+- [ ] 14 Floating call / WhatsApp button (SVG, admin toggle)
+- [ ] 15 Cookie consent banner (necessary only by default)
+- [ ] 16 Skip-to-content link
+- [ ] 17 404 page with search and popular categories
+- [ ] 18 Error page
+- [ ] 19 All data loaded from settings/menus (no hard-coded copy)
+- [ ] 20 Lighthouse check of layout on mobile
+
+## Phase 10 — Home Page (all sections editable)
+- [ ] 01 Section registry (type → component + admin schema)
+- [ ] 02 Hero: photo, eyebrow, H1, sub text, 2 buttons, 3 trust facts
+- [ ] 03 FeatureTriad: range, pack sizes, Delhi distribution
+- [ ] 04 About teaser with pull quote from proprietor
+- [ ] 05 Product families grid (6 cards with counts)
+- [ ] 06 Featured products (6 ProductCards)
+- [ ] 07 Industries we serve (8 icon cards)
+- [ ] 08 Numbered values 01-04
+- [ ] 09 Stats strip (since 2002, products, team, cities served)
+- [ ] 10 How ordering works (4 steps)
+- [ ] 11 Client logo strip (optional)
+- [ ] 12 Testimonials (optional)
+- [ ] 13 Insights preview (3 latest posts)
+- [ ] 14 Home FAQ (6 questions, FAQ schema)
+- [ ] 15 Final CTA band with quote button and phone
+- [ ] 16 Admin: add, remove, reorder, hide each section
+- [ ] 17 Admin: edit every text, image, button per section
+- [ ] 18 Write real human copy for all sections from Memory.md
+- [ ] 19 Responsive check 360 / 768 / 1280 / 1536
+- [ ] 20 Performance: LCP image priority, CLS 0
+
+## Phase 11 — About, Why Us, Quality, Infrastructure
+- [ ] 01 About hero with correct breadcrumb
+- [ ] 02 Our story (2002 to today) copy
+- [ ] 03 Timeline component (editable milestones)
+- [ ] 04 Key facts table (nature, team 35, banker, GST)
+- [ ] 05 Vision and mission blocks
+- [ ] 06 Values list with bold lead-ins
+- [ ] 07 Proprietor message with photo
+- [ ] 08 Warehouse and logistics section
+- [ ] 09 Why Us page: 4 numbered pillars
+- [ ] 10 Why Us: benefits at a glance (4 cards)
+- [ ] 11 Quality & Documentation page (COA, SDS, TDS, batch traceability)
+- [ ] 12 Sourcing partners section (brand names as "we supply")
+- [ ] 13 Packaging options section (25 kg, 50 kg, 200 L, carboys)
+- [ ] 14 Gallery page (filterable)
+- [ ] 15 Careers page (optional, admin toggle)
+- [ ] 16 Contact CTA form block on About
+- [ ] 17 All pages editable through Page + Section system
+- [ ] 18 Per-page SEO fields
+- [ ] 19 Human-tone copy review pass
+- [ ] 20 Visual QA vs reference site structure
+
+## Phase 12 — Product Catalogue & Admin CRUD
+- [ ] 01 Seed 22 categories with families and intros
+- [ ] 02 Seed ~120 products with cleaned names (fix typos)
+- [ ] 03 Admin categories list, create, edit, reorder
+- [ ] 04 Admin products list with filters (category, status, featured)
+- [ ] 05 Product form: basics (name, slug, category, CAS, grade, purity, form)
+- [ ] 06 Product form: pack sizes, MOQ, shelf life, dispatch time
+- [ ] 07 Product form: applications (tag list)
+- [ ] 08 Product form: specs table editor (property, value, method)
+- [ ] 09 Product form: FAQs editor
+- [ ] 10 Product form: documents (COA/SDS/TDS) picker
+- [ ] 11 Product form: brand note and "sourced" flag
+- [ ] 12 Product form: show indicative price toggle
+- [ ] 13 Product form: gallery images
+- [ ] 14 Bulk import/export CSV
+- [ ] 15 Duplicate product action
+- [ ] 16 Draft / published / archived status
+- [ ] 17 Products hub page with family tabs and search
+- [ ] 18 Category pages with product table and buying guide
+- [ ] 19 Slug redirects when slug changes (301 table)
+- [ ] 20 Test CRUD permissions per role
+
+## Phase 13 — Product Detail Template (Buyer's Guide)
+- [ ] 01 Eyebrow + H1 + SEO H2 "[Product] Supplier in Delhi, India"
+- [ ] 02 Intro paragraph with key facts
+- [ ] 03 CTA buttons: Request quotation (prefilled), Call
+- [ ] 04 Fact strip: CAS, grade, purity, pack, MOQ, shelf life
+- [ ] 05 Sticky anchor nav
+- [ ] 06 What is it section
+- [ ] 07 How it is made / sourced section
+- [ ] 08 Applications by industry list
+- [ ] 09 Specifications table (marked indicative)
+- [ ] 10 Ask the supplier table (question / why it matters)
+- [ ] 11 Packaging and storage section
+- [ ] 12 Documents download block (gated by enquiry optional)
+- [ ] 13 Supply and pricing factors table
+- [ ] 14 FAQ accordion with FAQ schema
+- [ ] 15 Related products
+- [ ] 16 Closing CTA band
+- [ ] 17 Product JSON-LD (Product, Offer without fake price)
+- [ ] 18 Write full content for 6 hero products
+- [ ] 19 Template content for remaining products from data
+- [ ] 20 Mobile QA of long page
+
+## Phase 14 — Enquiry, Quote & Contact System
+- [ ] 01 Contact page: address, phone, email tiles, map (click to load)
+- [ ] 02 Public contact form (no login required)
+- [ ] 03 Multi-step quote form (product, quantity, pack, location, contact)
+- [ ] 04 Sample request form
+- [ ] 05 Request callback form
+- [ ] 06 Zod validation client + server
+- [ ] 07 Cloudflare Turnstile on every public form
+- [ ] 08 Honeypot field + time-to-submit check
+- [ ] 09 Save Enquiry to DB with status NEW
+- [ ] 10 Brevo email to admin with enquiry details
+- [ ] 11 Brevo acknowledgement email to customer
+- [ ] 12 Admin enquiries inbox (filters, status, assign, notes)
+- [ ] 13 Enquiry detail with timeline
+- [ ] 14 Export enquiries CSV
+- [ ] 15 "Add to quote" basket across product pages (cookie, no PII)
+- [ ] 16 Success page with next steps
+- [ ] 17 Rate limit per IP and email
+- [ ] 18 Spam score and block list
+- [ ] 19 Notification bell in admin for new enquiries
+- [ ] 20 E2E test of each form
+
+## Phase 15 — Industries, Insights, FAQ, Legal
+- [ ] 01 Industries list page
+- [ ] 02 Industry detail template (needs, products, FAQs)
+- [ ] 03 Write 8 industry pages (food, cosmetics, pharma, detergents, soap, textile, auto care, labs)
+- [ ] 04 Insights (blog) list with categories and pagination
+- [ ] 05 Post editor (Tiptap, cover image, author, SEO)
+- [ ] 06 Post detail with table of contents
+- [ ] 07 Write 3 starter posts (human tone)
+- [ ] 08 Global FAQ page grouped by topic
+- [ ] 09 Privacy policy page
+- [ ] 10 Terms of use page
+- [ ] 11 Cookie policy page
+- [ ] 12 Shipping & returns / dispatch policy page
+- [ ] 13 Disclaimer on indicative specs
+- [ ] 14 Testimonials manager
+- [ ] 15 Client logos manager
+- [ ] 16 Downloads page (brochure PDF)
+- [ ] 17 Newsletter signup (Brevo list, double opt-in)
+- [ ] 18 All pages editable in admin
+- [ ] 19 Internal linking between industries and products
+- [ ] 20 Content review for human tone
+
+## Phase 16 — Admin Completion, Backups & Polish
+- [ ] 01 Dashboard charts (enquiries per week, top products)
+- [ ] 02 Global admin search
+- [ ] 03 Redirect manager (301/302)
+- [ ] 04 Email templates preview and test send
+- [ ] 05 Settings: upload limits, allowed file types
+- [ ] 06 Settings: notification recipients
+- [ ] 07 Trash / restore for deleted items (30 days)
+- [ ] 08 Scheduled publish for posts
+- [ ] 09 Cache purge button (revalidate all tags)
+- [ ] 10 Neon backup schedule documented
+- [ ] 11 Restore drill on a Neon branch
+- [ ] 12 Health check endpoint (no secrets in output)
+- [ ] 13 Admin help tooltips on each field
+- [ ] 14 Empty states for every list
+- [ ] 15 Accessibility audit (axe) on public pages
+- [ ] 16 Accessibility audit on admin
+- [ ] 17 Performance budget check (JS < 170 KB per route)
+- [ ] 18 Image audit (all alt texts present)
+- [ ] 19 Final copy proofread
+- [ ] 20 Freeze features before security phases
+
+## Phase 17 — Security 1: SQL Injection & Injection Flaws
+- [ ] 01 List all injection types: classic, blind, time-based, second-order, ORM operator injection, JSON filter injection, header, log, command, template, LDAP-style
+- [ ] 02 Audit: all DB access through Prisma, no string-built SQL
+- [ ] 03 Any raw query uses Prisma.sql template only
+- [ ] 04 Block user-controlled orderBy/where keys (allow-list fields)
+- [ ] 05 Validate IDs (cuid format) before queries
+- [ ] 06 Search input: length limit, escape LIKE wildcards
+- [ ] 07 No eval, new Function, child_process with user data
+- [ ] 08 No dynamic import() from user input
+- [ ] 09 Sanitise data written to logs (strip CR/LF)
+- [ ] 10 CSV export: prefix =,+,-,@ cells to stop formula injection
+- [ ] 11 Email header injection: strip newlines in names/subjects
+- [ ] 12 Least-privilege Neon DB role for app (no superuser)
+- [ ] 13 Separate migration role
+- [ ] 14 JSON body size limit
+- [ ] 15 Prototype pollution guard (reject __proto__, constructor)
+- [ ] 16 Path traversal guard on any file path use
+- [ ] 17 ReDoS check of all regexes
+- [ ] 18 Add sqlmap-style test cases to test suite
+- [ ] 19 Document findings in docs/security/17.md
+- [ ] 20 Re-run full tests
+
+## Phase 18 — Security 2: CSRF Protection
+- [ ] 01 List CSRF types: form POST, JSON with simple content types, login CSRF, logout CSRF, cookie tossing, subdomain attacks
+- [ ] 02 All auth cookies SameSite=Strict
+- [ ] 03 Double-submit CSRF token for all admin state-changing requests
+- [ ] 04 Verify Origin and Sec-Fetch-Site headers on POST/PUT/PATCH/DELETE
+- [ ] 05 Reject requests without Content-Type: application/json on JSON APIs
+- [ ] 06 Server Actions: confirm Next.js origin check is enabled, set allowedOrigins
+- [ ] 07 No state changes on GET
+- [ ] 08 Login CSRF: pre-session token on login form
+- [ ] 09 Logout via POST only
+- [ ] 10 __Host- cookie prefix for session cookies
+- [ ] 11 Rotate CSRF token on login
+- [ ] 12 Public forms protected by Turnstile + origin check
+- [ ] 13 frame-ancestors 'none' (clickjacking)
+- [ ] 14 Test cross-site form from another origin fails
+- [ ] 15 Test missing/invalid token returns 403
+- [ ] 16 Test Server Action from foreign origin fails
+- [ ] 17 Document all protected routes
+- [ ] 18 Add CSRF middleware unit tests
+- [ ] 19 Document in docs/security/18.md
+- [ ] 20 Re-run full tests
+
+## Phase 19 — Security 3: Validation & File Upload Safety
+- [ ] 01 Zod schema for every API input (body, query, params)
+- [ ] 02 Strip unknown keys (.strict())
+- [ ] 03 Length limits on every string field
+- [ ] 04 Email, phone, URL, slug format validation
+- [ ] 05 Number ranges (quantity, order fields)
+- [ ] 06 Server-side re-validation even if client validated
+- [ ] 07 Rich text sanitised with DOMPurify allow-list
+- [ ] 08 File type allow-list (jpg, png, webp, avif, pdf)
+- [ ] 09 Magic-byte check, not only extension
+- [ ] 10 Size limits enforced server side and in Cloudinary preset
+- [ ] 11 Random file names, no user file names in paths
+- [ ] 12 PDF scan: reject files with JavaScript/embedded actions
+- [ ] 13 SVG blocked or sanitised
+- [ ] 14 Image re-encode via Cloudinary to strip payloads
+- [ ] 15 Max files per request and per minute
+- [ ] 16 Uploads only for authenticated roles with permission
+- [ ] 17 Error messages generic (no stack traces)
+- [ ] 18 Fuzz test inputs with random payloads
+- [ ] 19 Document in docs/security/19.md
+- [ ] 20 Re-run full tests
+
+## Phase 20 — Security 4: XSS & CORS Lockdown (incl. tighter CORS)
+- [ ] 01 List XSS types: stored, reflected, DOM, mutation XSS, via SVG, via markdown, via URL (javascript:)
+- [ ] 02 No dangerouslySetInnerHTML except sanitised rich text
+- [ ] 03 Validate all link hrefs (http/https/mailto/tel only)
+- [ ] 04 CSP with per-request nonce and strict-dynamic
+- [ ] 05 object-src 'none', base-uri 'self', form-action 'self'
+- [ ] 06 Trusted Types in report-only, then enforce
+- [ ] 07 CSP report endpoint and monitoring
+- [ ] 08 Escape JSON-LD output (< → <)
+- [ ] 09 CORS: deny by default on all API routes
+- [ ] 10 CORS allow-list only for own origin(s); no *
+- [ ] 11 No Access-Control-Allow-Credentials with wildcard
+- [ ] 12 Preflight handling returns minimal headers
+- [ ] 13 Webhook routes accept only provider origin/IPs
+- [ ] 14 Remove CORS from admin APIs entirely (same-origin only)
+- [ ] 15 Cross-Origin-Resource-Policy: same-origin on API
+- [ ] 16 Cross-Origin-Opener-Policy: same-origin
+- [ ] 17 Test XSS payload list against every input
+- [ ] 18 Test cross-origin fetch blocked
+- [ ] 19 Document in docs/security/20.md
+- [ ] 20 Re-run full tests
+
+## Phase 21 — Security 5: Broken Object & Function Level Authorization + Server-side Permissions
+- [ ] 01 List BOLA/IDOR, BFLA, mass assignment, privilege escalation cases
+- [ ] 02 Every admin route calls requireAdmin + can()
+- [ ] 03 Never trust role/userId sent from client
+- [ ] 04 Mass assignment: pick allowed fields explicitly per role
+- [ ] 05 Users cannot change own role
+- [ ] 06 Only SUPER_ADMIN manages users, MFA settings, theme publish
+- [ ] 07 Enquiry access scoped by assignment for EDITOR (if enabled)
+- [ ] 08 Draft content not readable via public API
+- [ ] 09 Media delete checks ownership/role
+- [ ] 10 Server Actions each check permission (not only page)
+- [ ] 11 Proxy/middleware not used as the only auth layer
+- [ ] 12 Hidden admin UI buttons are also blocked server side
+- [ ] 13 Sequential IDs not exposed (use cuid)
+- [ ] 14 Test matrix: each role × each endpoint
+- [ ] 15 Test IDOR by swapping IDs
+- [ ] 16 Test escalation via body role field
+- [ ] 17 Audit log on every permission denial
+- [ ] 18 Alert on repeated denials
+- [ ] 19 Document in docs/security/21.md
+- [ ] 20 Re-run full tests
+
+## Phase 22 — Security 6: Rate Limiting & Abuse Control
+- [ ] 01 Upstash sliding-window limiter helper
+- [ ] 02 Login: 5 / 15 min per IP + per email
+- [ ] 03 OTP verify: 5 attempts per code, 10 / hour per user
+- [ ] 04 OTP resend: 60 s cooldown, 5 / hour
+- [ ] 05 Password reset request: 3 / hour per email and IP
+- [ ] 06 Public forms: 5 / hour per IP
+- [ ] 07 Search API: 60 / min per IP
+- [ ] 08 Upload: 30 / hour per admin
+- [ ] 09 Global API: 300 / min per IP
+- [ ] 10 Return 429 with Retry-After
+- [ ] 11 Exponential backoff on failed logins
+- [ ] 12 Cloudflare rate-limit rules as outer layer
+- [ ] 13 Block list of abusive IPs (admin view)
+- [ ] 14 Bot score check on forms (Turnstile)
+- [ ] 15 Email bombing protection (per-recipient limits)
+- [ ] 16 Limits configurable in admin within safe caps
+- [ ] 17 Log rate-limit hits (no PII)
+- [ ] 18 Load test limits
+- [ ] 19 Document in docs/security/22.md
+- [ ] 20 Re-run full tests
+
+## Phase 23 — Security 7: JWT, Tokens, OTP & Session Hygiene (no localStorage)
+- [ ] 01 Secrets ≥ 64 random bytes, different per environment
+- [ ] 02 Separate secrets for access JWT, refresh pepper, OTP pepper, TOTP key
+- [ ] 03 Algorithm pinned; reject alg:none and HS/RS confusion
+- [ ] 04 Always verify, never decode for auth decisions
+- [ ] 05 Validate iss, aud, exp, nbf
+- [ ] 06 Short access TTL (10 min), refresh 7 days
+- [ ] 07 Refresh rotation on every use + reuse detection
+- [ ] 08 tokenVersion bump on password change/reset/role change
+- [ ] 09 Old sessions killed after reset
+- [ ] 10 Reset links single use and expiring
+- [ ] 11 Email change needs password + OTP
+- [ ] 12 OTP never in API response, logs or URLs
+- [ ] 13 OTP expires, single use, hashed
+- [ ] 14 Same response for unknown email (no enumeration)
+- [ ] 15 Remove any token from localStorage/sessionStorage (audit code)
+- [ ] 16 Cookies HttpOnly, Secure, SameSite=Strict, __Host-
+- [ ] 17 Secret rotation procedure with key id (kid)
+- [ ] 18 Tests for every rule above
+- [ ] 19 Document in docs/security/23.md
+- [ ] 20 Re-run full tests
+
+## Phase 24 — Security 8: Secrets Server-side, .env, Source Maps, Logs
+- [ ] 01 Audit all NEXT_PUBLIC_ vars; no secrets
+- [ ] 02 server-only import on every secret-using module
+- [ ] 03 Check client bundles for secret strings (build scan)
+- [ ] 04 Cloudinary signing only on server
+- [ ] 05 Brevo key only on server
+- [ ] 06 Disable production browser source maps
+- [ ] 07 Block /.env, /.git, *.map paths at edge (404)
+- [ ] 08 Secret scanning in CI (gitleaks)
+- [ ] 09 Pre-commit hook for secrets
+- [ ] 10 Vercel env vars marked sensitive
+- [ ] 11 Structured logger with redaction (password, token, otp, cookie, authorization)
+- [ ] 12 Hash IPs in logs and DB
+- [ ] 13 No request bodies logged for auth routes
+- [ ] 14 Error responses generic; details only in server logs
+- [ ] 15 Remove console.log in production build
+- [ ] 16 Log retention policy (30 days)
+- [ ] 17 Rotate any secret that was ever committed
+- [ ] 18 Document secret inventory and owners
+- [ ] 19 Document in docs/security/24.md
+- [ ] 20 Re-run full tests
+
+## Phase 25 — Security 9: Password Hashing & MFA Hardening
+- [ ] 01 argon2id params (memory 64 MB, t=3, p=1) benchmarked
+- [ ] 02 Password policy: 12+ chars, breached-password check (k-anonymity)
+- [ ] 03 Rehash on login if params changed
+- [ ] 04 Hash all stored secrets: refresh tokens, OTPs, reset tokens, recovery codes
+- [ ] 05 Encrypt TOTP secrets (AES-256-GCM, key from env)
+- [ ] 06 MFA mandatory for all admin roles
+- [ ] 07 TOTP replay prevention (store last used step)
+- [ ] 08 Recovery codes single use and regenerate flow
+- [ ] 09 MFA toggle needs OTP to default email
+- [ ] 10 Step-up auth for sensitive actions (users, theme publish, settings)
+- [ ] 11 Re-auth after 12 hours absolute session
+- [ ] 12 Idle timeout 30 min in admin
+- [ ] 13 Notify on MFA change, new device, password change
+- [ ] 14 Super admin cannot be deleted/demoted if last one
+- [ ] 15 Authorization re-checked after MFA (no partial session access)
+- [ ] 16 mfa_pending cookie cannot access any admin API
+- [ ] 17 Tests for MFA bypass attempts
+- [ ] 18 Tests for recovery code reuse
+- [ ] 19 Document in docs/security/25.md
+- [ ] 20 Re-run full tests
+
+## Phase 26 — Security 10: Webhook Signatures & SSRF
+- [ ] 01 Inventory all webhooks (Brevo, Cloudinary)
+- [ ] 02 Cloudinary: verify X-Cld-Signature + timestamp
+- [ ] 03 Brevo: verify secret/token and IP allow-list
+- [ ] 04 Reject events older than 5 min (replay window)
+- [ ] 05 Store event IDs, reject duplicates (idempotency)
+- [ ] 06 Raw body used for signature check
+- [ ] 07 Constant-time signature compare
+- [ ] 08 Webhook routes rate limited
+- [ ] 09 SSRF list: URL upload, link previews, image proxy, webhooks out
+- [ ] 10 safeFetch: https only, resolve DNS, block private/loopback/link-local/169.254.169.254
+- [ ] 11 Re-check IP after redirects; limit redirects to 0-2
+- [ ] 12 Timeout 5 s, max size 10 MB
+- [ ] 13 Allow-list of content types
+- [ ] 14 next/image remotePatterns only Cloudinary
+- [ ] 15 Server Actions: protect against Host header SSRF (CVE-2024-34351 lesson)
+- [ ] 16 Block file:, gopher:, ftp: schemes
+- [ ] 17 Tests with internal IPs and DNS rebinding
+- [ ] 18 Tests for forged webhooks
+- [ ] 19 Document in docs/security/26.md
+- [ ] 20 Re-run full tests
+
+## Phase 27 — Security 11: Dependencies, CDN, WAF, DDoS/DoS
+- [ ] 01 npm audit and fix all high/critical
+- [ ] 02 Renovate/Dependabot weekly
+- [ ] 03 Lockfile committed, npm ci in CI
+- [ ] 04 Remove unused packages
+- [ ] 05 Check package provenance and typosquats
+- [ ] 06 Pin Next.js and React to patched versions
+- [ ] 07 Cloudflare proxied DNS in front of Vercel
+- [ ] 08 WAF managed rules (OWASP core set)
+- [ ] 09 Custom WAF rules: block /admin outside allowed countries (optional), block bad user agents
+- [ ] 10 DDoS protection on, "Under Attack" runbook
+- [ ] 11 Cache static assets at edge, long TTL
+- [ ] 12 Request size and timeout limits
+- [ ] 13 Slowloris/slow body protections (edge)
+- [ ] 14 Origin lock: Vercel accepts only Cloudflare (secret header)
+- [ ] 15 Image optimisation abuse limits (sizes allow-list)
+- [ ] 16 Health monitoring and uptime alerts
+- [ ] 17 Incident response runbook
+- [ ] 18 Load test 500 rps on public pages
+- [ ] 19 Document in docs/security/27.md
+- [ ] 20 Re-run full tests
+
+## Phase 28 — Security 12: Anti-bot, Anti-scraping & Historic CVE Hardening
+- [ ] 01 Honest note: HTML sent to a browser can always be viewed; goal is to stop bulk bots and scrapers
+- [ ] 02 Cloudflare Bot Management / Super Bot Fight Mode on
+- [ ] 03 Managed Challenge (puzzle page) for suspicious traffic, like AWS WAF CAPTCHA on big travel sites
+- [ ] 04 Turnstile on forms, search and downloads
+- [ ] 05 Block known scraper ASNs and headless signatures
+- [ ] 06 Rate-based challenge on product pages
+- [ ] 07 API responses need same-origin + token; no open JSON catalogue
+- [ ] 08 Documents (COA/SDS) behind signed expiring URLs
+- [ ] 09 Watermark images via Cloudinary overlay
+- [ ] 10 robots.txt disallow AI crawlers (GPTBot, CCBot etc.) if owner wants
+- [ ] 11 CVE-2025-29927 (Next.js middleware bypass): patched version + strip x-middleware-subrequest at edge
+- [ ] 12 CVE-2025-55182 / CVE-2025-66478 (RSC RCE): patched React/Next
+- [ ] 13 CVE-2024-34351 (Server Actions SSRF): patched + no relative redirects with user Host
+- [ ] 14 CVE-2024-46982 (Next.js cache poisoning): patched + no-store on dynamic routes
+- [ ] 15 jsonwebtoken CVE-2022-23529/23539/23540/23541 lessons: use jose, pin alg
+- [ ] 16 Prototype pollution CVEs (lodash, minimist): avoid/upgrade
+- [ ] 17 Log4Shell-style lesson: never evaluate strings from input in logs/templates
+- [ ] 18 Supply-chain lessons (event-stream, xz): lockfile, provenance, minimal deps
+- [ ] 19 Track CVE feed for Next.js, React, Prisma, jose monthly
+- [ ] 20 Document in docs/security/28.md
+
+## Phase 29 — Security 13: UI Attack-surface Audit
+- [ ] 01 Clickjacking test (frame-ancestors none)
+- [ ] 02 Open redirect test on all ?next= / returnTo
+- [ ] 03 Tabnabbing: rel="noopener noreferrer" on external links
+- [ ] 04 Form autocomplete correct (one-time-code, current-password)
+- [ ] 05 No sensitive data in page source or RSC payload
+- [ ] 06 Error pages show no stack/framework details
+- [ ] 07 Admin URLs not linked from public site
+- [ ] 08 Copy/paste of OTP works but no OTP in URL
+- [ ] 09 File preview cannot run scripts
+- [ ] 10 Rich text output safe in all browsers
+- [ ] 11 Cookie banner cannot be bypassed to load trackers
+- [ ] 12 Third-party scripts minimal and SRI where static
+- [ ] 13 Map embed click-to-load only
+- [ ] 14 Mixed content check
+- [ ] 15 HTTPS redirect and HSTS preload ready
+- [ ] 16 Brute force UI lockout messaging generic
+- [ ] 17 Session expiry UX (redirect to login safely)
+- [ ] 18 Back button after logout shows no data (no-store)
+- [ ] 19 Browser devtools review of storage (no tokens)
+- [ ] 20 Document in docs/security/29.md
+
+## Phase 30 — Security Testing (final, all attacks)
+- [ ] 01 Vitest unit tests for auth, guards, validators (≥ 90% on lib/auth, lib/security)
+- [ ] 02 Playwright E2E: login, OTP, TOTP, reset, logout, MFA toggle
+- [ ] 03 Automated SQLi payload suite
+- [ ] 04 Automated XSS payload suite
+- [ ] 05 CSRF suite
+- [ ] 06 IDOR/BFLA role matrix suite
+- [ ] 07 Rate-limit suite
+- [ ] 08 JWT tamper suite (alg none, expired, wrong aud, reused refresh)
+- [ ] 09 Upload suite (oversize, polyglot, SVG, PDF with JS)
+- [ ] 10 SSRF suite
+- [ ] 11 Webhook forgery suite
+- [ ] 12 OWASP ZAP baseline + full scan on staging
+- [ ] 13 Nuclei templates for Next.js on staging
+- [ ] 14 securityheaders.com and Mozilla Observatory A+
+- [ ] 15 SSL Labs A+
+- [ ] 16 Secret scan of repo and built bundle
+- [ ] 17 Dependency audit clean
+- [ ] 18 Manual pentest checklist (OWASP ASVS L2)
+- [ ] 19 Fix all findings and re-test
+- [ ] 20 Final security report docs/security/REPORT.md
+
+## Phase 31 — SEO (every page)
+- [ ] 01 Metadata API on every route (title, description, canonical)
+- [ ] 02 Title template "%s | Global India, Delhi"
+- [ ] 03 Admin SEO fields per page/product/category/post
+- [ ] 04 Open Graph + Twitter cards with Cloudinary OG images
+- [ ] 05 JSON-LD helpers (next-seo style): Organization, LocalBusiness
+- [ ] 06 Product schema (no fake prices), BreadcrumbList, FAQPage, Article
+- [ ] 07 sitemap.js with all published URLs + lastmod
+- [ ] 08 Image sitemap for product images
+- [ ] 09 robots.js: allow site, disallow /admin, /api, sitemap link
+- [ ] 10 Canonical URLs and trailing-slash policy
+- [ ] 11 301 redirects from old globalindiachem.com URLs (map all ~120)
+- [ ] 12 Clean slugs (no IDs)
+- [ ] 13 Heading hierarchy check (one H1)
+- [ ] 14 Internal linking: products ↔ categories ↔ industries
+- [ ] 15 Geo pages: "Supplier in Delhi", "Delhi NCR"
+- [ ] 16 Core Web Vitals: LCP < 2.5 s, CLS < 0.1, INP < 200 ms
+- [ ] 17 Alt text audit
+- [ ] 18 Google Search Console + Bing verification fields in admin
+- [ ] 19 Google Business Profile link + NAP consistency
+- [ ] 20 Lighthouse SEO 100 on key pages
+
+## Phase 32 — Launch & Handover
+- [ ] 01 Production env vars set and verified
+- [ ] 02 Production Neon migration + seed (with flag, then removed)
+- [ ] 03 Owner sets real email, logo, photos in admin
+- [ ] 04 Brevo domain authenticated (SPF, DKIM, DMARC)
+- [ ] 05 Cloudflare DNS cutover with WAF on
+- [ ] 06 Old site URL redirects live
+- [ ] 07 Final smoke test of every page and form
+- [ ] 08 Super admin MFA set up by owner
+- [ ] 09 Remove seed password from env
+- [ ] 10 Backups verified
+- [ ] 11 Uptime and error monitoring alerts
+- [ ] 12 Submit sitemap to Search Console
+- [ ] 13 Admin user guide (PDF) for owner
+- [ ] 14 Video walkthrough of admin (optional)
+- [ ] 15 Content entry training
+- [ ] 16 Security runbook handover
+- [ ] 17 Monthly maintenance checklist
+- [ ] 18 Update all docs to final state
+- [ ] 19 Update Memory.md progress log: complete
+- [ ] 20 Sign-off from owner
