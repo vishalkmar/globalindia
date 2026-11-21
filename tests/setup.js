@@ -1,5 +1,16 @@
 import { randomBytes } from "node:crypto";
 
+import { vi } from "vitest";
+
+import { TEST_DB_URL } from "./db-config.js";
+
+process.env.DATABASE_URL = TEST_DB_URL;
+process.env.DIRECT_URL = TEST_DB_URL;
+
+// next/server `after()` needs a request scope; in unit tests run the callback immediately.
+vi.mock("next/server", async (orig) => ({ ...(await orig()), after: (fn) => Promise.resolve().then(fn).catch(() => {}) }));
+
+
 // Deterministic, test-only secrets. Real values come from .env.local / Vercel.
 process.env.JWT_ACCESS_SECRET ??= randomBytes(64).toString("base64url");
 process.env.JWT_ISSUER ??= "global-india-test";

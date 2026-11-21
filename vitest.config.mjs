@@ -14,6 +14,9 @@ export default defineConfig({
     environment: "node",
     include: ["tests/unit/**/*.test.js"],
     setupFiles: ["tests/setup.js"],
+    globalSetup: ["tests/globalSetup.js"],
+    fileParallelism: false, // one shared test database
+    testTimeout: 20000,
     coverage: { include: ["src/lib/**"], reporter: ["text", "html"] },
   },
 });

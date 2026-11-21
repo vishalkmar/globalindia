@@ -110,26 +110,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Verify migration on a fresh database (fresh in-memory Postgres: all migrations applied, schema up to date)
 
 ## Phase 4 — JWT Auth Core
-- [ ] 01 lib/auth/password.js argon2id hash/verify
-- [ ] 02 lib/auth/jwt.js sign/verify with jose, alg whitelist, iss, aud, exp
-- [ ] 03 Access token 10 min with sub, role, tv, jti
-- [ ] 04 Opaque refresh token generator (32 random bytes) + hashing
-- [ ] 05 Session create/rotate/revoke helpers
-- [ ] 06 Refresh token family reuse detection (revoke family)
-- [ ] 07 Cookie helper: HttpOnly, Secure, SameSite=Strict, scoped paths
-- [ ] 08 POST /api/auth/login with generic error message
-- [ ] 09 POST /api/auth/refresh with rotation on every call
-- [ ] 10 POST /api/auth/logout revoke + clear cookies
-- [ ] 11 POST /api/auth/logout-all revoke all sessions
-- [ ] 12 requireAdmin(role) guard verifying token + DB tokenVersion
-- [ ] 13 Silent refresh in admin client (fetch wrapper retries once on 401)
-- [ ] 14 Proxy (middleware) redirect for /admin (UX only, not security)
-- [ ] 15 Account lockout after 5 failed logins (15 min)
-- [ ] 16 Constant-time responses to stop user enumeration
-- [ ] 17 Session list page data (device, last used)
-- [ ] 18 Unit tests for sign/verify/expired/tampered/alg-none tokens
-- [ ] 19 Unit tests for rotation and reuse detection
-- [ ] 20 Confirm no token ever touches localStorage
+- [x] 01 lib/auth/password.js argon2id hash/verify
+- [x] 02 lib/auth/jwt.js sign/verify with jose, alg whitelist, iss, aud, exp
+- [x] 03 Access token 10 min with sub, role, tv, jti
+- [x] 04 Opaque refresh token generator (32 random bytes) + hashing
+- [x] 05 Session create/rotate/revoke helpers
+- [x] 06 Refresh token family reuse detection (revoke family)
+- [x] 07 Cookie helper: HttpOnly, Secure, SameSite=Strict, scoped paths
+- [x] 08 POST /api/auth/login with generic error message
+- [x] 09 POST /api/auth/refresh with rotation on every call
+- [x] 10 POST /api/auth/logout revoke + clear cookies
+- [x] 11 POST /api/auth/logout-all revoke all sessions
+- [x] 12 requireAdmin(role) guard verifying token + DB tokenVersion
+- [x] 13 Silent refresh in admin client (fetch wrapper retries once on 401)
+- [x] 14 Proxy (middleware) redirect for /admin (UX only, not security)
+- [x] 15 Account lockout after 5 failed logins (15 min)
+- [x] 16 Constant-time responses to stop user enumeration
+- [x] 17 Session list page data (device, last used)
+- [x] 18 Unit tests for sign/verify/expired/tampered/alg-none tokens
+- [x] 19 Unit tests for rotation and reuse detection
+- [x] 20 Confirm no token ever touches localStorage
 
 ## Phase 5 — Admin MFA (Email OTP + Authenticator) & Seed
 - [ ] 01 OTP generator (6 digits, crypto random) stored hashed with pepper
