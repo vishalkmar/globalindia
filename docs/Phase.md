@@ -132,26 +132,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Confirm no token ever touches localStorage
 
 ## Phase 5 — Admin MFA (Email OTP + Authenticator) & Seed
-- [ ] 01 OTP generator (6 digits, crypto random) stored hashed with pepper
-- [ ] 02 OTP expiry 5 min, max 5 attempts, single use
-- [ ] 03 Brevo template: login OTP (no OTP in API response ever)
-- [ ] 04 POST /api/auth/verify-otp
-- [ ] 05 TOTP setup: secret encrypted (AES-256-GCM) at rest
-- [ ] 06 QR code page for authenticator app + manual key
-- [ ] 07 POST /api/auth/verify-totp with 1-step window
-- [ ] 08 Backup recovery codes (10, hashed, single use)
-- [ ] 09 MFA enable/disable requires OTP sent to default super-admin email
-- [ ] 10 Email change requires password + OTP to old email + link to new
-- [ ] 11 Password reset request (same response whether email exists or not)
-- [ ] 12 Reset token single use, 15 min, hashed; reset kills all sessions
-- [ ] 13 New-login alert email with device and time
-- [ ] 14 Forced password change + MFA setup on first login
-- [ ] 15 Seed SUPER_ADMIN from env, refuse prod seed without flag
-- [ ] 16 Admin login UI (email/password → method choice → code)
-- [ ] 17 Admin verify UI with resend timer (60 s cooldown)
-- [ ] 18 Admin security settings page (MFA, sessions, password)
-- [ ] 19 Audit log entries for every auth event
-- [ ] 20 E2E test full login with OTP and TOTP
+- [x] 01 OTP generator (6 digits, crypto random) stored hashed with pepper
+- [x] 02 OTP expiry 5 min, max 5 attempts, single use
+- [x] 03 Brevo template: login OTP (no OTP in API response ever) — dev outbox until BREVO_API_KEY is set
+- [x] 04 POST /api/auth/verify-otp
+- [x] 05 TOTP setup: secret encrypted (AES-256-GCM) at rest
+- [x] 06 QR code page for authenticator app + manual key
+- [x] 07 POST /api/auth/verify-totp with 1-step window
+- [x] 08 Backup recovery codes (10, hashed, single use)
+- [x] 09 MFA enable/disable requires OTP sent to default super-admin email
+- [x] 10 Email change requires password + OTP to old email + link to new
+- [x] 11 Password reset request (same response whether email exists or not)
+- [x] 12 Reset token single use, 15 min, hashed; reset kills all sessions
+- [x] 13 New-login alert email with device and time
+- [x] 14 Forced password change + MFA setup on first login
+- [x] 15 Seed SUPER_ADMIN from env, refuse prod seed without flag
+- [x] 16 Admin login UI (email/password → method choice → code)
+- [x] 17 Admin verify UI with resend timer (60 s cooldown)
+- [x] 18 Admin security settings page (MFA, sessions, password)
+- [x] 19 Audit log entries for every auth event
+- [x] 20 E2E test full login with OTP and TOTP
 
 ## Phase 6 — Admin Panel Shell & Roles
 - [ ] 01 Admin layout: sidebar, top bar, breadcrumb, user menu

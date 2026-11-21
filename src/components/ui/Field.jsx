@@ -1,7 +1,7 @@
 "use client";
 
-import { Check, ChevronDown, CircleAlert } from "lucide-react";
-import { cloneElement, isValidElement, useId } from "react";
+import { Check, ChevronDown, CircleAlert, Eye, EyeOff } from "lucide-react";
+import { cloneElement, isValidElement, useId, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -67,6 +67,28 @@ export function Input({ className, size = "md", ...props }) {
       className={cn(control, size === "sm" ? "h-9 px-3 text-sm" : "h-11 px-3.5 text-[0.9375rem]", className)}
       {...props}
     />
+  );
+}
+
+/**
+ * Password input with a show/hide toggle. id and aria-* props go to the <input> itself,
+ * so <Field> labels and error messages stay correctly linked.
+ */
+export function PasswordInput({ className, ...props }) {
+  const [show, setShow] = useState(false);
+  return (
+    <div className="relative">
+      <Input type={show ? "text" : "password"} className={cn("pr-11", className)} maxLength={128} {...props} />
+      <button
+        type="button"
+        onClick={() => setShow((v) => !v)}
+        aria-label={show ? "Hide password" : "Show password"}
+        aria-pressed={show}
+        className="absolute top-1/2 right-2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded text-muted hover:text-ink"
+      >
+        {show ? <EyeOff aria-hidden="true" className="size-4" /> : <Eye aria-hidden="true" className="size-4" />}
+      </button>
+    </div>
   );
 }
 

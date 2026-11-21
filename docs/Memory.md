@@ -85,9 +85,22 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | Phase | Status | Date | Notes |
 |---|---|---|---|
 | 0 Documentation | Done | 2026-11-21 | docs/ created from PDF + reference sites re-checked |
-| 1 | Not started | | |
+| 1 Project setup | Done (15/20, 5 blocked on owner accounts) | 2026-11-21 | Next 16.4 + Turbopack, JS only, ESLint no-emoji rule, Prettier, env template, secrets generator, PGlite local DB. Neon/Cloudinary/Brevo/Upstash/Vercel accounts pending (docs/setup/ACCOUNTS.md) |
+| 2 Design system | Done | 2026-11-21 | 3 AA-checked presets (light+dark), Tailwind default palette removed, 9 whitelisted fonts, base UI kit, /styleguide (dev only) |
+| 3 Database | Done | 2026-11-21 | 28 models, migrations verified on fresh DB, idempotent seed with prod guard |
+| 4 JWT auth core | Done | 2026-11-21 | jose HS256 pinned, rotating refresh + family reuse detection, lockout, guard, proxy.js (UX only) |
+| 5 MFA + seed | Done | 2026-11-21 | Email OTP, TOTP (own RFC 6238 impl), recovery codes, MFA changes approved from default admin email, email change 3-step, reset, setup wizard, security page; 55 unit tests + Playwright E2E passing |
+| 6 Admin shell | Not started | | Ask before starting |
 
-## 7. Open questions / needs from owner
+## 7. Technical notes (decisions made while building)
+
+- Local dev DB: `npm run db:local` starts PGlite on :5433 plus an in-memory shadow DB on :5434 (`SHADOW_DATABASE_URL`). URLs need `&pgbouncer=true` (PGlite multiplexer). Neon replaces this when the owner shares URLs.
+- Dev email: without `BREVO_API_KEY` mails are written to `.dev-mail/` (git-ignored). Tests capture mail in memory.
+- `AdminUser.mfaSetupAt` marks first-login setup finished; `totpPendingAt` lets a pending authenticator secret be reused for 10 minutes (fixes a double-request race).
+- Default approval inbox for MFA changes = `SiteSetting security.defaultAdminEmail` (seeded from `SEED_ADMIN_EMAIL`).
+- Cache Components is on: anything reading cookies/searchParams sits inside `<Suspense>`.
+
+## 8. Open questions / needs from owner
 
 - Official email address(es) for the site and the Brevo sender domain.
 - Real logo files (SVG preferred) and factory/warehouse/drum photos.

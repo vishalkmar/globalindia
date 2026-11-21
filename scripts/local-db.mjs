@@ -9,6 +9,7 @@
  * Set in .env.local:
  *   DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5433/postgres?sslmode=disable&connection_limit=1&pgbouncer=true"
  *   DIRECT_URL  = same value
+ *   SHADOW_DATABASE_URL = same but port 5434 (a second, throw-away in-memory DB used by `prisma migrate dev`)
  * Production and previews always use Neon.
  */
 import { PGlite } from "@electric-sql/pglite";
@@ -23,9 +24,21 @@ const server = new PGLiteSocketServer({ db, port, host: "127.0.0.1", maxConnecti
 await server.start();
 console.log(`Local PGlite Postgres listening on 127.0.0.1:${port} (${memory ? "in-memory" : "./.pglite"})`);
 
+// Shadow database for `prisma migrate dev` (PGlite cannot CREATE DATABASE a separate one).
+let shadowDb;
+let shadowServer;
+if (!memory) {
+  shadowDb = await PGlite.create("memory://");
+  shadowServer = new PGLiteSocketServer({ db: shadowDb, port: port + 1, host: "127.0.0.1", maxConnections: 10 });
+  await shadowServer.start();
+  console.log(`Shadow database listening on 127.0.0.1:${port + 1} (in-memory)`);
+}
+
 const shutdown = async () => {
   await server.stop();
   await db.close();
+  if (shadowServer) await shadowServer.stop();
+  if (shadowDb) await shadowDb.close();
   process.exit(0);
 };
 process.on("SIGINT", shutdown);

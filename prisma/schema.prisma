@@ -9,6 +9,8 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+  // Separate empty database used only by `prisma migrate dev` (local: PGlite :5434; Neon: a "shadow" branch)
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 // =====================================================================
@@ -112,9 +114,11 @@ model AdminUser {
   // MFA
   totpSecretEnc      String? // AES-256-GCM ciphertext (iv.tag.data base64), never plain
   totpPendingEnc     String? // secret during setup, before first code is confirmed
+  totpPendingAt      DateTime? // when the pending secret was created (reused for 10 minutes)
   totpEnabled        Boolean    @default(false)
   totpLastStep       Int? // last accepted TOTP time-step (replay protection)
   emailOtpEnabled    Boolean    @default(true)
+  mfaSetupAt         DateTime? // first-login MFA setup finished (authenticator + recovery codes)
   // Password / lockout
   mustChangePassword Boolean    @default(false)
   failedLogins       Int        @default(0)

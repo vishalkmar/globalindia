@@ -35,6 +35,7 @@ const SAFE_USER = {
   mustChangePassword: true,
   totpEnabled: true,
   emailOtpEnabled: true,
+  mfaSetupAt: true,
 };
 
 /** Resolve the signed-in admin from the access cookie, or null. Never throws. */
@@ -52,9 +53,9 @@ export async function getAdmin() {
   return { ...user, sessionId: claims.sid, mfaConfigured: user.totpEnabled || user.emailOtpEnabled };
 }
 
-/** Whether the account still has to finish first-login setup (new password + authenticator). */
+/** Whether the account still has to finish first-login setup (new password + authenticator + recovery codes). */
 export function setupPending(user) {
-  return user.mustChangePassword || !user.totpEnabled;
+  return user.mustChangePassword || !user.mfaSetupAt;
 }
 
 /**
