@@ -7,7 +7,7 @@
  *   npm run db:local -- --memory -> throwaway in-memory DB (used by tests)
  *
  * Set in .env.local:
- *   DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5433/postgres?sslmode=disable&connection_limit=1"
+ *   DATABASE_URL="postgresql://postgres:postgres@127.0.0.1:5433/postgres?sslmode=disable&connection_limit=1&pgbouncer=true"
  *   DIRECT_URL  = same value
  * Production and previews always use Neon.
  */

@@ -12,7 +12,7 @@ These steps need the owner's login, card or domain, so they cannot be done from 
 4. Later (Phase 17): create a least-privilege role `gi_app` for the app and keep the owner role only for migrations.
 
 Until Neon is ready, run `npm run db:local` (PGlite, no Docker needed) and use
-`postgresql://postgres:postgres@127.0.0.1:5433/postgres?sslmode=disable&connection_limit=1` for both URLs.
+`postgresql://postgres:postgres@127.0.0.1:5433/postgres?sslmode=disable&connection_limit=1&pgbouncer=true` for both URLs.
 
 ## 2. Cloudinary — todo 14
 1. Sign up, note **Cloud name**, **API key**, **API secret** → `CLOUDINARY_*`.

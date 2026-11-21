@@ -14,6 +14,7 @@
     "test:watch": "vitest",
     "e2e": "playwright test",
     "secrets": "node scripts/gen-secrets.mjs",
+    "check:contrast": "node scripts/check-contrast.mjs",
     "db:local": "node scripts/local-db.mjs",
     "db:generate": "node scripts/prisma.mjs generate",
     "db:migrate": "node scripts/prisma.mjs migrate dev",
@@ -58,5 +59,6 @@
     "prisma@6.19.3": true,
     "@prisma/engines@6.19.3": true,
     "@prisma/client@6.19.3": true
-  }
+  },
+  "type": "module"
 }

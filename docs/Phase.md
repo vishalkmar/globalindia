@@ -44,48 +44,48 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 ---
 
 ## Phase 1 — Project Setup & Tooling
-- [ ] 01 Create Next.js 16 App Router project (Turbopack) with JavaScript (no TypeScript)
-- [ ] 02 Set up src/ folder structure exactly as Architecture.md
-- [ ] 03 Install Tailwind CSS v4 and base globals.css
-- [ ] 04 Add ESLint (next/core-web-vitals) + Prettier + import sort
-- [ ] 05 Add lint rule to block emoji characters in JSX/strings
-- [ ] 06 Add jsconfig.json path aliases (@/components, @/lib)
-- [ ] 07 Install lucide-react, zod, clsx, tailwind-merge
-- [ ] 08 Create .env.example with all variable names, no values
-- [ ] 09 Add .gitignore for .env*, .next, coverage, source maps
-- [ ] 10 Initialise Git repo, main + develop branches
-- [ ] 11 Set poweredByHeader:false, productionBrowserSourceMaps:false
-- [ ] 12 Add server-only package and usage rule
-- [ ] 13 Create Neon project, main + dev branches, copy pooled URL
-- [ ] 14 Create Cloudinary account folders global-india/dev|prod
-- [ ] 15 Create Brevo account, sender, API key (server env only)
-- [ ] 16 Create Upstash Redis database for rate limiting
-- [ ] 17 Configure Vercel project with preview + production envs
-- [ ] 18 Add npm scripts: dev, build, lint, test, e2e, db:migrate, db:seed
-- [ ] 19 Copy docs folder into repo, link from README
-- [ ] 20 Verify: npm run build passes on clean clone
+- [x] 01 Create Next.js 16 App Router project (Turbopack) with JavaScript (no TypeScript)
+- [x] 02 Set up src/ folder structure exactly as Architecture.md
+- [x] 03 Install Tailwind CSS v4 and base globals.css
+- [x] 04 Add ESLint (next/core-web-vitals) + Prettier + import sort
+- [x] 05 Add lint rule to block emoji characters in JSX/strings
+- [x] 06 Add jsconfig.json path aliases (@/components, @/lib)
+- [x] 07 Install lucide-react, zod, clsx, tailwind-merge
+- [x] 08 Create .env.example with all variable names, no values
+- [x] 09 Add .gitignore for .env*, .next, coverage, source maps
+- [x] 10 Initialise Git repo, main + develop branches
+- [x] 11 Set poweredByHeader:false, productionBrowserSourceMaps:false
+- [x] 12 Add server-only package and usage rule
+- [~] 13 Create Neon project, main + dev branches, copy pooled URL
+- [~] 14 Create Cloudinary account folders global-india/dev|prod
+- [~] 15 Create Brevo account, sender, API key (server env only)
+- [~] 16 Create Upstash Redis database for rate limiting
+- [~] 17 Configure Vercel project with preview + production envs
+- [x] 18 Add npm scripts: dev, build, lint, test, e2e, db:migrate, db:seed
+- [x] 19 Copy docs folder into repo, link from README
+- [x] 20 Verify: npm run build passes on clean clone
 
 ## Phase 2 — Design System & Theme Tokens
-- [ ] 01 Define CSS variables for all colour tokens from Design.md
-- [ ] 02 Map tokens in Tailwind @theme (primary, accent, surface, ink, muted, line)
-- [ ] 03 Load Fraunces, Manrope, JetBrains Mono via next/font
-- [ ] 04 Build type scale utilities (display, h2, h3, eyebrow, body, small, data)
-- [ ] 05 Container, section, grid helpers
-- [ ] 06 Button component (primary, secondary, ghost, link; sizes; loading)
-- [ ] 07 Input, Textarea, Select, Checkbox, Radio, FileDrop base styles
-- [ ] 08 Card, Badge, Tag, Divider components
-- [ ] 09 Eyebrow with accent line component
-- [ ] 10 Dialog/Modal and Drawer (focus trap, Esc close)
-- [ ] 11 Tabs and Accordion (keyboard accessible)
-- [ ] 12 Table component for specs (zebra with surface colour)
-- [ ] 13 Icon wrapper (44 px bordered square, lucide 1.5 stroke)
-- [ ] 14 Toast/notification component
-- [ ] 15 Skeleton loaders
-- [ ] 16 Reveal-on-scroll hook respecting reduced motion
-- [ ] 17 Count-up hook with server value fallback
-- [ ] 18 Focus ring style using accent colour
-- [ ] 19 /styleguide dev-only page showing every component
-- [ ] 20 Check contrast AA for all token pairs
+- [x] 01 Define CSS variables for all colour tokens from Design.md
+- [x] 02 Map tokens in Tailwind @theme (primary, accent, surface, ink, muted, line)
+- [x] 03 Load Fraunces, Manrope, JetBrains Mono via next/font
+- [x] 04 Build type scale utilities (display, h2, h3, eyebrow, body, small, data)
+- [x] 05 Container, section, grid helpers
+- [x] 06 Button component (primary, secondary, ghost, link; sizes; loading)
+- [x] 07 Input, Textarea, Select, Checkbox, Radio, FileDrop base styles
+- [x] 08 Card, Badge, Tag, Divider components
+- [x] 09 Eyebrow with accent line component
+- [x] 10 Dialog/Modal and Drawer (focus trap, Esc close)
+- [x] 11 Tabs and Accordion (keyboard accessible)
+- [x] 12 Table component for specs (zebra with surface colour)
+- [x] 13 Icon wrapper (44 px bordered square, lucide 1.5 stroke)
+- [x] 14 Toast/notification component
+- [x] 15 Skeleton loaders
+- [x] 16 Reveal-on-scroll hook respecting reduced motion
+- [x] 17 Count-up hook with server value fallback
+- [x] 18 Focus ring style using accent colour
+- [x] 19 /styleguide dev-only page showing every component
+- [x] 20 Check contrast AA for all token pairs
 
 ## Phase 3 — Database Schema (Prisma + Neon)
 - [ ] 01 Install Prisma, configure DATABASE_URL + DIRECT_URL

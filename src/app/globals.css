@@ -1,26 +1,333 @@
 @import "tailwindcss";
 
+/*
+ * Global India design system (docs/Design.md)
+ * Runtime tokens (--c-*, --ff-*, --r-*, --sy*) are printed by the server from the active Theme
+ * (src/lib/theme/css.js). The values below are the Pine & Brass fallback so the site renders
+ * correctly even before a theme is loaded.
+ */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --c-primary: #0f3b3a;
+  --c-primary-ink: #ffffff;
+  --c-accent: #b9852f;
+  --c-accent-text: #80591a;
+  --c-band: #0f3b3a;
+  --c-band-ink: #ffffff;
+  --c-bg: #ffffff;
+  --c-surface: #f6f4ef;
+  --c-card: #ffffff;
+  --c-ink: #16201f;
+  --c-muted: #5b6766;
+  --c-line: #dcd8ce;
+  --c-success: #2f6b3f;
+  --c-error: #a3352b;
+
+  --ff-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --ff-body: var(--font-manrope), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ff-data: var(--font-jetbrains-mono), ui-monospace, "Cascadia Mono", monospace;
+
+  --r-btn: 6px;
+  --r-card: 10px;
+  --sy: 96px;
+  --sy-sm: 64px;
+
+  --header-h: 76px;
+  color-scheme: light;
 }
 
+/* Only the theme palette exists. Tailwind's default colours are removed on purpose,
+   so no random red-500 / purple-600 can creep into the UI. */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+
+  --color-primary: var(--c-primary);
+  --color-primary-ink: var(--c-primary-ink);
+  --color-accent: var(--c-accent);
+  --color-accent-text: var(--c-accent-text);
+  --color-band: var(--c-band);
+  --color-band-ink: var(--c-band-ink);
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-card: var(--c-card);
+  --color-ink: var(--c-ink);
+  --color-muted: var(--c-muted);
+  --color-line: var(--c-line);
+  --color-success: var(--c-success);
+  --color-error: var(--c-error);
+
+  --font-display: var(--ff-display);
+  --font-sans: var(--ff-body);
+  --font-body: var(--ff-body);
+  --font-mono: var(--ff-data);
+  --font-data: var(--ff-data);
+
+  --radius-btn: var(--r-btn);
+  --radius-card: var(--r-card);
+
+  --breakpoint-xs: 360px;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---------- Base ---------- */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: calc(var(--header-h) + 16px);
+  }
+
+  body {
+    background-color: var(--c-bg);
+    color: var(--c-ink);
+    font-family: var(--ff-body);
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  @media (min-width: 768px) {
+    body {
+      font-size: 17px;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--c-primary);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    color: inherit;
+    text-underline-offset: 3px;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--c-accent) 30%, transparent);
+    color: var(--c-ink);
+  }
+
+  /* Focus ring: accent colour, visible on keyboard focus only (Design.md, Phase 2 todo 18) */
+  :focus-visible {
+    outline: 2px solid var(--c-accent);
+    outline-offset: 2px;
+  }
+
+  hr {
+    border-color: var(--c-line);
+  }
+
+  dialog::backdrop {
+    background: color-mix(in oklab, var(--c-ink) 45%, transparent);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ---------- Type scale (Design.md §3) ---------- */
+@utility text-display {
+  font-family: var(--ff-display);
+  font-size: clamp(2.25rem, 1.55rem + 2.6vw, 3.5rem); /* 36 -> 56 px */
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  font-optical-sizing: auto;
+}
+
+@utility text-h2 {
+  font-family: var(--ff-display);
+  font-size: clamp(1.75rem, 1.4rem + 1.4vw, 2.5rem); /* 28 -> 40 px */
+  line-height: 1.15;
+  letter-spacing: -0.005em;
+  font-weight: 500;
+  font-optical-sizing: auto;
+}
+
+@utility text-h3 {
+  font-family: var(--ff-body);
+  font-size: clamp(1.1875rem, 1.12rem + 0.3vw, 1.375rem); /* 19 -> 22 px */
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+@utility text-h4 {
+  font-family: var(--ff-body);
+  font-size: 1.0625rem;
+  line-height: 1.35;
+  font-weight: 700;
+}
+
+@utility text-lead {
+  font-size: clamp(1.0625rem, 1rem + 0.35vw, 1.25rem);
+  line-height: 1.6;
+  color: var(--c-muted);
+}
+
+@utility text-body {
+  font-family: var(--ff-body);
+  font-size: 1rem;
+  line-height: 1.65;
+  @media (min-width: 768px) {
+    font-size: 1.0625rem;
+  }
+}
+
+@utility text-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+@utility text-label {
+  font-size: 0.8125rem;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+@utility text-data {
+  font-family: var(--ff-data);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+@utility text-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--ff-body);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-accent-text);
+}
+
+@utility measure {
+  max-width: 68ch;
+}
+
+/* ---------- Layout helpers ---------- */
+@utility container-site {
+  width: 100%;
+  max-width: calc(1240px + 48px);
+  margin-inline: auto;
+  padding-inline: 16px;
+  @media (min-width: 768px) {
+    padding-inline: 24px;
+  }
+}
+
+@utility section-y {
+  padding-block: var(--sy-sm);
+  @media (min-width: 768px) {
+    padding-block: var(--sy);
+  }
+}
+
+@utility grid-site {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 16px;
+  @media (min-width: 768px) {
+    column-gap: 24px;
+  }
+}
+
+/* ---------- Motion ---------- */
+@layer components {
+  .reveal-pending {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  .reveal-in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 600ms var(--ease-standard),
+      transform 600ms var(--ease-standard);
+  }
+
+  .skeleton {
+    position: relative;
+    overflow: hidden;
+    background-color: color-mix(in oklab, var(--c-line) 55%, var(--c-card));
+    border-radius: 6px;
+  }
+
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--c-card) 60%, transparent), transparent);
+    animation: skeleton-sweep 1.4s infinite;
+  }
+}
+
+@keyframes skeleton-sweep {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes drawer-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes drawer-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal-pending {
+    opacity: 1;
+    transform: none;
+  }
 }

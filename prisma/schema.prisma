@@ -1,0 +1,678 @@
+// Global India — database schema (docs/Architecture.md §3)
+// PostgreSQL on Neon. All ids are cuid (never sequential). All secrets are stored hashed or encrypted.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// =====================================================================
+// Enums
+// =====================================================================
+
+enum Role {
+  SUPER_ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum UserStatus {
+  ACTIVE
+  INVITED
+  DISABLED
+}
+
+enum OtpPurpose {
+  LOGIN
+  MFA_TOGGLE
+  EMAIL_CHANGE
+  STEP_UP
+}
+
+enum ThemeMode {
+  LIGHT
+  DARK
+}
+
+enum PublishStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum MenuLocation {
+  HEADER
+  MEGA
+  FOOTER_QUICK
+  FOOTER_PRODUCTS
+  FOOTER_LEGAL
+}
+
+enum ProductFamily {
+  FOOD
+  PERSONAL_CARE
+  DETERGENT
+  PARAFFINS_OILS_GLYCOLS
+  INDUSTRIAL_LAB
+  HOME_AUTO_CARE
+}
+
+enum DocumentType {
+  COA
+  SDS
+  TDS
+  BROCHURE
+  OTHER
+}
+
+enum MediaType {
+  IMAGE
+  PDF
+}
+
+enum EnquiryType {
+  QUOTE
+  CONTACT
+  SAMPLE
+  CALLBACK
+}
+
+enum EnquiryStatus {
+  NEW
+  IN_PROGRESS
+  QUOTED
+  WON
+  LOST
+  SPAM
+  CLOSED
+}
+
+enum SubscriberStatus {
+  PENDING
+  CONFIRMED
+  UNSUBSCRIBED
+}
+
+// =====================================================================
+// Admin users, sessions and auth secrets
+// =====================================================================
+
+model AdminUser {
+  id                 String     @id @default(cuid())
+  email              String     @unique // always stored lowercase
+  name               String     @default("")
+  passwordHash       String // argon2id
+  role               Role       @default(EDITOR)
+  status             UserStatus @default(ACTIVE)
+  // MFA
+  totpSecretEnc      String? // AES-256-GCM ciphertext (iv.tag.data base64), never plain
+  totpPendingEnc     String? // secret during setup, before first code is confirmed
+  totpEnabled        Boolean    @default(false)
+  totpLastStep       Int? // last accepted TOTP time-step (replay protection)
+  emailOtpEnabled    Boolean    @default(true)
+  // Password / lockout
+  mustChangePassword Boolean    @default(false)
+  failedLogins       Int        @default(0)
+  lockedUntil        DateTime?
+  passwordChangedAt  DateTime   @default(now())
+  tokenVersion       Int        @default(0) // bump to kill every access token at once
+  lastLoginAt        DateTime?
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  sessions            Session[]
+  otpCodes            OtpCode[]
+  resetTokens         PasswordResetToken[]
+  recoveryCodes       RecoveryCode[]
+  emailChangeRequests EmailChangeRequest[]
+  auditLogs           AuditLog[]
+  mediaUploads        MediaAsset[]
+  posts               Post[]
+  assignedEnquiries   Enquiry[]            @relation("EnquiryAssignee")
+  enquiryNotes        EnquiryNote[]
+  revisions           Revision[]
+  themes              Theme[]
+
+  @@index([role, status])
+}
+
+/// One row per refresh token. Rotation creates a new row and links the old one via replacedById.
+/// All rows from one login share familyId; reuse of a rotated token revokes the whole family.
+model Session {
+  id                String    @id @default(cuid())
+  userId            String
+  refreshTokenHash  String    @unique // HMAC-SHA256(token, REFRESH_PEPPER)
+  familyId          String
+  userAgent         String    @default("")
+  ipHash            String    @default("")
+  createdAt         DateTime  @default(now())
+  lastUsedAt        DateTime  @default(now())
+  expiresAt         DateTime // sliding 7 days
+  absoluteExpiresAt DateTime // hard cap for the family
+  revokedAt         DateTime?
+  revokeReason      String?
+  replacedById      String?   @unique
+
+  user       AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+  replacedBy Session?  @relation("SessionRotation", fields: [replacedById], references: [id], onDelete: SetNull)
+  replaces   Session?  @relation("SessionRotation")
+
+  @@index([userId, revokedAt])
+  @@index([familyId])
+  @@index([expiresAt])
+}
+
+model OtpCode {
+  id         String     @id @default(cuid())
+  userId     String
+  purpose    OtpPurpose
+  codeHash   String // HMAC-SHA256(code, OTP_PEPPER)
+  expiresAt  DateTime // 5 minutes
+  attempts   Int        @default(0) // max 5, then burnt
+  consumedAt DateTime?
+  meta       Json? // e.g. { target: "totp", enable: false } for MFA toggles — never the code
+  createdAt  DateTime   @default(now())
+
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose, createdAt])
+  @@index([expiresAt])
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime // 15 minutes
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RecoveryCode {
+  id        String    @id @default(cuid())
+  userId    String
+  codeHash  String
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// Email change: password + OTP to old email (otpVerifiedAt) + link to new email (tokenHash).
+model EmailChangeRequest {
+  id            String    @id @default(cuid())
+  userId        String
+  newEmail      String
+  tokenHash     String    @unique
+  otpVerifiedAt DateTime?
+  expiresAt     DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  user AdminUser @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// =====================================================================
+// Settings, theme, pages, menus
+// =====================================================================
+
+/// key/value JSON: business, topbar, header, footer, social, seo, uploads, security, notifications, maintenance
+model SiteSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+model Theme {
+  id          String    @id @default(cuid())
+  name        String
+  slug        String    @unique
+  isActive    Boolean   @default(false)
+  mode        ThemeMode @default(LIGHT)
+  tokens      Json // shape: src/lib/theme/presets.js
+  isPreset    Boolean   @default(false)
+  createdById String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  createdBy AdminUser? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@index([isActive])
+}
+
+model Page {
+  id          String        @id @default(cuid())
+  slug        String        @unique // "home", "about", "why-us", ...
+  title       String
+  status      PublishStatus @default(DRAFT)
+  seo         Json? // { title, description, ogImageId, noindex, canonical }
+  publishedAt DateTime?
+  deletedAt   DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  sections Section[]
+
+  @@index([status])
+}
+
+/// A typed block on a page. `type` must exist in the section registry; `data` is validated by its Zod schema.
+model Section {
+  id        String   @id @default(cuid())
+  pageId    String
+  type      String
+  order     Int      @default(0)
+  data      Json
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  page Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId, order])
+}
+
+/// Last 20 versions of pages, sections and products for restore.
+model Revision {
+  id        String   @id @default(cuid())
+  entity    String // "page" | "product" | "post" | ...
+  entityId  String
+  data      Json
+  note      String?
+  authorId  String?
+  createdAt DateTime @default(now())
+
+  author AdminUser? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId, createdAt])
+}
+
+model MenuItem {
+  id        String       @id @default(cuid())
+  location  MenuLocation
+  parentId  String?
+  label     String
+  href      String // internal path or validated https URL
+  order     Int          @default(0)
+  isVisible Boolean      @default(true)
+  newTab    Boolean      @default(false)
+  meta      Json? // e.g. { family: "FOOD", featuredProductId: "..." } for mega menu
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  parent   MenuItem?  @relation("MenuTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children MenuItem[] @relation("MenuTree")
+
+  @@index([location, parentId, order])
+}
+
+model Redirect {
+  id         String   @id @default(cuid())
+  fromPath   String   @unique
+  toPath     String
+  statusCode Int      @default(301)
+  hits       Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// =====================================================================
+// Catalogue
+// =====================================================================
+
+model ProductCategory {
+  id        String        @id @default(cuid())
+  slug      String        @unique
+  name      String
+  family    ProductFamily
+  intro     String        @default("")
+  guide     String        @default("") // buying guide text (sanitised rich text)
+  faqs      Json? // [{ q, a }]
+  imageId   String?
+  order     Int           @default(0)
+  status    PublishStatus @default(PUBLISHED)
+  seo       Json?
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  image    MediaAsset? @relation("CategoryImage", fields: [imageId], references: [id], onDelete: SetNull)
+  products Product[]
+
+  @@index([family, order])
+  @@index([status])
+}
+
+model Product {
+  id              String        @id @default(cuid())
+  slug            String        @unique
+  name            String
+  categoryId      String
+  casNo           String?
+  grade           String?
+  purity          String?
+  form            String? // powder, liquid, flakes, paste...
+  packSizes       String[]
+  moq             String?
+  shelfLife       String?
+  dispatchTime    String?
+  applications    String[]
+  summary         String        @default("") // one-paragraph intro
+  content         Json? // long buyer's-guide sections: { whatIsIt, howMade, storage, pricingFactors[], askSupplier[] ... }
+  specs           Json? // [{ property, value, method }]
+  faqs            Json? // [{ q, a }]
+  brandNote       String? // "Authorised stock of Godrej ..."
+  isSourced       Boolean       @default(true) // true = supplied from producer, false = made/blended in-house
+  showPrice       Boolean       @default(false)
+  indicativePrice String?
+  featured        Boolean       @default(false)
+  order           Int           @default(0)
+  status          PublishStatus @default(DRAFT)
+  seo             Json?
+  imageId         String?
+  publishedAt     DateTime?
+  deletedAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  category   ProductCategory   @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  image      MediaAsset?       @relation("ProductImage", fields: [imageId], references: [id], onDelete: SetNull)
+  gallery    ProductImage[]
+  documents  ProductDocument[]
+  industries Industry[]        @relation("IndustryProducts")
+
+  @@index([categoryId, status, order])
+  @@index([status, featured])
+  @@index([createdAt])
+}
+
+model ProductImage {
+  id        String @id @default(cuid())
+  productId String
+  mediaId   String
+  order     Int    @default(0)
+
+  product Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  media   MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, mediaId])
+}
+
+model ProductDocument {
+  id        String       @id @default(cuid())
+  productId String
+  mediaId   String
+  type      DocumentType
+  label     String?
+  isPublic  Boolean      @default(false) // false = shown only via signed, expiring link
+  createdAt DateTime     @default(now())
+
+  product Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  media   MediaAsset @relation(fields: [mediaId], references: [id], onDelete: Restrict)
+
+  @@index([productId])
+}
+
+// =====================================================================
+// Content
+// =====================================================================
+
+model Industry {
+  id        String        @id @default(cuid())
+  slug      String        @unique
+  name      String
+  icon      String // lucide icon name from an allow-list
+  summary   String
+  content   Json? // { needs, intro, sections[] }
+  faqs      Json?
+  imageId   String?
+  order     Int           @default(0)
+  status    PublishStatus @default(PUBLISHED)
+  seo       Json?
+  deletedAt DateTime?
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  image    MediaAsset? @relation("IndustryImage", fields: [imageId], references: [id], onDelete: SetNull)
+  products Product[]   @relation("IndustryProducts")
+
+  @@index([status, order])
+}
+
+model Post {
+  id          String        @id @default(cuid())
+  slug        String        @unique
+  title       String
+  excerpt     String        @default("")
+  body        String        @default("") // sanitised HTML from Tiptap
+  category    String        @default("General")
+  coverId     String?
+  authorId    String?
+  status      PublishStatus @default(DRAFT)
+  publishAt   DateTime? // scheduled publish
+  publishedAt DateTime?
+  seo         Json?
+  deletedAt   DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  cover  MediaAsset? @relation("PostCover", fields: [coverId], references: [id], onDelete: SetNull)
+  author AdminUser?  @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([status, publishedAt])
+  @@index([category])
+}
+
+model Testimonial {
+  id        String   @id @default(cuid())
+  quote     String
+  name      String
+  role      String   @default("")
+  company   String   @default("")
+  city      String   @default("")
+  isVisible Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ClientLogo {
+  id        String   @id @default(cuid())
+  name      String
+  mediaId   String?
+  url       String?
+  isVisible Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media MediaAsset? @relation("ClientLogoMedia", fields: [mediaId], references: [id], onDelete: SetNull)
+}
+
+model GalleryItem {
+  id        String   @id @default(cuid())
+  mediaId   String
+  caption   String   @default("")
+  category  String   @default("Warehouse")
+  isVisible Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+
+  media MediaAsset @relation("GalleryMedia", fields: [mediaId], references: [id], onDelete: Cascade)
+
+  @@index([category, order])
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  topic     String   @default("General") // Ordering, Delivery, Quality, Payments...
+  pageSlug  String? // show on a specific page (e.g. "home") as well as /faq
+  isVisible Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([topic, order])
+}
+
+model TimelineEntry {
+  id        String   @id @default(cuid())
+  year      String
+  title     String
+  text      String   @default("")
+  order     Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// =====================================================================
+// Media
+// =====================================================================
+
+model MediaAsset {
+  id           String    @id @default(cuid())
+  publicId     String    @unique // Cloudinary public_id (random, never the user's file name)
+  url          String // https://res.cloudinary.com/...
+  type         MediaType
+  format       String // jpg, png, webp, avif, pdf
+  bytes        Int
+  width        Int?
+  height       Int?
+  alt          String    @default("")
+  folder       String    @default("library")
+  originalName String? // stored for display only, never used in paths
+  sourceUrl    String? // when uploaded by URL
+  uploadedById String?
+  deletedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  uploadedBy       AdminUser?        @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  categoryImages   ProductCategory[] @relation("CategoryImage")
+  productImages    Product[]         @relation("ProductImage")
+  productGallery   ProductImage[]
+  productDocuments ProductDocument[]
+  industryImages   Industry[]        @relation("IndustryImage")
+  postCovers       Post[]            @relation("PostCover")
+  clientLogos      ClientLogo[]      @relation("ClientLogoMedia")
+  galleryItems     GalleryItem[]     @relation("GalleryMedia")
+
+  @@index([type, createdAt])
+  @@index([folder])
+}
+
+// =====================================================================
+// Enquiries and newsletter
+// =====================================================================
+
+model Enquiry {
+  id           String        @id @default(cuid())
+  type         EnquiryType
+  status       EnquiryStatus @default(NEW)
+  name         String
+  company      String        @default("")
+  email        String
+  phone        String        @default("")
+  city         String        @default("")
+  productIds   String[]
+  productNames String[] // snapshot at submit time
+  quantity     String        @default("")
+  packSize     String        @default("")
+  message      String        @default("")
+  source       String        @default("") // page path the form was sent from
+  spamScore    Int           @default(0)
+  assignedToId String?
+  ipHash       String        @default("")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  assignedTo AdminUser?    @relation("EnquiryAssignee", fields: [assignedToId], references: [id], onDelete: SetNull)
+  notes      EnquiryNote[]
+
+  @@index([status, createdAt])
+  @@index([type, createdAt])
+  @@index([assignedToId])
+  @@index([email])
+}
+
+model EnquiryNote {
+  id        String   @id @default(cuid())
+  enquiryId String
+  authorId  String?
+  text      String
+  createdAt DateTime @default(now())
+
+  enquiry Enquiry    @relation(fields: [enquiryId], references: [id], onDelete: Cascade)
+  author  AdminUser? @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  @@index([enquiryId, createdAt])
+}
+
+model NewsletterSubscriber {
+  id               String           @id @default(cuid())
+  email            String           @unique
+  status           SubscriberStatus @default(PENDING)
+  confirmTokenHash String?          @unique
+  ipHash           String           @default("")
+  createdAt        DateTime         @default(now())
+  confirmedAt      DateTime?
+}
+
+// =====================================================================
+// Audit and webhooks
+// =====================================================================
+
+model AuditLog {
+  id       String   @id @default(cuid())
+  actorId  String?
+  action   String // "auth.login.success", "product.update", "mfa.disable", ...
+  entity   String?
+  entityId String?
+  diff     Json? // secrets stripped by lib/audit.js
+  ipHash   String   @default("")
+  at       DateTime @default(now())
+
+  actor AdminUser? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([at])
+  @@index([actorId, at])
+  @@index([action, at])
+  @@index([entity, entityId])
+}
+
+/// Replay protection: a provider event id is processed only once.
+model WebhookEvent {
+  id         String   @id @default(cuid())
+  provider   String
+  eventId    String
+  receivedAt DateTime @default(now())
+
+  @@unique([provider, eventId])
+  @@index([receivedAt])
+}
+
+/// Simple IP block list (admin view in Phase 22). IPs are stored hashed.
+model BlockedIp {
+  id        String    @id @default(cuid())
+  ipHash    String    @unique
+  reason    String    @default("")
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+}
