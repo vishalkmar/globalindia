@@ -249,6 +249,12 @@
   }
 }
 
+/* Off-screen sections: the browser skips their layout and paint until they come near the viewport. */
+@utility cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 720px;
+}
+
 /* ---------- Motion ---------- */
 @layer components {
   .reveal-pending {
@@ -262,6 +268,7 @@
     transition:
       opacity 600ms var(--ease-standard),
       transform 600ms var(--ease-standard);
+    transition-delay: var(--reveal-delay, 0ms);
   }
 
   /* Rich text: admin editor and public "prose" output share the same simple rules */

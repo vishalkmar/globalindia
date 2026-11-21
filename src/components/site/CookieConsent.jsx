@@ -24,7 +24,15 @@ export function CookieConsent({ initial }) {
 
   useEffect(() => {
     if (initial) announce(initial === "granted");
-    const reopen = () => setOpen(true);
+    // A click on "Cookie settings" that happened before this component finished loading is not lost.
+    if (window.__giCookieSettingsRequested) {
+      window.__giCookieSettingsRequested = false;
+      requestAnimationFrame(() => setOpen(true));
+    }
+    const reopen = () => {
+      window.__giCookieSettingsRequested = false;
+      setOpen(true);
+    };
     window.addEventListener("gi:cookie-settings", reopen);
     return () => window.removeEventListener("gi:cookie-settings", reopen);
   }, [initial]);
@@ -83,7 +91,14 @@ export function CookieConsent({ initial }) {
 /** Footer link that reopens the banner. */
 export function CookieSettingsButton() {
   return (
-    <button type="button" onClick={() => window.dispatchEvent(new Event("gi:cookie-settings"))} className="hover:text-band-ink hover:underline">
+    <button
+      type="button"
+      onClick={() => {
+        window.__giCookieSettingsRequested = true;
+        window.dispatchEvent(new Event("gi:cookie-settings"));
+      }}
+      className="hover:text-band-ink hover:underline"
+    >
       Cookie settings
     </button>
   );

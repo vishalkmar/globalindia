@@ -45,7 +45,7 @@ export const POST = route(async (req) => {
         },
         include: { uploadedBy: { select: { name: true, email: true } } },
       });
-      invalidate(TAGS.mediaItem(asset.id));
+      invalidate(TAGS.mediaItem(asset.id), TAGS.media);
       await audit({ actorId: user.id, action: "media.replace", entity: "MediaAsset", entityId: asset.id, diff: { bytes: asset.bytes, format: asset.format }, ipHash });
       return json({ ok: true, asset: serializeAsset(asset) });
     }

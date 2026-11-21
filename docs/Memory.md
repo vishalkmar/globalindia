@@ -72,7 +72,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 
 ## 5. Working rules for Claude (must follow)
 
-1. Before starting any phase: print the full todo list of that phase from Phase.md and ask **"Phase N start karun?"**. Start only after a clear yes. (Exception given by owner on 21 Nov 2026: phases 1–5 run back-to-back without asking; from Phase 6 onwards ask every time.)
+1. Before starting any phase: print the full todo list of that phase from Phase.md and ask **"Phase N start karun?"**. Start only after a clear yes. (Exceptions from the owner: 21 Nov 2026 — phases 1–5 back-to-back; 22 Nov 2026 — from Phase 10 onwards continue phase after phase without asking until told to stop. Still list todos, tick them, test and commit each phase.)
 2. Tick each todo in Phase.md (`- [x]`) and show the ticked list on screen so progress per phase is visible.
 3. Never skip todos to go faster. Never shorten a page because of time. Build long, multi-section pages properly.
 4. After each phase: run lint + build + relevant tests, update the Progress log below, then stop and ask before the next phase.
@@ -94,7 +94,8 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 7 Media library | Done (18/20, 2 need Cloudinary keys) | 2026-11-21 | Signed direct uploads, byte-level checks (magic bytes, SVG/markup refusal, dimension caps, PDF active-content scan incl. compressed streams), SSRF-safe URL upload, library grid + detail (alt, folder, focal point, replace, usage, delete guard), MediaPicker, product documents API, Cloudinary loader. Local dev driver until keys arrive. 171 unit + 5 E2E passing |
 | 8 Settings + themes | Done | 2026-11-21 | 9 settings sections (strict Zod, revisions, cache tags), menu builder (5 locations, 2 levels), theme manager (3 presets, duplicate, editor with contrast report, fonts, radius, density, button style, light/dark, live preview), root layout reads active theme + SEO from DB, analytics after consent, maintenance gate. 205 unit + 6 E2E passing |
 | 9 Public layout | Done (18/20, 2 wait for catalogue/pages) | 2026-11-22 | Top bar, sticky shrinking header, dropdowns + products mega menu (keyboard/mouse/Esc), mobile drawer, Ctrl+K search (lazy-loaded) + search API, breadcrumb with JSON-LD, 4-column footer, floating Call/WhatsApp, consent banner (analytics only after consent), skip link, 404/error/global-error. Lighthouse mobile 95-98/100/96/100. 211 unit + 15 E2E passing |
-| 10 Home page | Not started | | Ask before starting |
+| 10 Home page | Done | 2026-11-22 | Section registry (14 types, strict schemas, real Content.md copy), home rendered from Page/Section rows, draft / preview (draft mode + admin session) / publish / discard / history, page editor (reorder, hide, duplicate, add, per-section forms, SEO), data sections hide when empty, FAQ JSON-LD, single RevealObserver. 237 unit + 19 E2E passing |
+| 11 Company pages | Not started | | |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -114,6 +115,9 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Public pages render inside SiteShell ((site)/layout.js) which provides <main id="main">; pages output sections only. The root not-found also uses SiteShell.
 - E2E runs its own dev server on port 3100 with E2E_RELAXED_LIMITS=1 (rate limits x20, ignored in production). Stop the 3000 dev server before `npm run e2e`.
 - tests/e2e/site-layout.spec.mjs has a PLANNED list of pages linked from menus but built later; remove entries as pages ship.
+- Managed pages: src/components/site/ManagedPage.jsx renders a slug's sections (live cached; preview = draft mode + admin). Add new section types in src/lib/sections/registry.js AND src/components/sections/SectionRenderer.jsx.
+- E2E tests must change settings/pages through the admin API (helpers.mjs putSetting / page API), never directly in the DB — direct DB edits skip cache invalidation and leak into later tests.
+- Performance follow-up for Phase 31: RSC payload ~112 KB on home; TBT ~0.9 s under Lighthouse mobile throttling.
 - Public pages must show drafts only when `isPreview()` (draft cookie AND admin session) — use it from Phase 9/10.
 
 ## 8. Open questions / needs from owner

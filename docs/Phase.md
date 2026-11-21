@@ -242,26 +242,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Lighthouse check of layout on mobile — Performance 95-98, Accessibility 100, Best practices 96, SEO 100; LCP 0.8 s, CLS 0
 
 ## Phase 10 — Home Page (all sections editable)
-- [ ] 01 Section registry (type → component + admin schema)
-- [ ] 02 Hero: photo, eyebrow, H1, sub text, 2 buttons, 3 trust facts
-- [ ] 03 FeatureTriad: range, pack sizes, Delhi distribution
-- [ ] 04 About teaser with pull quote from proprietor
-- [ ] 05 Product families grid (6 cards with counts)
-- [ ] 06 Featured products (6 ProductCards)
-- [ ] 07 Industries we serve (8 icon cards)
-- [ ] 08 Numbered values 01-04
-- [ ] 09 Stats strip (since 2002, products, team, cities served)
-- [ ] 10 How ordering works (4 steps)
-- [ ] 11 Client logo strip (optional)
-- [ ] 12 Testimonials (optional)
-- [ ] 13 Insights preview (3 latest posts)
-- [ ] 14 Home FAQ (6 questions, FAQ schema)
-- [ ] 15 Final CTA band with quote button and phone
-- [ ] 16 Admin: add, remove, reorder, hide each section
-- [ ] 17 Admin: edit every text, image, button per section
-- [ ] 18 Write real human copy for all sections from Memory.md
-- [ ] 19 Responsive check 360 / 768 / 1280 / 1536
-- [ ] 20 Performance: LCP image priority, CLS 0
+- [x] 01 Section registry (type → component + admin schema)
+- [x] 02 Hero: photo, eyebrow, H1, sub text, 2 buttons, 3 trust facts
+- [x] 03 FeatureTriad: range, pack sizes, Delhi distribution
+- [x] 04 About teaser with pull quote from proprietor
+- [x] 05 Product families grid (6 cards with counts)
+- [x] 06 Featured products (6 ProductCards) — section live; shows once products are marked featured (catalogue, Phase 12)
+- [x] 07 Industries we serve (8 icon cards)
+- [x] 08 Numbered values 01-04
+- [x] 09 Stats strip (since 2002, products, team, cities served)
+- [x] 10 How ordering works (4 steps)
+- [x] 11 Client logo strip (optional) — section live; hidden until logos are added (manager in Phase 15)
+- [x] 12 Testimonials (optional) — section live; hidden until testimonials are added (manager in Phase 15)
+- [x] 13 Insights preview (3 latest posts) — section live; hidden until posts are published (Phase 15)
+- [x] 14 Home FAQ (6 questions, FAQ schema)
+- [x] 15 Final CTA band with quote button and phone
+- [x] 16 Admin: add, remove, reorder, hide each section
+- [x] 17 Admin: edit every text, image, button per section
+- [x] 18 Write real human copy for all sections from Memory.md
+- [x] 19 Responsive check 360 / 768 / 1280 / 1536
+- [x] 20 Performance: LCP image priority, CLS 0 — LCP 1.1-1.2 s, CLS 0; Lighthouse mobile 77-80 / 100 / 96 / 100. TBT ~0.9 s on 4x CPU throttle is hydration of the long page; reduce in Phase 31
 
 ## Phase 11 — About, Why Us, Quality, Infrastructure
 - [ ] 01 About hero with correct breadcrumb

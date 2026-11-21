@@ -16,6 +16,12 @@ export const TAGS = {
   menuAt: (location) => `menu:${location}`,
   media: "media",
   mediaItem: (id) => `media:${id}`,
+  page: (slug) => `page:${slug}`,
+  products: "products",
+  categories: "categories",
+  posts: "posts",
+  testimonials: "testimonials",
+  clientLogos: "client-logos",
 };
 
 /** Tag the current 'use cache' scope. Outside Next (unit tests) this is a no-op. */

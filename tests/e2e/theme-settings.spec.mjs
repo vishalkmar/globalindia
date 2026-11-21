@@ -93,16 +93,16 @@ test("activate a theme, edit the header, toggle maintenance — the public site 
   await expect(page.getByText(/Maintenance mode saved/)).toBeVisible();
   await site.reload();
   await expect(site.getByRole("heading", { name: "We are updating the website" })).toBeVisible();
-  await expect(site.getByTestId("home-title")).toHaveCount(0);
+  await expect(site.getByRole("heading", { level: 1, name: /Raw materials/ })).toHaveCount(0);
   await page.goto("/");
   await expect(page.getByText(/Maintenance mode is on/)).toBeVisible();
-  await expect(page.getByTestId("home-title")).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
   await page.goto("/admin/settings/maintenance");
   await page.getByLabel("Turn on maintenance mode").uncheck();
   await page.getByRole("button", { name: "Save and publish" }).click();
   await expect(page.getByText(/Maintenance mode saved/)).toBeVisible();
   await site.reload();
-  await expect(site.getByTestId("home-title")).toBeVisible();
+  await expect(site.getByRole("heading", { level: 1, name: /Raw materials/ })).toBeVisible();
   await visitor.close();
 });

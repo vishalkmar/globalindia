@@ -6,6 +6,7 @@ import { ConsentGate } from "./ConsentGate";
 import { FloatingContact } from "./FloatingContact";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
+import { RevealObserver } from "./RevealObserver";
 import { TopBar } from "./TopBar";
 
 /**
@@ -29,6 +30,7 @@ export async function SiteShell({ children }) {
       </main>
       <Footer chrome={chrome} />
       <FloatingContact chrome={chrome} />
+      <RevealObserver />
       {chrome.analyticsEnabled ? (
         <Suspense fallback={null}>
           <ConsentGate />

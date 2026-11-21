@@ -36,3 +36,21 @@ export function codeFrom(html) {
   if (!m) throw new Error("No code in email");
   return m[1];
 }
+
+/** UI sign-in with the email OTP read from the dev outbox. */
+export async function signInWithOtp(page, email, password) {
+  await page.goto("/admin/login");
+  await page.getByLabel("Email").fill(email);
+  await page.getByLabel("Password", { exact: true }).fill(password);
+  const since = Date.now() - 1000;
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.waitForURL(/\/admin\/verify/);
+  await page.getByLabel("6-digit code").fill(codeFrom(await waitForMail({ to: email, tag: "otp-login", since })));
+  await page.waitForURL((u) => u.pathname === "/admin");
+}
+
+/** Change a setting through the admin API (so the public cache is expired like a real save). */
+export async function putSetting(page, key, value) {
+  const res = await page.request.put(`/api/admin/settings/${key}`, { data: value, headers: { origin: new URL(page.url()).origin } });
+  if (!res.ok()) throw new Error(`PUT ${key} failed: ${res.status()} ${await res.text()}`);
+}

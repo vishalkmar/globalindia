@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
+import { hash } from "@node-rs/argon2";
 import { PrismaClient } from "@prisma/client";
+
+import { ARGON2_OPTIONS } from "../../src/lib/auth/argon-params.js";
+import { putSetting, signInWithOtp } from "./helpers.mjs";
 
 /** Phase 9: public top bar, header, mega menu, search, footer, consent, 404 — in a real browser. */
 
@@ -25,16 +29,19 @@ const PLANNED = {
 };
 const plannedFor = (path) => PLANNED[path] ?? (path.startsWith("/products/") ? 12 : null);
 
-let originalAnalytics;
+const ownerEmail = `e2e-layout-owner-${stamp}@test.local`;
+const ownerPassword = `Layout-Owner-${stamp}`;
 test.beforeAll(async () => {
+  await db.adminUser.create({
+    data: { email: ownerEmail, name: "Layout Owner", role: "SUPER_ADMIN", passwordHash: await hash(ownerPassword, ARGON2_OPTIONS), mfaSetupAt: new Date() },
+  });
   const cat = await db.productCategory.create({ data: { slug: `e2e-paraffin-${stamp}`, name: `E2E Paraffin ${stamp}`, family: "PARAFFINS_OILS_GLYCOLS" } });
   await db.product.create({ data: { slug: `e2e-llp-${stamp}`, name: `Light Liquid Paraffin E2E ${stamp}`, casNo: "8012-95-1", categoryId: cat.id, status: "PUBLISHED" } });
-  originalAnalytics = (await db.siteSetting.findUnique({ where: { key: "analytics" } }))?.value;
 });
 test.afterAll(async () => {
   await db.product.deleteMany({ where: { slug: `e2e-llp-${stamp}` } });
   await db.productCategory.deleteMany({ where: { slug: `e2e-paraffin-${stamp}` } });
-  if (originalAnalytics) await db.siteSetting.update({ where: { key: "analytics" }, data: { value: originalAnalytics } });
+  await db.adminUser.deleteMany({ where: { email: ownerEmail } });
   await db.$disconnect();
 });
 
@@ -80,7 +87,7 @@ test("search finds products by name and CAS, opens with Ctrl+K", async ({ page }
   await page.goto("/", { waitUntil: "networkidle" }); // shortcuts work once the page is interactive
   await page.keyboard.press("Control+k");
   const dialog = page.getByRole("dialog", { name: "Search products" });
-  await expect(dialog).toBeVisible();
+  await expect(dialog).toBeVisible({ timeout: 45_000 }); // first open downloads the lazy search chunk (dev compiles it on demand)
   await dialog.getByRole("combobox").fill(`${stamp}`);
   await expect(dialog.getByRole("option", { name: new RegExp(`Light Liquid Paraffin E2E ${stamp}`) })).toBeVisible();
   await dialog.getByRole("combobox").fill("zzzz-no-such-chemical");
@@ -105,7 +112,7 @@ test("unknown pages return 404 with search and product families", async ({ page 
   await expect(page.getByRole("heading", { name: "This page is not here." })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Popular product families" })).toBeVisible();
   await page.getByRole("button", { name: /Search products, CAS number/ }).click();
-  await expect(page.getByRole("dialog", { name: "Search products" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "Search products" })).toBeVisible({ timeout: 45_000 });
 });
 
 test("mobile: drawer with accordion and floating call button", async ({ browser }) => {
@@ -124,8 +131,13 @@ test("mobile: drawer with accordion and floating call button", async ({ browser 
 });
 
 test("cookie banner: necessary only by default, analytics only after consent", async ({ browser }) => {
-  await db.siteSetting.update({ where: { key: "analytics" }, data: { value: { ga4Id: "G-E2ETEST01", clarityId: "" } } });
-  // Saving through the DB skips cache invalidation; the dev server re-reads on the next request in dev.
+  // Turn analytics on through the admin API, exactly like the owner would (expires the cache).
+  const adminCtx = await browser.newContext();
+  const admin = await adminCtx.newPage();
+  await signInWithOtp(admin, ownerEmail, ownerPassword);
+  const original = (await (await admin.request.get("/api/admin/settings/analytics")).json()).value;
+  await putSetting(admin, "analytics", { ga4Id: "G-E2ETEST01", clarityId: "" });
+
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   const gtagRequests = [];
@@ -150,6 +162,9 @@ test("cookie banner: necessary only by default, analytics only after consent", a
   await expect.poll(() => gtagRequests.length).toBeGreaterThan(0);
   expect(gtagRequests[0]).toContain("id=G-E2ETEST01");
   await ctx.close();
+
+  await putSetting(admin, "analytics", original);
+  await adminCtx.close();
 });
 
 test("every header, mega menu and footer link works or is scheduled for a later phase", async ({ page, request }) => {

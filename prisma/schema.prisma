@@ -264,6 +264,9 @@ model Page {
   title       String
   status      PublishStatus @default(DRAFT)
   seo         Json? // { title, description, ogImageId, noindex, canonical }
+  draftData   Json? // unpublished edits: { title, seo, sections[] } — shown only in preview until published
+  draftAt     DateTime?
+  draftById   String?
   publishedAt DateTime?
   deletedAt   DateTime?
   createdAt   DateTime      @default(now())

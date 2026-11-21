@@ -7,6 +7,7 @@
  */
 import { PrismaClient } from "@prisma/client";
 
+import { HOME_LAYOUT, SECTIONS } from "../src/lib/sections/registry.js";
 import { MENU_DEFAULTS } from "../src/lib/settings/menus.js";
 import { SETTING_DEFAULTS } from "../src/lib/settings/schemas.js";
 import { THEME_PRESETS } from "../src/lib/theme/presets.js";
@@ -50,12 +51,29 @@ async function seedMenus() {
   log("menus", Object.keys(MENU_DEFAULTS).join(", "));
 }
 
+async function seedHomePage() {
+  const existing = await db.page.findUnique({ where: { slug: "home" } });
+  if (existing) return log("pages", "home already exists, left unchanged");
+  await db.page.create({
+    data: {
+      slug: "home",
+      title: "Home",
+      status: "PUBLISHED",
+      publishedAt: new Date(),
+      seo: { title: "", description: "" },
+      sections: { create: HOME_LAYOUT.map((type, order) => ({ type, order, data: SECTIONS[type].defaults, isVisible: true })) },
+    },
+  });
+  log("pages", `home with ${HOME_LAYOUT.length} sections`);
+}
+
 async function main() {
   assertSeedAllowed();
   console.log("Seeding Global India database...");
   await seedThemes();
   await seedSettings();
   await seedMenus();
+  await seedHomePage();
   await seedAdmin(db);
   console.log("Seed complete.");
 }
