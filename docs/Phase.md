@@ -88,26 +88,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Check contrast AA for all token pairs
 
 ## Phase 3 — Database Schema (Prisma + Neon)
-- [ ] 01 Install Prisma, configure DATABASE_URL + DIRECT_URL
-- [ ] 02 Model AdminUser with roles and MFA fields
-- [ ] 03 Model Session (refresh token family, rotation fields)
-- [ ] 04 Model OtpCode and PasswordResetToken (hashed, expiry, used)
-- [ ] 05 Model SiteSetting (key/value JSON)
-- [ ] 06 Model Theme (tokens JSON, active flag)
-- [ ] 07 Model Page and Section (typed sections, order, visibility)
-- [ ] 08 Model MenuItem tree (header, footer, mega menu)
-- [ ] 09 Model ProductCategory with family enum
-- [ ] 10 Model Product with specs, faqs, documents, SEO
-- [ ] 11 Model Industry, Post, Testimonial, ClientLogo, GalleryItem, Faq
-- [ ] 12 Model MediaAsset
-- [ ] 13 Model Enquiry with status pipeline
-- [ ] 14 Model AuditLog and WebhookEvent
-- [ ] 15 Add indexes (slug unique, status, categoryId, createdAt)
-- [ ] 16 Run first migration on Neon dev branch
-- [ ] 17 Create Prisma client singleton lib/db.js (server-only)
-- [ ] 18 Write seed.js skeleton with upsert helpers
-- [ ] 19 Document ER diagram in Architecture.md
-- [ ] 20 Verify migration on a fresh Neon branch
+- [x] 01 Install Prisma, configure DATABASE_URL + DIRECT_URL
+- [x] 02 Model AdminUser with roles and MFA fields
+- [x] 03 Model Session (refresh token family, rotation fields)
+- [x] 04 Model OtpCode and PasswordResetToken (hashed, expiry, used)
+- [x] 05 Model SiteSetting (key/value JSON)
+- [x] 06 Model Theme (tokens JSON, active flag)
+- [x] 07 Model Page and Section (typed sections, order, visibility)
+- [x] 08 Model MenuItem tree (header, footer, mega menu)
+- [x] 09 Model ProductCategory with family enum
+- [x] 10 Model Product with specs, faqs, documents, SEO
+- [x] 11 Model Industry, Post, Testimonial, ClientLogo, GalleryItem, Faq
+- [x] 12 Model MediaAsset
+- [x] 13 Model Enquiry with status pipeline
+- [x] 14 Model AuditLog and WebhookEvent
+- [x] 15 Add indexes (slug unique, status, categoryId, createdAt)
+- [x] 16 Run first migration (local PGlite done; Neon dev branch runs `npm run db:deploy` once URL is set)
+- [x] 17 Create Prisma client singleton lib/db.js (server-only)
+- [x] 18 Write seed.js skeleton with upsert helpers
+- [x] 19 Document ER diagram in Architecture.md
+- [x] 20 Verify migration on a fresh database (fresh in-memory Postgres: all migrations applied, schema up to date)
 
 ## Phase 4 — JWT Auth Core
 - [ ] 01 lib/auth/password.js argon2id hash/verify

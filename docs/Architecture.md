@@ -85,15 +85,43 @@ Rule: everything in `lib/auth`, `lib/security`, `lib/db.js`, `lib/env.js`, `clou
 
 All queries go through Prisma (parameterised). Raw SQL only via `Prisma.sql` tagged templates.
 
-### ER overview
+### ER diagram (source of truth: `prisma/schema.prisma`, migration `20261121160045_init`)
 
+```mermaid
+erDiagram
+  AdminUser ||--o{ Session : "refresh tokens"
+  AdminUser ||--o{ OtpCode : ""
+  AdminUser ||--o{ PasswordResetToken : ""
+  AdminUser ||--o{ RecoveryCode : ""
+  AdminUser ||--o{ EmailChangeRequest : ""
+  AdminUser ||--o{ AuditLog : "actor"
+  AdminUser ||--o{ MediaAsset : "uploaded"
+  AdminUser ||--o{ Post : "author"
+  AdminUser ||--o{ Enquiry : "assigned"
+  AdminUser ||--o{ EnquiryNote : ""
+  AdminUser ||--o{ Revision : ""
+  AdminUser ||--o{ Theme : "created"
+  Session |o--o| Session : "replacedBy (rotation)"
+  Page ||--o{ Section : ""
+  MenuItem ||--o{ MenuItem : "children"
+  ProductCategory ||--o{ Product : ""
+  ProductCategory }o--o| MediaAsset : "image"
+  Product }o--o| MediaAsset : "main image"
+  Product ||--o{ ProductImage : "gallery"
+  ProductImage }o--|| MediaAsset : ""
+  Product ||--o{ ProductDocument : "COA/SDS/TDS"
+  ProductDocument }o--|| MediaAsset : ""
+  Product }o--o{ Industry : "used in"
+  Industry }o--o| MediaAsset : "image"
+  Post }o--o| MediaAsset : "cover"
+  ClientLogo }o--o| MediaAsset : ""
+  GalleryItem }o--|| MediaAsset : ""
+  Enquiry ||--o{ EnquiryNote : ""
 ```
-AdminUser 1─* Session          AdminUser 1─* OtpCode        AdminUser 1─* RecoveryCode
-AdminUser 1─* PasswordResetToken  AdminUser 1─* EmailChangeRequest  AdminUser 1─* AuditLog
-Page 1─* Section               MenuItem 1─* MenuItem (parent/children)
-ProductCategory 1─* Product    Product 1─* ProductDocument *─1 MediaAsset
-Product *─* Industry           Post *─1 AdminUser (author)   Enquiry 1─* EnquiryNote
-```
+
+Stand-alone tables: SiteSetting (key/value), Redirect, Testimonial, Faq, TimelineEntry, NewsletterSubscriber, WebhookEvent (unique provider+eventId), BlockedIp.
+
+Delete rules: auth rows cascade with the user; content keeps working if a user is deleted (SetNull); a MediaAsset attached as a product document cannot be deleted (Restrict) until it is detached; a category with products cannot be deleted (Restrict).
 
 ## 4. Authentication design
 
