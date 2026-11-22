@@ -660,26 +660,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Document in docs/security/28.md
 
 ## Phase 29 — Security 13: UI Attack-surface Audit
-- [ ] 01 Clickjacking test (frame-ancestors none)
-- [ ] 02 Open redirect test on all ?next= / returnTo
-- [ ] 03 Tabnabbing: rel="noopener noreferrer" on external links
-- [ ] 04 Form autocomplete correct (one-time-code, current-password)
-- [ ] 05 No sensitive data in page source or RSC payload
-- [ ] 06 Error pages show no stack/framework details
-- [ ] 07 Admin URLs not linked from public site
-- [ ] 08 Copy/paste of OTP works but no OTP in URL
-- [ ] 09 File preview cannot run scripts
-- [ ] 10 Rich text output safe in all browsers
-- [ ] 11 Cookie banner cannot be bypassed to load trackers
-- [ ] 12 Third-party scripts minimal and SRI where static
-- [ ] 13 Map embed click-to-load only
-- [ ] 14 Mixed content check
-- [ ] 15 HTTPS redirect and HSTS preload ready
-- [ ] 16 Brute force UI lockout messaging generic
-- [ ] 17 Session expiry UX (redirect to login safely)
-- [ ] 18 Back button after logout shows no data (no-store)
-- [ ] 19 Browser devtools review of storage (no tokens)
-- [ ] 20 Document in docs/security/29.md
+- [x] 01 Clickjacking test (frame-ancestors none)
+- [x] 02 Open redirect test on all ?next= / returnTo
+- [x] 03 Tabnabbing: rel="noopener noreferrer" on external links
+- [x] 04 Form autocomplete correct (one-time-code, current-password)
+- [x] 05 No sensitive data in page source or RSC payload
+- [x] 06 Error pages show no stack/framework details
+- [x] 07 Admin URLs not linked from public site
+- [x] 08 Copy/paste of OTP works but no OTP in URL
+- [x] 09 File preview cannot run scripts
+- [x] 10 Rich text output safe in all browsers
+- [x] 11 Cookie banner cannot be bypassed to load trackers
+- [x] 12 Third-party scripts minimal and SRI where static
+- [x] 13 Map embed click-to-load only
+- [x] 14 Mixed content check
+- [x] 15 HTTPS redirect and HSTS preload ready
+- [x] 16 Brute force UI lockout messaging generic
+- [x] 17 Session expiry UX (redirect to login safely)
+- [x] 18 Back button after logout shows no data (no-store)
+- [x] 19 Browser devtools review of storage (no tokens)
+- [x] 20 Document in docs/security/29.md
 
 ## Phase 30 — Security Testing (final, all attacks)
 - [ ] 01 Vitest unit tests for auth, guards, validators (≥ 90% on lib/auth, lib/security)

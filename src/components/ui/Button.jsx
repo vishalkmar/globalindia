@@ -77,6 +77,8 @@ export function Button({
         className={classes}
         aria-disabled={disabled || undefined}
         tabIndex={disabled ? -1 : undefined}
+        // New tabs never get a handle on this window (tabnabbing, Phase 29 todo 03).
+        rel={props.target === "_blank" ? "noopener noreferrer" : props.rel}
         {...props}
       >
         {content}
