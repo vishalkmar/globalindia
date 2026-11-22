@@ -682,26 +682,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Document in docs/security/29.md
 
 ## Phase 30 — Security Testing (final, all attacks)
-- [ ] 01 Vitest unit tests for auth, guards, validators (≥ 90% on lib/auth, lib/security)
-- [ ] 02 Playwright E2E: login, OTP, TOTP, reset, logout, MFA toggle
-- [ ] 03 Automated SQLi payload suite
-- [ ] 04 Automated XSS payload suite
-- [ ] 05 CSRF suite
-- [ ] 06 IDOR/BFLA role matrix suite
-- [ ] 07 Rate-limit suite
-- [ ] 08 JWT tamper suite (alg none, expired, wrong aud, reused refresh)
-- [ ] 09 Upload suite (oversize, polyglot, SVG, PDF with JS)
-- [ ] 10 SSRF suite
-- [ ] 11 Webhook forgery suite
-- [ ] 12 OWASP ZAP baseline + full scan on staging
-- [ ] 13 Nuclei templates for Next.js on staging
-- [ ] 14 securityheaders.com and Mozilla Observatory A+
-- [ ] 15 SSL Labs A+
-- [ ] 16 Secret scan of repo and built bundle
-- [ ] 17 Dependency audit clean
-- [ ] 18 Manual pentest checklist (OWASP ASVS L2)
-- [ ] 19 Fix all findings and re-test
-- [ ] 20 Final security report docs/security/REPORT.md
+- [x] 01 Vitest unit tests for auth, guards, validators (≥ 90% on lib/auth, lib/security)
+- [x] 02 Playwright E2E: login, OTP, TOTP, reset, logout, MFA toggle
+- [x] 03 Automated SQLi payload suite
+- [x] 04 Automated XSS payload suite
+- [x] 05 CSRF suite
+- [x] 06 IDOR/BFLA role matrix suite
+- [x] 07 Rate-limit suite
+- [x] 08 JWT tamper suite (alg none, expired, wrong aud, reused refresh)
+- [x] 09 Upload suite (oversize, polyglot, SVG, PDF with JS)
+- [x] 10 SSRF suite
+- [x] 11 Webhook forgery suite
+- [~] 12 OWASP ZAP baseline + full scan on staging — needs the staging URL; commands in security/REPORT.md
+- [~] 13 Nuclei templates for Next.js on staging — needs the staging URL; commands in security/REPORT.md
+- [~] 14 securityheaders.com and Mozilla Observatory A+ — needs the staging URL; commands in security/REPORT.md
+- [~] 15 SSL Labs A+ — needs the staging URL; commands in security/REPORT.md
+- [x] 16 Secret scan of repo and built bundle
+- [x] 17 Dependency audit clean
+- [~] 18 Manual pentest checklist (OWASP ASVS L2) — checklist written (security/asvs-l2.md); manual run on staging
+- [x] 19 Fix all findings and re-test
+- [x] 20 Final security report docs/security/REPORT.md
 
 ## Phase 31 — SEO (every page)
 - [ ] 01 Metadata API on every route (title, description, canonical)

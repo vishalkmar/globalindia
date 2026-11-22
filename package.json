@@ -27,7 +27,8 @@
     "budget": "node scripts/js-budget.mjs http://localhost:3000",
     "prepare": "git config core.hooksPath .githooks || true",
     "scan:secrets": "node scripts/scan-secrets.mjs --history",
-    "scan:bundle": "node scripts/scan-secrets.mjs --bundle"
+    "scan:bundle": "node scripts/scan-secrets.mjs --bundle",
+    "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -59,6 +60,7 @@
     "@electric-sql/pglite-socket": "^0.2.20",
     "@playwright/test": "^1.65.1",
     "@tailwindcss/turbopack": "4.3.3",
+    "@vitest/coverage-v8": "^5.1.1",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "eslint-plugin-simple-import-sort": "^14.0.0",

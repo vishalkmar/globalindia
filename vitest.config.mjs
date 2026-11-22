@@ -17,6 +17,11 @@ export default defineConfig({
     globalSetup: ["tests/globalSetup.js"],
     fileParallelism: false, // one shared test database
     testTimeout: 20000,
-    coverage: { include: ["src/lib/**"], reporter: ["text", "html"] },
+    // Phase 30 todo 01: auth and security code stays at 90 %+ (npm run test:coverage).
+    coverage: {
+      include: ["src/lib/auth/**", "src/lib/security/**"],
+      reporter: ["text-summary", "html"],
+      thresholds: { statements: 90, lines: 90, functions: 90 },
+    },
   },
 });
