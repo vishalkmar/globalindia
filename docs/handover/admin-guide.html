@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Global India website: admin guide</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  :root { --ink: #1c2421; --muted: #5a6661; --line: #d9e0dc; --primary: #0f3b3a; --tint: #eef4f1; }
+  * { box-sizing: border-box; }
+  body { font: 11pt/1.55 "Segoe UI", Arial, sans-serif; color: var(--ink); margin: 0; }
+  h1 { font-size: 24pt; color: var(--primary); margin: 0 0 4mm; line-height: 1.2; }
+  h2 { font-size: 15pt; color: var(--primary); margin: 9mm 0 3mm; padding-top: 2mm; border-top: 1px solid var(--line); break-after: avoid; }
+  h3 { font-size: 12pt; margin: 5mm 0 2mm; break-after: avoid; }
+  p, li { margin: 0 0 2mm; }
+  ol, ul { padding-left: 6mm; margin: 0 0 3mm; }
+  table { width: 100%; border-collapse: collapse; margin: 2mm 0 4mm; font-size: 10pt; break-inside: avoid; }
+  th, td { text-align: left; vertical-align: top; padding: 2mm 2.5mm; border-bottom: 1px solid var(--line); }
+  th { background: var(--tint); }
+  .lead { font-size: 12pt; color: var(--muted); }
+  .box { background: var(--tint); border-left: 3px solid var(--primary); padding: 3mm 4mm; margin: 3mm 0; break-inside: avoid; }
+  .cover { page-break-after: always; padding-top: 40mm; }
+  .meta { color: var(--muted); font-size: 10pt; margin-top: 10mm; }
+  code, .path { font-family: Consolas, monospace; font-size: 10pt; background: #f4f6f5; padding: 0 1mm; }
+  .toc li { margin-bottom: 1mm; }
+</style>
+</head>
+<body>
+
+<section class="cover">
+  <h1>Global India website<br>Admin guide</h1>
+  <p class="lead">How to sign in, keep products and pages up to date, answer enquiries and keep the site safe. Written for the owner and the team who will run the website day to day.</p>
+  <ol class="toc">
+    <li>Signing in and your security</li>
+    <li>The dashboard</li>
+    <li>Enquiries: answering buyers</li>
+    <li>Products and categories</li>
+    <li>Pages and sections</li>
+    <li>Industries, articles, FAQ, gallery</li>
+    <li>Photos and documents (Media)</li>
+    <li>Menus, theme and settings</li>
+    <li>Team members and roles</li>
+    <li>Redirects, emails, trash, audit log</li>
+    <li>When something goes wrong</li>
+  </ol>
+  <p class="meta">Admin address: <span class="path">https://&lt;your domain&gt;/admin</span><br>Version: November 2026</p>
+</section>
+
+<h2>1. Signing in and your security</h2>
+<ol>
+  <li>Open <span class="path">/admin</span>, enter your email and password, and press <b>Continue</b>.</li>
+  <li>Enter the 6-digit code from your authenticator app, or the code emailed to you. You can paste it.</li>
+  <li>The first time, the site asks you to choose a new password and set up a second step (authenticator app or email code), and shows <b>10 recovery codes</b>. Print them or keep them somewhere safe and offline. Each works once if you lose your phone.</li>
+</ol>
+<div class="box">Passwords need at least 12 characters. Passwords that appear in known data leaks are refused. A long sentence you can remember works well.</div>
+<h3>Things that keep the admin safe (and why you may see them)</h3>
+<table>
+  <tr><th>You see</th><th>Why</th></tr>
+  <tr><td>"Confirm it is you" asks for your password</td><td>Before sensitive changes (users, theme going live, security settings, permanent delete). Asked again after 10 minutes.</td></tr>
+  <tr><td>Signed out after 30 minutes</td><td>No clicks or typing for 30 minutes. Every session also ends 12 hours after sign-in.</td></tr>
+  <tr><td>Email "New sign-in to the admin panel"</td><td>Sent on every sign-in. If it was not you, change your password and use <b>Sign out everywhere</b> in <b>My security</b>.</td></tr>
+  <tr><td>"Sign-in paused"</td><td>5 wrong passwords. The pause doubles each time within a day. Use <b>Forgot password</b> if needed.</td></tr>
+</table>
+<p><b>My security</b> (bottom of the menu): change password, sign-in email, authenticator, create new recovery codes, see and end your active sessions.</p>
+
+<h2>2. The dashboard</h2>
+<p>Shows enquiries today and this week, new enquiries waiting, product and page counts, recent edits, a 12-week enquiry chart, the most-asked products, and how many images still need a description (alt text). Aim to keep "images without alt text" at zero; it helps Google and visitors using screen readers.</p>
+
+<h2>3. Enquiries: answering buyers</h2>
+<ol>
+  <li>The bell at the top shows new enquiries. <b>Enquiries</b> lists them all; spam is kept under the <b>Spam</b> filter so nothing is lost.</li>
+  <li>Open an enquiry to see the products, quantities and contact details. Set the status (<i>New → In progress → Quoted → Won / Lost / Closed</i>), assign it to a team member, and add internal notes (customers never see notes).</li>
+  <li><b>Export</b> downloads the current filtered list as a spreadsheet. Exports are recorded in the audit log because they contain personal data.</li>
+</ol>
+<div class="box">Settings → <b>Enquiries and spam</b>: who receives new-enquiry emails, the automatic "we received your enquiry" reply, blocked emails, domains and words, and the option that editors see only enquiries assigned to them.</div>
+
+<h2>4. Products and categories</h2>
+<h3>Add or edit a product</h3>
+<ol>
+  <li><b>Products → New product</b>. Fill name, category, CAS number (checked automatically), grade, purity, form, pack sizes, minimum order and dispatch time.</li>
+  <li>Add the buyer's guide sections you need: specifications, applications, storage, documents, FAQs. Empty sections are hidden on the website.</li>
+  <li>Add photos from Media and documents (TDS, SDS, COA). Mark a document <b>public</b> only if anyone may download it; batch COAs stay private and are sent with quotes.</li>
+  <li>Fill the <b>SEO</b> panel (title up to ~60 characters, description ~150). Leave empty to use the defaults.</li>
+  <li><b>Save as draft</b> to keep working; <b>Publish</b> to show it. Changing a slug (web address) automatically creates a redirect from the old one.</li>
+</ol>
+<p><b>Categories</b> work the same way and group products into the six families shown on the site. Import and export of products as a spreadsheet are on the Products page.</p>
+
+<h2>5. Pages and sections</h2>
+<p>Home, About, Why us, Quality, Gallery, Careers, Downloads, legal pages and the Delhi / Delhi NCR pages are built from <b>sections</b> (hero, text, product families, FAQ, call-to-action and more).</p>
+<ol>
+  <li>Open a page, use <b>Edit</b> on a section, change the text or image, and <b>Apply changes</b>.</li>
+  <li>Reorder with the arrows, hide a section with <b>Hide</b>, or add a new one.</li>
+  <li><b>Save draft</b> keeps changes private. <b>Preview</b> opens the page as visitors will see it. <b>Publish</b> makes it live. Older versions can be restored from <b>History</b>.</li>
+</ol>
+
+<h2>6. Industries, articles, FAQ, gallery</h2>
+<ul>
+  <li><b>Industries</b>: one page per industry, linked to the products it uses.</li>
+  <li><b>Insights</b>: articles. Set a future publish date to schedule one.</li>
+  <li><b>FAQ</b>, <b>Testimonials</b>, <b>Client logos</b>: ordered lists. Only add testimonials and logos you have permission to show.</li>
+  <li><b>Gallery</b>: photos with categories; visitors can filter and open them.</li>
+</ul>
+
+<h2>7. Photos and documents (Media)</h2>
+<ul>
+  <li>Drag files onto <b>Media</b> or use <b>Upload</b>. Allowed: JPG, PNG, WebP, AVIF (up to 5 MB) and PDF (up to 10 MB). SVG and PDFs with scripts are refused for safety.</li>
+  <li>Always write <b>alt text</b>: one short sentence describing the photo ("50 kg bags of soda ash on a pallet").</li>
+  <li>Set the <b>focal point</b> so crops keep the important part. <b>Replace</b> swaps a file everywhere it is used.</li>
+  <li>A file in use cannot be deleted until it is removed from the pages that use it; the media detail shows where.</li>
+</ul>
+
+<h2>8. Menus, theme and settings</h2>
+<table>
+  <tr><th>Where</th><th>What you can change</th></tr>
+  <tr><td>Menus</td><td>Header, mega menu, footer columns and legal links.</td></tr>
+  <tr><td>Theme</td><td>Colours and fonts. Prepare a theme, preview, then <b>Make live</b> (asks for your password).</td></tr>
+  <tr><td>Settings → Business details</td><td>Name, address, phones, emails, WhatsApp, hours, map, Google Business Profile link. Keep these exactly the same as on your Google profile.</td></tr>
+  <tr><td>Top bar, Header, Footer, Social links</td><td>Text, buttons and links shown on every page.</td></tr>
+  <tr><td>SEO defaults</td><td>Title pattern, default description and share image, Search Console and Bing codes, AI-crawler switch.</td></tr>
+  <tr><td>Analytics</td><td>Google Analytics 4 and Clarity IDs (load only after a visitor accepts).</td></tr>
+  <tr><td>Maintenance mode</td><td>Shows a notice instead of the site; admins still see everything.</td></tr>
+  <tr><td>Upload limits, Enquiries and spam, Rate limits and blocked IPs</td><td>Safety settings (super admin only).</td></tr>
+  <tr><td>Clear website cache</td><td>Only if a change does not appear after a minute.</td></tr>
+</table>
+
+<h2>9. Team members and roles</h2>
+<table>
+  <tr><th>Role</th><th>Can</th></tr>
+  <tr><td>Viewer</td><td>Read everything in the admin, change nothing.</td></tr>
+  <tr><td>Editor</td><td>Add, edit, publish and delete content, answer enquiries, prepare themes.</td></tr>
+  <tr><td>Super admin</td><td>Everything, plus users, security settings, theme going live, audit log, permanent delete.</td></tr>
+</table>
+<p><b>Users → Invite user</b> sends a link to set a password; the new person sets up their own second step. Changing a role or disabling someone signs them out immediately. Keep at least two super admins so you are never locked out.</p>
+
+<h2>10. Redirects, emails, trash, audit log</h2>
+<ul>
+  <li><b>Redirects</b>: send an old address to a new page (301 permanent). The 145 addresses of the old website are already redirected; the hit counts show which ones are still used.</li>
+  <li><b>Emails</b>: preview every automatic email and send yourself a test.</li>
+  <li><b>Trash</b>: deleted items stay 30 days and can be restored; then they are removed automatically.</li>
+  <li><b>Audit log</b>: who did what and when, including sign-ins, exports and refused actions.</li>
+</ul>
+
+<h2>11. When something goes wrong</h2>
+<table>
+  <tr><th>Problem</th><th>Do this</th></tr>
+  <tr><td>Lost phone with the authenticator</td><td>Sign in with a recovery code, then set up the app again in My security.</td></tr>
+  <tr><td>Forgot password</td><td><b>Forgot your password?</b> on the sign-in page; the link works once for 15 minutes and signs out every device.</td></tr>
+  <tr><td>A change does not show on the site</td><td>Check it was <b>Published</b> (not only saved as draft). Wait a minute, then Settings → Clear website cache.</td></tr>
+  <tr><td>Strange sign-in email or activity</td><td>Change your password, use Sign out everywhere, check the Audit log, and tell your developer.</td></tr>
+  <tr><td>Site attacked or very slow</td><td>Follow the "Under Attack" steps in the security runbook (docs/security/27.md) or call your developer.</td></tr>
+</table>
+</body>
+</html>

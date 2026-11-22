@@ -116,6 +116,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 29 Security: UI attack surface | Done | 2026-11-23 | Audit with evidence table (docs/security/29.md). New: ui-surface.test.js (open redirect cases for safeNext, tabnabbing scan, autocomplete, no admin links on public site, sandboxed previews) and ui-surface.spec.mjs (clickjacking frame, no secrets in HTML/RSC, error text, HSTS, mixed content, no code in URLs, no tokens in storage, back after logout, map click-to-load, same message when locked). Button adds rel for internal _blank links |
 | 30 Security testing | Done (staging scans + manual pentest wait for a staging URL) | 2026-11-23 | Coverage gate 90 % on lib/auth + lib/security (now 91 % statements, 95 % lines; npm run test:coverage). New suites: coverage-auth, ssrf-fetch (fake network), password-reset E2E. ASVS L2 checklist (docs/security/asvs-l2.md) and final docs/security/REPORT.md (owner actions, scan commands, findings fixed, accepted risks) |
 | 31 SEO | Done (Web Vitals field data + GBP link after launch) | 2026-11-23 | 145 old-site URLs -> 301 (prisma/seed-redirects.js, proxy matcher now includes *.html); sitemap.xml with images and lastmod (pages tag on publish); robots sitemap link; Organization + LocalBusiness JSON-LD from Business details; Google Business Profile URL field + contact link; trailingSlash false; location pages /chemical-supplier-delhi and /chemical-supplier-delhi-ncr (footer links); contact CLS fix (reserved form height). Lighthouse SEO 100, a11y 100, desktop perf 99. seo.spec.mjs, seo.test.js, docs/operations/seo.md |
+| 32 Launch and handover | Build complete; launch steps wait for the owner | 2026-11-23 | scripts/smoke.mjs (npm run smoke <url>) passes on a production build (138 pages). docs/handover: admin-guide.pdf (+ .html source), LAUNCH.md (22-step launch/handover checklist with owners), MAINTENANCE.md (monthly). All code-side work of Phases 1-32 done; remaining items are owner/deploy actions listed in LAUNCH.md |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -184,6 +185,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Brochure PDF for /downloads; real testimonials and client logos (with permission); BREVO_LIST_ID for the newsletter list.
 - Careers: is the company hiring? (page is a draft until switched on in Admin > Pages)
 - Client logos allowed to be shown? Export countries served?
+- Live DB footer menu predates the location pages: add /chemical-supplier-delhi and /chemical-supplier-delhi-ncr in Admin -> Menus (LAUNCH.md 9).
 - Owner to decide: block AI crawlers (Settings -> SEO)? watermark product photos (needs final logo)?
 - Planned upgrade: Prisma 6 -> 7 (clears the CLI-only audit findings listed in scripts/audit-gate.mjs).
 - Neon: reset the neondb_owner password (shared in chat) and do the restore drill (Phase 16 todo 11).

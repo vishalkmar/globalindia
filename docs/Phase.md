@@ -726,23 +726,23 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Lighthouse SEO 100 on key pages
 
 ## Phase 32 — Launch & Handover
-- [ ] 01 Production env vars set and verified
-- [ ] 02 Production Neon migration + seed (with flag, then removed)
-- [ ] 03 Owner sets real email, logo, photos in admin
-- [ ] 04 Brevo domain authenticated (SPF, DKIM, DMARC)
-- [ ] 05 Cloudflare DNS cutover with WAF on
-- [ ] 06 Old site URL redirects live
-- [ ] 07 Final smoke test of every page and form
-- [ ] 08 Super admin MFA set up by owner
-- [ ] 09 Remove seed password from env
-- [ ] 10 Backups verified
-- [ ] 11 Uptime and error monitoring alerts
-- [ ] 12 Submit sitemap to Search Console
-- [ ] 13 Admin user guide (PDF) for owner
-- [ ] 14 Video walkthrough of admin (optional)
-- [ ] 15 Content entry training
-- [ ] 16 Security runbook handover
-- [ ] 17 Monthly maintenance checklist
-- [ ] 18 Update all docs to final state
-- [ ] 19 Update Memory.md progress log: complete
-- [ ] 20 Sign-off from owner
+- [~] 01 Production env vars set and verified — Vercel env vars at deploy (LAUNCH.md 2)
+- [x] 02 Production Neon migration + seed (with flag, then removed) — Neon migrated + seeded 22-23 Nov 2026
+- [~] 03 Owner sets real email, logo, photos in admin — owner (LAUNCH.md 6)
+- [~] 04 Brevo domain authenticated (SPF, DKIM, DMARC) — owner + dev (LAUNCH.md 7)
+- [~] 05 Cloudflare DNS cutover with WAF on — launch day (LAUNCH.md 10)
+- [x] 06 Old site URL redirects live — 145 redirects in the live DB; live once the domain points here
+- [x] 07 Final smoke test of every page and form — scripts/smoke.mjs (138 pages + headers, forms, admin, 404, redirects) passes on a production build
+- [~] 08 Super admin MFA set up by owner — owner (LAUNCH.md 4)
+- [~] 09 Remove seed password from env — at deploy (LAUNCH.md 5)
+- [~] 10 Backups verified — test restore at launch (LAUNCH.md 16)
+- [~] 11 Uptime and error monitoring alerts — launch day (LAUNCH.md 15)
+- [~] 12 Submit sitemap to Search Console — owner (LAUNCH.md 14)
+- [x] 13 Admin user guide (PDF) for owner — docs/handover/admin-guide.pdf
+- [~] 14 Video walkthrough of admin (optional) — optional, owner's choice
+- [x] 15 Content entry training — practice plan in docs/handover/LAUNCH.md
+- [x] 16 Security runbook handover — runbooks in docs/security/27.md, 23.md, 24.md
+- [x] 17 Monthly maintenance checklist — docs/handover/MAINTENANCE.md
+- [x] 18 Update all docs to final state — docs updated
+- [x] 19 Update Memory.md progress log: complete — Memory.md updated
+- [~] 20 Sign-off from owner — owner sign-off (LAUNCH.md 22)
