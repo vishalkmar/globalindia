@@ -6,7 +6,7 @@ import "server-only";
  * only fails the feature that needs it, while auth secrets fail loudly.
  */
 
-const MIN_SECRET_BYTES = 48; // base64url of 64 random bytes is ~86 chars; reject obviously weak values
+const MIN_SECRET_BYTES = 86; // 64 random bytes in base64url (Phase 23 todo 01); npm run secrets makes them
 
 function read(name) {
   const value = process.env[name];
@@ -21,11 +21,17 @@ export function requireEnv(name) {
 }
 
 /** Required secret with minimum length check. */
+const secretOwners = new Map(); // value -> variable name
+
 export function requireSecret(name, minBytes = MIN_SECRET_BYTES) {
   const value = requireEnv(name);
   if (Buffer.byteLength(value, "utf8") < minBytes) {
     throw new Error(`Environment variable ${name} is too short to be a safe secret`);
   }
+  // Each purpose has its own secret (Phase 23 todo 02): one leaked value must not unlock the others.
+  const owner = secretOwners.get(value);
+  if (owner && owner !== name) throw new Error(`Environment variables ${owner} and ${name} must not share a value`);
+  secretOwners.set(value, name);
   return value;
 }
 

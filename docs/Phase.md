@@ -528,26 +528,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Re-run full tests
 
 ## Phase 23 — Security 7: JWT, Tokens, OTP & Session Hygiene (no localStorage)
-- [ ] 01 Secrets ≥ 64 random bytes, different per environment
-- [ ] 02 Separate secrets for access JWT, refresh pepper, OTP pepper, TOTP key
-- [ ] 03 Algorithm pinned; reject alg:none and HS/RS confusion
-- [ ] 04 Always verify, never decode for auth decisions
-- [ ] 05 Validate iss, aud, exp, nbf
-- [ ] 06 Short access TTL (10 min), refresh 7 days
-- [ ] 07 Refresh rotation on every use + reuse detection
-- [ ] 08 tokenVersion bump on password change/reset/role change
-- [ ] 09 Old sessions killed after reset
-- [ ] 10 Reset links single use and expiring
-- [ ] 11 Email change needs password + OTP
-- [ ] 12 OTP never in API response, logs or URLs
-- [ ] 13 OTP expires, single use, hashed
-- [ ] 14 Same response for unknown email (no enumeration)
-- [ ] 15 Remove any token from localStorage/sessionStorage (audit code)
-- [ ] 16 Cookies HttpOnly, Secure, SameSite=Strict, __Host-
-- [ ] 17 Secret rotation procedure with key id (kid)
-- [ ] 18 Tests for every rule above
-- [ ] 19 Document in docs/security/23.md
-- [ ] 20 Re-run full tests
+- [x] 01 Secrets ≥ 64 random bytes, different per environment
+- [x] 02 Separate secrets for access JWT, refresh pepper, OTP pepper, TOTP key
+- [x] 03 Algorithm pinned; reject alg:none and HS/RS confusion
+- [x] 04 Always verify, never decode for auth decisions
+- [x] 05 Validate iss, aud, exp, nbf
+- [x] 06 Short access TTL (10 min), refresh 7 days
+- [x] 07 Refresh rotation on every use + reuse detection
+- [x] 08 tokenVersion bump on password change/reset/role change
+- [x] 09 Old sessions killed after reset
+- [x] 10 Reset links single use and expiring
+- [x] 11 Email change needs password + OTP
+- [x] 12 OTP never in API response, logs or URLs
+- [x] 13 OTP expires, single use, hashed
+- [x] 14 Same response for unknown email (no enumeration)
+- [x] 15 Remove any token from localStorage/sessionStorage (audit code)
+- [x] 16 Cookies HttpOnly, Secure, SameSite=Strict, __Host-
+- [x] 17 Secret rotation procedure with key id (kid)
+- [x] 18 Tests for every rule above
+- [x] 19 Document in docs/security/23.md
+- [x] 20 Re-run full tests
 
 ## Phase 24 — Security 8: Secrets Server-side, .env, Source Maps, Logs
 - [ ] 01 Audit all NEXT_PUBLIC_ vars; no secrets
