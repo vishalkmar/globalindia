@@ -25,7 +25,9 @@ function clampInt(value, min, max, fallback) {
 }
 
 function colorBlock(colors, fallbackColors) {
-  return COLOR_TOKENS.map(({ key }) => `--c-${toKebab(key)}:${safeColor(colors?.[key], fallbackColors[key])};`).join("");
+  return COLOR_TOKENS.map(
+    ({ key }) => `--c-${toKebab(key)}:${safeColor(colors?.[key], fallbackColors[key])};`,
+  ).join("");
 }
 
 /**

@@ -10,14 +10,22 @@ import { deviceLabel } from "@/lib/security/ip";
  */
 
 function when() {
-  return new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short", timeZone: "Asia/Kolkata" }).format(new Date()) + " IST";
+  return (
+    new Intl.DateTimeFormat("en-IN", {
+      dateStyle: "medium",
+      timeStyle: "short",
+      timeZone: "Asia/Kolkata",
+    }).format(new Date()) + " IST"
+  );
 }
 
 async function alert(userId, { title, message, details }) {
   const user = await db.adminUser.findUnique({ where: { id: userId }, select: { email: true, name: true } });
   if (!user) return;
   const mail = securityAlertEmail({ title, message, details });
-  await sendEmail({ to: user.email, toName: user.name, ...mail, tags: ["security-alert"] }).catch(() => false);
+  await sendEmail({ to: user.email, toName: user.name, ...mail, tags: ["security-alert"] }).catch(
+    () => false,
+  );
 }
 
 export function notifyNewLogin(userId, headers) {

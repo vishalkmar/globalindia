@@ -16,7 +16,9 @@ import { makeUser } from "../helpers.js";
 const cookieJar = { access: "" };
 vi.mock("next/headers", async (orig) => ({
   ...(await orig()),
-  cookies: async () => ({ get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined) }),
+  cookies: async () => ({
+    get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined),
+  }),
   draftMode: async () => ({ isEnabled: false, enable() {}, disable() {} }),
 }));
 
@@ -39,7 +41,9 @@ const FAKE_ID = "cm0000000000000000000abcd";
 let viewer;
 beforeAll(async () => {
   const { user } = await makeUser({ role: "VIEWER" });
-  await import("@/lib/db").then(({ db }) => db.adminUser.update({ where: { id: user.id }, data: { mfaSetupAt: new Date() } }));
+  await import("@/lib/db").then(({ db }) =>
+    db.adminUser.update({ where: { id: user.id }, data: { mfaSetupAt: new Date() } }),
+  );
   viewer = { ...user, mfaSetupAt: new Date() };
   const { accessToken } = await createSession(viewer);
   cookieJar.access = accessToken;
@@ -60,7 +64,9 @@ describe("VIEWER cannot reach any write endpoint", () => {
           headers: { "content-type": "application/json", origin: ORIGIN },
           body: JSON.stringify({ role: "SUPER_ADMIN", name: "x", email: "x@y.in" }),
         });
-        const res = await mod[method](req, { params: Promise.resolve({ id: FAKE_ID, key: "header", location: "HEADER" }) });
+        const res = await mod[method](req, {
+          params: Promise.resolve({ id: FAKE_ID, key: "header", location: "HEADER" }),
+        });
         if (READ_ONLY_POSTS.has(`${rel}:${method}`)) expect(res.status).not.toBe(500);
         else expect(res.status).toBe(403);
       });

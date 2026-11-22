@@ -17,7 +17,9 @@ const slugify = (s) =>
 /** GET /api/admin/themes — every saved theme, active first. */
 export const GET = route(async () => {
   await requirePermission("read", "theme");
-  const themes = await db.theme.findMany({ orderBy: [{ isActive: "desc" }, { isPreset: "desc" }, { createdAt: "asc" }] });
+  const themes = await db.theme.findMany({
+    orderBy: [{ isActive: "desc" }, { isPreset: "desc" }, { createdAt: "asc" }],
+  });
   return json({ ok: true, themes: themes.map(themeShape) });
 });
 
@@ -37,7 +39,15 @@ export const POST = route(async (req) => {
   const base = slugify(name);
   let slug = base;
   for (let i = 2; await db.theme.findUnique({ where: { slug } }); i++) slug = `${base}-${i}`;
-  const theme = await db.theme.create({ data: { name, slug, tokens, mode, isActive: false, isPreset: false, createdById: user.id } });
-  await audit({ actorId: user.id, action: "theme.create", entity: "Theme", entityId: theme.id, diff: { name, fromId: fromId ?? null } });
+  const theme = await db.theme.create({
+    data: { name, slug, tokens, mode, isActive: false, isPreset: false, createdById: user.id },
+  });
+  await audit({
+    actorId: user.id,
+    action: "theme.create",
+    entity: "Theme",
+    entityId: theme.id,
+    diff: { name, fromId: fromId ?? null },
+  });
   return json({ ok: true, theme: themeShape(theme) }, { status: 201 });
 });

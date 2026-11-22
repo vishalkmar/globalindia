@@ -4,6 +4,7 @@ import { getSiteChrome } from "@/lib/site-chrome";
 import {
   BrandList,
   ContactBlock,
+  Downloads,
   FactsTable,
   Gallery,
   IconCards,
@@ -61,6 +62,7 @@ const COMPONENTS = {
   contactBlock: ContactBlock,
   gallery: Gallery,
   openings: Openings,
+  downloads: Downloads,
 };
 
 /** Sections that draw their own background; the rest alternate white / surface down the page. */

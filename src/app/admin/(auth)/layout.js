@@ -9,7 +9,10 @@ export default function AuthLayout({ children }) {
     <div className="grid min-h-dvh bg-surface lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
       <aside className="relative hidden flex-col justify-between bg-band p-12 text-band-ink lg:flex">
         <div className="flex items-center gap-3">
-          <span aria-hidden="true" className="inline-flex size-10 items-center justify-center rounded-btn border border-[color-mix(in_oklab,var(--c-band-ink)_35%,transparent)] font-display text-lg">
+          <span
+            aria-hidden="true"
+            className="inline-flex size-10 items-center justify-center rounded-btn border border-[color-mix(in_oklab,var(--c-band-ink)_35%,transparent)] font-display text-lg"
+          >
             G
           </span>
           <span className="font-display text-xl">Global India</span>
@@ -45,7 +48,10 @@ export default function AuthLayout({ children }) {
       <main id="main" className="flex items-center justify-center px-4 py-12 sm:px-8">
         <div className="w-full max-w-[440px]">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <span aria-hidden="true" className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card font-display text-primary">
+            <span
+              aria-hidden="true"
+              className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card font-display text-primary"
+            >
               G
             </span>
             <span className="font-display text-lg text-primary">Global India admin</span>

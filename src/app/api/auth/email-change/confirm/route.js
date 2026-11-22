@@ -23,15 +23,25 @@ export const POST = route(async (req) => {
   if (!limited.success) return errorResponse(429, undefined, { retryAfter: limited.retryAfter });
 
   const { token } = await readJson(req, emailChangeConfirmSchema);
-  const request = await db.emailChangeRequest.findUnique({ where: { tokenHash: hashEmailChangeToken(token) }, include: { user: true } });
-  if (!request || request.usedAt || !request.otpVerifiedAt || request.expiresAt <= new Date()) return errorResponse(400, BAD_LINK);
+  const request = await db.emailChangeRequest.findUnique({
+    where: { tokenHash: hashEmailChangeToken(token) },
+    include: { user: true },
+  });
+  if (!request || request.usedAt || !request.otpVerifiedAt || request.expiresAt <= new Date())
+    return errorResponse(400, BAD_LINK);
 
   const oldEmail = request.user.email;
   try {
     await db.$transaction(async (tx) => {
-      const claimed = await tx.emailChangeRequest.updateMany({ where: { id: request.id, usedAt: null }, data: { usedAt: new Date() } });
+      const claimed = await tx.emailChangeRequest.updateMany({
+        where: { id: request.id, usedAt: null },
+        data: { usedAt: new Date() },
+      });
       if (claimed.count !== 1) throw new Error("used");
-      const taken = await tx.adminUser.findUnique({ where: { email: request.newEmail }, select: { id: true } });
+      const taken = await tx.adminUser.findUnique({
+        where: { email: request.newEmail },
+        select: { id: true },
+      });
       if (taken) throw new Error("taken");
       await applyEmailChange(tx, { userId: request.userId, oldEmail, newEmail: request.newEmail });
     });
@@ -39,7 +49,11 @@ export const POST = route(async (req) => {
     return errorResponse(400, BAD_LINK);
   }
 
-  await audit({ actorId: request.userId, action: "auth.email_change.completed", diff: { from: oldEmail, to: request.newEmail } });
+  await audit({
+    actorId: request.userId,
+    action: "auth.email_change.completed",
+    diff: { from: oldEmail, to: request.newEmail },
+  });
   after(() =>
     sendEmail({
       to: oldEmail,

@@ -26,11 +26,18 @@ const resourceType = (kind) => (kind === "pdf" ? "raw" : "image");
 /** Cloudinary signature: SHA-1 of the sorted "key=value&..." string + API secret. */
 export function signParams(params, apiSecret) {
   const str = Object.keys(params)
-    .filter((k) => params[k] !== undefined && params[k] !== "" && !["file", "api_key", "resource_type", "cloud_name"].includes(k))
+    .filter(
+      (k) =>
+        params[k] !== undefined &&
+        params[k] !== "" &&
+        !["file", "api_key", "resource_type", "cloud_name"].includes(k),
+    )
     .sort()
     .map((k) => `${k}=${Array.isArray(params[k]) ? params[k].join(",") : params[k]}`)
     .join("&");
-  return createHash("sha1").update(str + apiSecret).digest("hex");
+  return createHash("sha1")
+    .update(str + apiSecret)
+    .digest("hex");
 }
 
 function uploadParams(id, kind, { overwrite }) {
@@ -57,7 +64,11 @@ export function directUploadForm(id, kind, { overwrite = false } = {}) {
   const params = uploadParams(id, kind, { overwrite });
   return {
     url: `https://api.cloudinary.com/v1_1/${cfg.cloudName}/${resourceType(kind)}/upload`,
-    fields: { ...Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)), api_key: cfg.apiKey, signature: signParams(params, cfg.apiSecret) },
+    fields: {
+      ...Object.fromEntries(Object.entries(params).filter(([, v]) => v !== undefined)),
+      api_key: cfg.apiKey,
+      signature: signParams(params, cfg.apiSecret),
+    },
     publicId: params.public_id,
   };
 }
@@ -76,7 +87,14 @@ export async function getResource(publicId, kind) {
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`Cloudinary resource lookup failed (${res.status})`);
   const r = await res.json();
-  return { bytes: r.bytes, format: r.format, width: r.width ?? null, height: r.height ?? null, url: r.secure_url, version: r.version };
+  return {
+    bytes: r.bytes,
+    format: r.format,
+    width: r.width ?? null,
+    height: r.height ?? null,
+    url: r.secure_url,
+    version: r.version,
+  };
 }
 
 /** Downloads the stored file from our own Cloudinary account to inspect its bytes. */
@@ -111,7 +129,15 @@ export async function uploadBuffer(id, kind, buffer, { overwrite = false } = {})
     throw new Error("Upload to media storage failed");
   }
   const r = await res.json();
-  return { publicId: r.public_id, bytes: r.bytes, format: r.format, width: r.width ?? null, height: r.height ?? null, url: r.secure_url, version: r.version };
+  return {
+    publicId: r.public_id,
+    bytes: r.bytes,
+    format: r.format,
+    width: r.width ?? null,
+    height: r.height ?? null,
+    url: r.secure_url,
+    version: r.version,
+  };
 }
 
 export async function destroy(publicId, kind) {

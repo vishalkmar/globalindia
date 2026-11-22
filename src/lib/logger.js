@@ -7,7 +7,8 @@ import "server-only";
  * - Output is plain JSON; nothing is ever evaluated or interpolated (Log4Shell lesson).
  */
 
-const SENSITIVE = /pass(word)?|secret|token|otp|^code$|cookie|authorization|apikey|api_key|totp|recovery|hash|signature|jwt/i;
+const SENSITIVE =
+  /pass(word)?|secret|token|otp|^code$|cookie|authorization|apikey|api_key|totp|recovery|hash|signature|jwt/i;
 const MAX_DEPTH = 5;
 
 export function redact(value, depth = 0) {
@@ -25,7 +26,12 @@ export function redact(value, depth = 0) {
 }
 
 function write(level, event, data) {
-  const line = JSON.stringify({ t: new Date().toISOString(), level, event: redact(event), ...redact(data ?? {}) });
+  const line = JSON.stringify({
+    t: new Date().toISOString(),
+    level,
+    event: redact(event),
+    ...redact(data ?? {}),
+  });
   if (level === "error") console.error(line);
   else if (level === "warn") console.warn(line);
   // eslint-disable-next-line no-console -- this module is the single sanctioned console writer

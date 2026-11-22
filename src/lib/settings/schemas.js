@@ -16,9 +16,16 @@ export const safeHref = z
   .string()
   .trim()
   .max(500)
-  .refine((v) => v === "" || /^\/(?!\/)[\w\-./?=&#%~+]*$/.test(v) || /^https:\/\/[^\s/]+\.[^\s]+$/i.test(v) || /^(tel:\+?[\d\s-]{6,20}|mailto:[^\s@]+@[^\s@]+\.[^\s@]+)$/i.test(v), {
-    message: "Use a page path like /contact, an https:// link, tel: or mailto:.",
-  });
+  .refine(
+    (v) =>
+      v === "" ||
+      /^\/(?!\/)[\w\-./?=&#%~+]*$/.test(v) ||
+      /^https:\/\/[^\s/]+\.[^\s]+$/i.test(v) ||
+      /^(tel:\+?[\d\s-]{6,20}|mailto:[^\s@]+@[^\s@]+\.[^\s@]+)$/i.test(v),
+    {
+      message: "Use a page path like /contact, an https:// link, tel: or mailto:.",
+    },
+  );
 
 const httpsUrl = z
   .string()
@@ -26,8 +33,15 @@ const httpsUrl = z
   .max(500)
   .refine((v) => v === "" || /^https:\/\/[^\s/]+\.[^\s]+$/i.test(v), "Use a full https:// link.");
 
-const mediaId = z.string().regex(/^c[a-z0-9]{20,32}$/).nullable().default(null);
-const phone = z.string().trim().regex(/^\+?[\d\s-]{6,20}$/, "Use digits, spaces, + and - only, e.g. +91 80717 79152.");
+const mediaId = z
+  .string()
+  .regex(/^c[a-z0-9]{20,32}$/)
+  .nullable()
+  .default(null);
+const phone = z
+  .string()
+  .trim()
+  .regex(/^\+?[\d\s-]{6,20}$/, "Use digits, spaces, + and - only, e.g. +91 80717 79152.");
 
 /* ---------- business ---------- */
 export const businessSchema = z.strictObject({
@@ -48,16 +62,34 @@ export const businessSchema = z.strictObject({
     line1: noTags(required(120, "Enter the address.")),
     line2: noTags(text(120)),
     city: noTags(required(60, "Enter the city.")),
-    pin: z.string().trim().regex(/^\d{6}$/, "PIN code has 6 digits."),
+    pin: z
+      .string()
+      .trim()
+      .regex(/^\d{6}$/, "PIN code has 6 digits."),
     state: noTags(text(60)),
     country: noTags(text(60)),
   }),
   phones: z.array(z.strictObject({ label: noTags(text(40)), number: phone })).max(6),
-  emails: z.array(z.strictObject({ label: noTags(text(40)), email: z.string().trim().toLowerCase().email("Enter a valid email.") })).max(6),
-  whatsapp: z.string().trim().regex(/^$|^\+?\d{10,15}$/, "Digits only with country code, e.g. 918071779152."),
+  emails: z
+    .array(
+      z.strictObject({
+        label: noTags(text(40)),
+        email: z.string().trim().toLowerCase().email("Enter a valid email."),
+      }),
+    )
+    .max(6),
+  whatsapp: z
+    .string()
+    .trim()
+    .regex(/^$|^\+?\d{10,15}$/, "Digits only with country code, e.g. 918071779152."),
   hours: noTags(text(120)),
   market: noTags(text(160)),
-  mapUrl: httpsUrl.refine((v) => v === "" || /^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed|^https:\/\/maps\.google\.[a-z.]+\//i.test(v), "Use the Google Maps embed link (Share > Embed a map)."),
+  mapUrl: httpsUrl.refine(
+    (v) =>
+      v === "" ||
+      /^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed|^https:\/\/maps\.google\.[a-z.]+\//i.test(v),
+    "Use the Google Maps embed link (Share > Embed a map).",
+  ),
 });
 
 /* ---------- top bar ---------- */
@@ -107,19 +139,35 @@ export const socialSchema = z.strictObject({
 /* ---------- SEO defaults ---------- */
 export const seoSchema = z.strictObject({
   siteName: noTags(required(60, "Enter the site name.")),
-  titleTemplate: noTags(required(80, "Enter a template.")).refine((v) => v.includes("%s"), "Keep %s where the page title goes."),
+  titleTemplate: noTags(required(80, "Enter a template.")).refine(
+    (v) => v.includes("%s"),
+    "Keep %s where the page title goes.",
+  ),
   defaultTitle: noTags(required(70, "Enter a default title.")),
   defaultDescription: noTags(text(170, "Keep it under 170 characters.")),
   ogImageId: mediaId,
   faviconId: mediaId,
-  googleVerification: z.string().trim().regex(/^[A-Za-z0-9_-]{0,100}$/, "Paste only the content value of the meta tag."),
-  bingVerification: z.string().trim().regex(/^[A-Za-z0-9_-]{0,100}$/, "Paste only the content value of the meta tag."),
+  googleVerification: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z0-9_-]{0,100}$/, "Paste only the content value of the meta tag."),
+  bingVerification: z
+    .string()
+    .trim()
+    .regex(/^[A-Za-z0-9_-]{0,100}$/, "Paste only the content value of the meta tag."),
 });
 
 /* ---------- analytics (IDs only — no scripts can be pasted) ---------- */
 export const analyticsSchema = z.strictObject({
-  ga4Id: z.string().trim().toUpperCase().regex(/^$|^G-[A-Z0-9]{4,12}$/, "GA4 IDs look like G-ABC123XYZ."),
-  clarityId: z.string().trim().regex(/^$|^[a-z0-9]{6,16}$/, "Clarity IDs are 6-16 lowercase letters/numbers."),
+  ga4Id: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .regex(/^$|^G-[A-Z0-9]{4,12}$/, "GA4 IDs look like G-ABC123XYZ."),
+  clarityId: z
+    .string()
+    .trim()
+    .regex(/^$|^[a-z0-9]{6,16}$/, "Clarity IDs are 6-16 lowercase letters/numbers."),
 });
 
 /* ---------- maintenance ---------- */
@@ -135,6 +183,26 @@ export const uploadsSchema = z.strictObject({
   pdfMaxMB: z.coerce.number().min(1).max(10),
 });
 
+/* ---------- enquiries: who is told, and the spam block list (Phase 14) ---------- */
+const listOf = (max, item) => z.array(item).max(max).default([]);
+export const enquiriesSchema = z.strictObject({
+  notifyEmails: listOf(5, z.string().trim().toLowerCase().email("Enter a valid email.")),
+  acknowledge: z.boolean().default(true),
+  blockedEmails: listOf(200, z.string().trim().toLowerCase().email("Enter a valid email.")),
+  blockedDomains: listOf(
+    200,
+    z
+      .string()
+      .trim()
+      .toLowerCase()
+      .regex(/^[a-z0-9-]+(\.[a-z0-9-]+)+$/, "Enter a domain like example.com."),
+  ),
+  blockedWords: listOf(
+    200,
+    noTags(z.string().trim().toLowerCase().min(3, "Words need at least 3 letters.").max(40)),
+  ),
+});
+
 /** key -> { schema, resource (role matrix), label } */
 export const SETTINGS = {
   business: { schema: businessSchema, resource: "business", label: "Business details" },
@@ -146,6 +214,7 @@ export const SETTINGS = {
   analytics: { schema: analyticsSchema, resource: "security", label: "Analytics" },
   maintenance: { schema: maintenanceSchema, resource: "security", label: "Maintenance mode" },
   uploads: { schema: uploadsSchema, resource: "security", label: "Upload limits" },
+  enquiries: { schema: enquiriesSchema, resource: "security", label: "Enquiries and spam" },
 };
 
 /** Real defaults (docs/Content.md, Memory.md). Used by the seed and whenever a key is missing. */
@@ -160,7 +229,14 @@ export const SETTING_DEFAULTS = {
     teamSize: 35,
     banker: "Kotak Mahindra Bank",
     gst: "07BMMPA5592C1Z4",
-    address: { line1: "419, Khasra No-300, Ground Floor", line2: "Burari Road", city: "Delhi", pin: "110084", state: "Delhi", country: "India" },
+    address: {
+      line1: "419, Khasra No-300, Ground Floor",
+      line2: "Burari Road",
+      city: "Delhi",
+      pin: "110084",
+      state: "Delhi",
+      country: "India",
+    },
     phones: [{ label: "Sales", number: "+91 80717 79152" }],
     emails: [],
     whatsapp: "",
@@ -168,8 +244,26 @@ export const SETTING_DEFAULTS = {
     market: "All India; export enquiries accepted (FOB)",
     mapUrl: "",
   },
-  topbar: { enabled: true, showPhone: true, showEmail: true, showGst: true, showHours: true, message: "Dispatch across India, usually within 7 working days" },
-  header: { logoLightId: null, logoDarkId: null, logoText: "Global India", ctaText: "Request a quote", ctaHref: "/contact#quote", showCall: true, sticky: true, showSearch: true, floatingCall: true, floatingWhatsApp: true },
+  topbar: {
+    enabled: true,
+    showPhone: true,
+    showEmail: true,
+    showGst: true,
+    showHours: true,
+    message: "Dispatch across India, usually within 7 working days",
+  },
+  header: {
+    logoLightId: null,
+    logoDarkId: null,
+    logoText: "Global India",
+    ctaText: "Request a quote",
+    ctaHref: "/contact#quote",
+    showCall: true,
+    sticky: true,
+    showSearch: true,
+    floatingCall: true,
+    floatingWhatsApp: true,
+  },
   footer: {
     aboutText:
       "Chemical raw materials from Burari Road, Delhi, since 2002. Surfactants, glycols, paraffins, food additives and soap bases in practical pack sizes, with the paperwork your buyers ask for.",
@@ -183,7 +277,8 @@ export const SETTING_DEFAULTS = {
     siteName: "Global India",
     titleTemplate: "%s | Global India, Delhi",
     defaultTitle: "Chemical Raw Material Supplier in Delhi | Global India",
-    defaultDescription: "Global India supplies Light Liquid Paraffin, Propylene Glycol, SLES, Xanthan Gum, glycerine and 120+ chemicals from Delhi since 2002. MOQ from 50 kg.",
+    defaultDescription:
+      "Global India supplies Light Liquid Paraffin, Propylene Glycol, SLES, Xanthan Gum, glycerine and 120+ chemicals from Delhi since 2002. MOQ from 50 kg.",
     ogImageId: null,
     faviconId: null,
     googleVerification: "",
@@ -196,6 +291,7 @@ export const SETTING_DEFAULTS = {
     message: "The site will be back shortly. For orders and quotes, please call +91 80717 79152.",
   },
   uploads: { imageMaxMB: 5, pdfMaxMB: 10 },
+  enquiries: { notifyEmails: [], acknowledge: true, blockedEmails: [], blockedDomains: [], blockedWords: [] },
 };
 
 /** Merge a stored value over defaults and validate; invalid stored data falls back to defaults. */

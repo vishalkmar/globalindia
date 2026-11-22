@@ -28,7 +28,9 @@ export const POST = route(async (req) => {
 
   if (!(await verifyPassword(user.passwordHash, currentPassword))) {
     await audit({ actorId: me.id, action: "auth.password.change_failed" });
-    return errorResponse(400, "Current password is not correct.", { body: { fields: { currentPassword: "Current password is not correct." } } });
+    return errorResponse(400, "Current password is not correct.", {
+      body: { fields: { currentPassword: "Current password is not correct." } },
+    });
   }
   const policy = passwordPolicyError(newPassword, { email: user.email });
   if (policy) return errorResponse(400, policy, { body: { fields: { newPassword: policy } } });
@@ -39,15 +41,25 @@ export const POST = route(async (req) => {
 
   await db.adminUser.update({
     where: { id: me.id },
-    data: { passwordHash: await hashPassword(newPassword), mustChangePassword: false, passwordChangedAt: new Date() },
+    data: {
+      passwordHash: await hashPassword(newPassword),
+      mustChangePassword: false,
+      passwordChangedAt: new Date(),
+    },
   });
   await revokeAllForUser(me.id, "password_changed");
   const fresh = await db.adminUser.findUnique({ where: { id: me.id } });
   const ipHash = hashIp(clientIp(req.headers));
-  const { accessToken, refreshToken } = await createSession(fresh, { userAgent: req.headers.get("user-agent") ?? "", ipHash });
+  const { accessToken, refreshToken } = await createSession(fresh, {
+    userAgent: req.headers.get("user-agent") ?? "",
+    ipHash,
+  });
 
   await audit({ actorId: me.id, action: "auth.password.changed", ipHash });
   const headers = req.headers;
   after(() => notifySecurityChange(me.id, headers, "Your admin password was changed"));
-  return setSessionCookies(json({ ok: true, next: fresh.mfaSetupAt ? "/admin" : "/admin/setup" }), { accessToken, refreshToken });
+  return setSessionCookies(json({ ok: true, next: fresh.mfaSetupAt ? "/admin" : "/admin/setup" }), {
+    accessToken,
+    refreshToken,
+  });
 });

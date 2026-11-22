@@ -21,7 +21,8 @@ export const POST = route(async (req) => {
 
   const form = await req.formData();
   const intent = readIntent(String(form.get("intent") ?? ""), user.id);
-  if (!intent || intent.driver !== "local") throw new HttpError(400, "This upload has expired. Please try again.");
+  if (!intent || intent.driver !== "local")
+    throw new HttpError(400, "This upload has expired. Please try again.");
   const file = form.get("file");
   if (!(file instanceof Blob)) throw new HttpError(400, "No file received.");
   if (file.size > maxBytesFor(intent.kind, limits)) throw new HttpError(413, "The file is too large.");

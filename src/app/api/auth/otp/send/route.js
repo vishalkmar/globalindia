@@ -1,4 +1,4 @@
-import { sendLoginOtp,userFromMfaTicket } from "@/lib/auth/mfa";
+import { sendLoginOtp, userFromMfaTicket } from "@/lib/auth/mfa";
 import { OtpError, otpErrorMessage } from "@/lib/auth/otp";
 import { assertSameOrigin, errorResponse, json, readJson, route } from "@/lib/http";
 import { sendOtpSchema } from "@/lib/validation/auth";
@@ -15,7 +15,8 @@ export const POST = route(async (req) => {
   try {
     await sendLoginOtp(user);
   } catch (err) {
-    if (err instanceof OtpError) return errorResponse(429, otpErrorMessage(err), { retryAfter: err.retryAfter });
+    if (err instanceof OtpError)
+      return errorResponse(429, otpErrorMessage(err), { retryAfter: err.retryAfter });
     throw err;
   }
   return json({ ok: true, next: "verify", resendAfter: 60 });

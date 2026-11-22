@@ -5,7 +5,12 @@ import { sanitizeRichText } from "@/lib/security/sanitize";
 
 /** Page draft payload (Phase 10 todo 16-17). Each section is validated by its own registry schema. */
 
-const noTags = (max) => z.string().trim().max(max).refine((v) => !/[<>]/.test(v), "Cannot contain < or >.");
+const noTags = (max) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .refine((v) => !/[<>]/.test(v), "Cannot contain < or >.");
 
 export const pageSeoSchema = z.strictObject({
   title: noTags(70),
@@ -31,7 +36,11 @@ export const pageDraftSchema = z
       const r = parseSection(s.type, s.data);
       if (!r.success) {
         for (const issue of r.error.issues) {
-          ctx.addIssue({ code: "custom", path: ["sections", i, "data", ...issue.path], message: issue.message });
+          ctx.addIssue({
+            code: "custom",
+            path: ["sections", i, "data", ...issue.path],
+            message: issue.message,
+          });
         }
       }
     });

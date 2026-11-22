@@ -2,6 +2,7 @@ import { ArrowRight, Download, FileLock2, FlaskConical, Phone } from "lucide-rea
 import { notFound, permanentRedirect } from "next/navigation";
 
 import { ProductAnchorNav } from "@/components/catalogue/ProductAnchorNav";
+import { AddToQuote } from "@/components/enquiry/AddToQuote";
 import { CtaBand, Faq } from "@/components/sections/ContentSections";
 import { Breadcrumb } from "@/components/site/Breadcrumb";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -13,6 +14,7 @@ import { Table } from "@/components/ui/Table";
 import { findRedirect, getProductPage, getProductParams } from "@/lib/catalogue/data";
 import { familyByKey } from "@/lib/catalogue/families";
 import { buildGuide, introFor } from "@/lib/catalogue/guide";
+import { getIndustriesForProduct } from "@/lib/content/data";
 import { siteUrl } from "@/lib/env";
 import { SECTIONS } from "@/lib/sections/registry";
 import { jsonLd } from "@/lib/seo/jsonLd";
@@ -89,7 +91,7 @@ export default async function ProductPage({ params }) {
   }
   if (p.category.slug !== category) permanentRedirect(`/products/${p.category.slug}/${p.slug}`);
 
-  const chrome = await getSiteChrome();
+  const [chrome, industries] = await Promise.all([getSiteChrome(), getIndustriesForProduct(p.id)]);
   const family = familyByKey(p.category.family);
   const guide = buildGuide(p, { categorySlug: p.category.slug });
   const base = siteUrl();
@@ -168,12 +170,16 @@ export default async function ProductPage({ params }) {
               <Button href={quote} size="lg">
                 Request quotation <ArrowRight aria-hidden="true" />
               </Button>
-              {chrome.contact.phone ? (
-                <Button href={chrome.contact.phoneHref} variant="secondary" size="lg">
-                  <Phone aria-hidden="true" /> Call {chrome.contact.phone}
-                </Button>
-              ) : null}
+              <AddToQuote slug={p.slug} />
             </div>
+            {chrome.contact.phone ? (
+              <a
+                href={chrome.contact.phoneHref}
+                className="inline-flex items-center gap-2 font-semibold text-primary hover:underline"
+              >
+                <Phone aria-hidden="true" className="size-4" /> Call {chrome.contact.phone}
+              </a>
+            ) : null}
             {p.brandNote ? <p className="text-sm text-muted">{p.brandNote}</p> : null}
           </div>
           <div
@@ -288,6 +294,20 @@ export default async function ProductPage({ params }) {
               Tell us what you make and we will tell you whether this is the right material for it.
             </p>
           )}
+          {industries.length ? (
+            <div className="flex flex-col gap-3">
+              <h3 className="text-sm font-bold tracking-wide text-muted uppercase">
+                Industries that buy it from us
+              </h3>
+              <ul className="flex flex-wrap gap-2" aria-label="Industries">
+                {industries.map((ind) => (
+                  <li key={ind.slug}>
+                    <Tag href={`/industries/${ind.slug}`}>{ind.name}</Tag>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
         </Container>
       </Section>
 

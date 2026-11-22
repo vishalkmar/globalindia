@@ -1,6 +1,7 @@
 import { ArrowUpRight, Clock, Mail, MapPin, Phone, Receipt } from "lucide-react";
 import Link from "next/link";
 
+import { NewsletterForm } from "@/components/content/NewsletterForm";
 import { currentYear } from "@/lib/site-chrome";
 
 import { CookieSettingsButton } from "./CookieConsent";
@@ -76,6 +77,9 @@ export async function Footer({ chrome }) {
               ))}
             </ul>
           ) : null}
+          <div className="max-w-sm pt-2">
+            <NewsletterForm />
+          </div>
         </div>
 
         <FooterLinks title="Company" items={menus.quick} />

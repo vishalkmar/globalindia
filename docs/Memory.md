@@ -98,6 +98,8 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 11 Company pages | Done | 2026-11-22 | 14 company section types (registry-company.js, rich text sanitised on save), generic `[page]` route for admin pages (about, why-us, quality, gallery live; careers seeded as draft), real copy in prisma/seed-pages.js, Admin > Gallery manager (add/caption/category/reorder/hide, revisions, audit), real 404 for unknown/draft slugs, cookie consent read client-side so public pages are fully static, scroll reveal moved to a CSS view timeline (RevealObserver removed: no hydration mismatch, less JS), (site)/not-found.js so a 404 inside the site layout does not repeat the header. 254 unit + 23 E2E passing |
 | 12 Catalogue | Done | 2026-11-22 | 22 categories / 87 products seeded (prisma/seed-catalogue.js, guides in seed-guides.js, CAS check digits verified), admin categories (family groups, drag reorder, editor, delete guard) and products (filters, full editor with specs/FAQs/gallery/documents/price/brand, duplicate, soft delete, CSV export/import with dry run), publish permission enforced, redirects on slug change and delete, /products hub (family links + instant filter) and /products/[category] pages. 305 unit + 27 E2E |
 | 13 Product page | Done | 2026-11-22 | /products/[category]/[product] buyer's guide: hero with SEO H2, CTAs (prefilled quote link), fact strip, sticky anchor bar (scroll-based active section), what is it / sourcing / applications by industry / indicative specs / ask the supplier / packaging & storage / documents / supply & price / FAQs / related / CTA, Product JSON-LD with Offer and no price. Product.content edited in Admin (Buyer's guide section); empty fields filled by lib/catalogue/guide.js from product data; full hero content for 6 products (prisma/seed-hero-content.js). Wrong category in URL redirects. Tables stack into cards on phones. 312 unit + 31 E2E |
+| 14 Enquiries | Done | 2026-11-22 | /contact with four forms (3-step quote, sample, callback, message) in hash-linked tabs, prefill from ?product/?doc and the "Add to quote" basket (httpOnly cookie of slugs via /api/public/basket), click-to-load map, thank-you page with reference GI-XXXXXX. POST /api/public/enquiry: strict Zod, same-origin, Turnstile (fails closed in production without keys), honeypot, time-to-submit, rate limit per IP and per email, spam score + block list (setting "enquiries"), products snapshot, hashed IP, Brevo emails to team + customer after the response. Admin inbox (filters incl. dates, export of current view), detail with status/assign/notes/timeline, header bell. |
+| 15 Content | Done | 2026-11-22 | /industries (8, linked both ways with products), /insights (topics, pagination /insights/page/n, articles with TOC + Article JSON-LD, scheduling via publishedAt in the future, cache life 1 h), /faq (topics, FAQPage JSON-LD), /legal/{privacy,terms,cookies,shipping,disclaimer} as managed pages "legal-*", /downloads (new "downloads" section), newsletter double opt-in (footer, 7-day single-use link, Brevo list on confirm). Admin: industries and articles editors, FAQ / testimonials / client logos list editors (sortable repeater). Testimonials and logos intentionally empty. 393 unit + 9 new E2E |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -134,6 +136,12 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Product page text = Product.content (admin) field by field, else lib/catalogue/guide.js builds honest text from the product data (never invents specs or certificates). Change the template there, not in the page.
 - `<Table stackOnMobile>` turns rows into labelled cards below 640 px (CSS only, same DOM).
 - Anchor targets on the product page use scroll-mt-12; html already has scroll-padding-top (header + 16 px). Adding more margin pushes sections below the anchor bar's 160 px "active" line.
+- Enquiries: submit pipeline in src/lib/enquiries/submit.js; spam rules in spam.js (60+ = SPAM, kept but never emailed; honeypot = fake success, nothing stored). Recipients = setting enquiries.notifyEmails, else security.defaultAdminEmail.
+- Scripts never touch document.cookie (unit test enforces it): the quote basket and consent both go through small API routes that set httpOnly cookies. Use cookieValue(req, name) from lib/http.js in routes.
+- Legal pages are managed pages with slug "legal-<name>", served only at /legal/<name>; lib/pagePath.js gives the public path for any page slug.
+- Post scheduling: status PUBLISHED + publishedAt in the future = hidden until then. Post reads use tagWithLife("hours") instead of tag() so they refresh by themselves.
+- Articles show "By the Global India sales desk"; admin names are never sent to the public site.
+- Testimonials and client logos must be real: never seed or invent them.
 - Public pages must show drafts only when `isPreview()` (draft cookie AND admin session) — use it from Phase 9/10.
 
 ## 8. Open questions / needs from owner
@@ -143,6 +151,8 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Which products are actually manufactured or blended in-house? Certifications (ISO, FSSAI, GMP)?
 - Domain name and where DNS is managed (needed for Cloudflare WAF and Brevo DKIM).
 - Confirm the middle timeline years on /about (2008, 2014, 2019 are placeholders from the product history) and the brand list on /quality.
+- Legal pages (privacy, terms, cookies, shipping, disclaimer) are plain-English drafts: have them checked by a lawyer/CA before launch.
+- Brochure PDF for /downloads; real testimonials and client logos (with permission); BREVO_LIST_ID for the newsletter list.
 - Careers: is the company hiring? (page is a draft until switched on in Admin > Pages)
 - Client logos allowed to be shown? Export countries served?
 - Accounts/keys: Neon `DATABASE_URL`/`DIRECT_URL`, Brevo API key, Cloudinary keys, Upstash Redis, Cloudflare Turnstile keys, Vercel project.

@@ -19,7 +19,9 @@ export function slugify(text) {
 export function assertSeedAllowed() {
   const isProd = process.env.NODE_ENV === "production" || process.env.VERCEL_ENV === "production";
   if (isProd && process.env.ALLOW_PROD_SEED !== "true") {
-    throw new Error("Refusing to seed a production database. Set ALLOW_PROD_SEED=true for the one-time launch seed.");
+    throw new Error(
+      "Refusing to seed a production database. Set ALLOW_PROD_SEED=true for the one-time launch seed.",
+    );
   }
 }
 

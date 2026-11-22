@@ -54,7 +54,11 @@ export function StyleguideInteractive() {
             ]}
           />
           <Checkbox label="Send me a sample first" description="Samples are available for most products." />
-          <FileDrop className="md:col-span-2" accept={["image/jpeg", "image/png", "image/webp", "application/pdf"]} maxBytes={5 * 1024 * 1024} />
+          <FileDrop
+            className="md:col-span-2"
+            accept={["image/jpeg", "image/png", "image/webp", "application/pdf"]}
+            maxBytes={5 * 1024 * 1024}
+          />
         </form>
       </div>
 
@@ -93,7 +97,9 @@ export function StyleguideInteractive() {
           </Field>
         </Dialog>
         <Drawer open={drawer} onClose={() => setDrawer(false)} title="Menu">
-          <p className="text-muted">Drawer content. Esc or the close button closes it; focus returns to the button.</p>
+          <p className="text-muted">
+            Drawer content. Esc or the close button closes it; focus returns to the button.
+          </p>
         </Drawer>
       </div>
 
@@ -102,16 +108,49 @@ export function StyleguideInteractive() {
         <Tabs
           label="Product families"
           tabs={[
-            { id: "food", label: "Food ingredients", content: <p className="text-muted">Xanthan gum, malic acid, citric acid, sodium citrate, MSG, maltodextrin.</p> },
-            { id: "care", label: "Personal care bases", content: <p className="text-muted">Light liquid paraffin, glycerine, CAPB, shampoo and soap bases.</p> },
-            { id: "detergent", label: "Detergent raw materials", content: <p className="text-muted">SLES, LABSA, AOS, SLS, acid thickeners and foam boosters.</p> },
+            {
+              id: "food",
+              label: "Food ingredients",
+              content: (
+                <p className="text-muted">
+                  Xanthan gum, malic acid, citric acid, sodium citrate, MSG, maltodextrin.
+                </p>
+              ),
+            },
+            {
+              id: "care",
+              label: "Personal care bases",
+              content: (
+                <p className="text-muted">Light liquid paraffin, glycerine, CAPB, shampoo and soap bases.</p>
+              ),
+            },
+            {
+              id: "detergent",
+              label: "Detergent raw materials",
+              content: (
+                <p className="text-muted">SLES, LABSA, AOS, SLS, acid thickeners and foam boosters.</p>
+              ),
+            },
           ]}
         />
         <Accordion
           items={[
-            { id: "moq", title: "What is your minimum order?", content: "For most products 50 kg or 50 L. A few items such as soap bases start at 25 kg." },
-            { id: "outside", title: "Do you supply outside Delhi?", content: "Yes. We dispatch across India by road transport and can arrange FOB for export enquiries." },
-            { id: "sample", title: "Can I get a sample first?", content: "Samples are available for most products. Mention it in your enquiry." },
+            {
+              id: "moq",
+              title: "What is your minimum order?",
+              content: "For most products 50 kg or 50 L. A few items such as soap bases start at 25 kg.",
+            },
+            {
+              id: "outside",
+              title: "Do you supply outside Delhi?",
+              content:
+                "Yes. We dispatch across India by road transport and can arrange FOB for export enquiries.",
+            },
+            {
+              id: "sample",
+              title: "Can I get a sample first?",
+              content: "Samples are available for most products. Mention it in your enquiry.",
+            },
           ]}
         />
       </div>

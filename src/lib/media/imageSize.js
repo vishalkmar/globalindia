@@ -59,5 +59,12 @@ function avifSize(b) {
 
 /** Refuse absurd dimensions (decompression bombs) — 12k px per side, 50 megapixels. */
 export function dimensionsAcceptable(size) {
-  return Boolean(size && size.width > 0 && size.height > 0 && size.width <= 12000 && size.height <= 12000 && size.width * size.height <= 50_000_000);
+  return Boolean(
+    size &&
+    size.width > 0 &&
+    size.height > 0 &&
+    size.width <= 12000 &&
+    size.height <= 12000 &&
+    size.width * size.height <= 50_000_000,
+  );
 }

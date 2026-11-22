@@ -42,7 +42,10 @@ export async function issueOtp(userId, purpose, meta = undefined) {
     select: { createdAt: true },
   });
   if (recent[0] && now - recent[0].createdAt.getTime() < OTP_RESEND_COOLDOWN_MS) {
-    throw new OtpError("cooldown", Math.ceil((OTP_RESEND_COOLDOWN_MS - (now - recent[0].createdAt.getTime())) / 1000));
+    throw new OtpError(
+      "cooldown",
+      Math.ceil((OTP_RESEND_COOLDOWN_MS - (now - recent[0].createdAt.getTime())) / 1000),
+    );
   }
   if (recent.length >= OTP_MAX_PER_HOUR) {
     const oldest = recent[recent.length - 1].createdAt.getTime();
@@ -51,9 +54,18 @@ export async function issueOtp(userId, purpose, meta = undefined) {
 
   const code = randomDigits(6);
   const otp = await db.$transaction(async (tx) => {
-    await tx.otpCode.updateMany({ where: { userId, purpose, consumedAt: null }, data: { consumedAt: new Date(now) } });
+    await tx.otpCode.updateMany({
+      where: { userId, purpose, consumedAt: null },
+      data: { consumedAt: new Date(now) },
+    });
     return tx.otpCode.create({
-      data: { userId, purpose, codeHash: hashCode(code, purpose, userId), expiresAt: new Date(now + OTP_TTL_MS), meta },
+      data: {
+        userId,
+        purpose,
+        codeHash: hashCode(code, purpose, userId),
+        expiresAt: new Date(now + OTP_TTL_MS),
+        meta,
+      },
       select: { id: true, expiresAt: true },
     });
   });
@@ -80,7 +92,10 @@ export async function verifyOtp(userId, purpose, code, { otpId } = {}) {
   const ok = safeEqual(hashCode(String(code), purpose, userId), otp.codeHash);
   if (!ok) {
     const burn = attempts >= OTP_MAX_ATTEMPTS;
-    await db.otpCode.update({ where: { id: otp.id }, data: { attempts, ...(burn ? { consumedAt: new Date() } : {}) } });
+    await db.otpCode.update({
+      where: { id: otp.id },
+      data: { attempts, ...(burn ? { consumedAt: new Date() } : {}) },
+    });
     throw new OtpError(burn ? "burnt" : "invalid");
   }
 
@@ -96,6 +111,7 @@ export async function verifyOtp(userId, purpose, code, { otpId } = {}) {
 export function otpErrorMessage(err) {
   if (err.reason === "cooldown") return `Please wait ${err.retryAfter} seconds before asking for a new code.`;
   if (err.reason === "hourly_limit") return "Too many codes requested. Please try again later.";
-  if (err.reason === "burnt" || err.reason === "expired") return "This code can no longer be used. Ask for a new code.";
+  if (err.reason === "burnt" || err.reason === "expired")
+    return "This code can no longer be used. Ask for a new code.";
   return "That code is not correct.";
 }

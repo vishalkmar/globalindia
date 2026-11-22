@@ -1,7 +1,13 @@
 import { isProduction } from "@/lib/env";
 import { localRead } from "@/lib/media/localDriver";
 
-const TYPES = { jpg: "image/jpeg", png: "image/png", webp: "image/webp", avif: "image/avif", pdf: "application/pdf" };
+const TYPES = {
+  jpg: "image/jpeg",
+  png: "image/png",
+  webp: "image/webp",
+  avif: "image/avif",
+  pdf: "application/pdf",
+};
 
 /**
  * GET /api/dev-media/<id>.<ext> — serves local development uploads. 404 in production.

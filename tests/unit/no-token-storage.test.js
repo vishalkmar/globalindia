@@ -31,7 +31,11 @@ describe("token storage", () => {
 
 describe("log redaction", () => {
   it("removes secrets at any depth and strips newlines", () => {
-    const out = redact({ email: "a@b.in", password: "x", nested: { refreshToken: "y", otp: "123456", note: "line1\nFAKE line" } });
+    const out = redact({
+      email: "a@b.in",
+      password: "x",
+      nested: { refreshToken: "y", otp: "123456", note: "line1\nFAKE line" },
+    });
     expect(out.password).toBe("[redacted]");
     expect(out.nested.refreshToken).toBe("[redacted]");
     expect(out.nested.otp).toBe("[redacted]");

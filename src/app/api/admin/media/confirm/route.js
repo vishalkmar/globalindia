@@ -33,7 +33,10 @@ export const POST = route(async (req) => {
       const asset = await db.mediaAsset.update({
         where: { id: before.id },
         data: {
-          url: intent.driver === "local" ? stored.url.replace(/\?v=\d+$/, `?v=${before.version + 1}`) : stored.url,
+          url:
+            intent.driver === "local"
+              ? stored.url.replace(/\?v=\d+$/, `?v=${before.version + 1}`)
+              : stored.url,
           format: stored.format,
           bytes: stored.bytes,
           width: stored.width,
@@ -46,7 +49,14 @@ export const POST = route(async (req) => {
         include: { uploadedBy: { select: { name: true, email: true } } },
       });
       invalidate(TAGS.mediaItem(asset.id), TAGS.media);
-      await audit({ actorId: user.id, action: "media.replace", entity: "MediaAsset", entityId: asset.id, diff: { bytes: asset.bytes, format: asset.format }, ipHash });
+      await audit({
+        actorId: user.id,
+        action: "media.replace",
+        entity: "MediaAsset",
+        entityId: asset.id,
+        diff: { bytes: asset.bytes, format: asset.format },
+        ipHash,
+      });
       return json({ ok: true, asset: serializeAsset(asset) });
     }
 
@@ -68,10 +78,23 @@ export const POST = route(async (req) => {
       },
       include: { uploadedBy: { select: { name: true, email: true } } },
     });
-    await audit({ actorId: user.id, action: "media.upload", entity: "MediaAsset", entityId: asset.id, diff: { type: asset.type, bytes: asset.bytes, folder: asset.folder }, ipHash });
+    await audit({
+      actorId: user.id,
+      action: "media.upload",
+      entity: "MediaAsset",
+      entityId: asset.id,
+      diff: { type: asset.type, bytes: asset.bytes, folder: asset.folder },
+      ipHash,
+    });
     return json({ ok: true, asset: serializeAsset(asset) }, { status: 201 });
   } catch (err) {
-    if (!intent.replaceId) await removeStored({ driver: intent.driver, publicId: stored.publicId, format: stored.format, type: intent.kind === "pdf" ? "PDF" : "IMAGE" });
+    if (!intent.replaceId)
+      await removeStored({
+        driver: intent.driver,
+        publicId: stored.publicId,
+        format: stored.format,
+        type: intent.kind === "pdf" ? "PDF" : "IMAGE",
+      });
     throw err;
   }
 });

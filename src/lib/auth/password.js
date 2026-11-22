@@ -17,7 +17,8 @@ function dummyHash() {
 }
 
 export async function hashPassword(password) {
-  if (typeof password !== "string" || password.length > PASSWORD_MAX_LENGTH) throw new Error("Invalid password input");
+  if (typeof password !== "string" || password.length > PASSWORD_MAX_LENGTH)
+    throw new Error("Invalid password input");
   return hash(password, ARGON2_OPTIONS);
 }
 
@@ -45,7 +46,11 @@ export function needsRehash(storedHash) {
   const m = /^\$argon2id\$v=19\$m=(\d+),t=(\d+),p=(\d+)\$/.exec(storedHash ?? "");
   if (!m) return true;
   const [, mem, time, par] = m.map(Number);
-  return mem !== ARGON2_OPTIONS.memoryCost || time !== ARGON2_OPTIONS.timeCost || par !== ARGON2_OPTIONS.parallelism;
+  return (
+    mem !== ARGON2_OPTIONS.memoryCost ||
+    time !== ARGON2_OPTIONS.timeCost ||
+    par !== ARGON2_OPTIONS.parallelism
+  );
 }
 
 /** Basic policy check; returns a user-facing message or null. Breached-password check is added in Phase 25. */

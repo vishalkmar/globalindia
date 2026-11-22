@@ -67,7 +67,8 @@ export function setupPending(user) {
 export async function requireAdmin({ role = "VIEWER", allowSetup = false } = {}) {
   const user = await getAdmin();
   if (!user) throw new HttpError(401, "Please sign in again.");
-  if (!allowSetup && setupPending(user)) throw new HttpError(403, "Finish account setup first.", { body: { next: "setup" } });
+  if (!allowSetup && setupPending(user))
+    throw new HttpError(403, "Finish account setup first.", { body: { next: "setup" } });
   if (!roleAtLeast(user.role, role)) throw new HttpError(403, "You do not have permission to do that.");
   return user;
 }
@@ -93,7 +94,12 @@ export async function requireAdminPage({ role = "VIEWER", allowSetup = false, ne
 export async function requirePermission(action, resource) {
   const user = await requireAdmin();
   if (!can(user, action, resource)) {
-    await audit({ actorId: user.id, action: "authz.denied", entity: resource, diff: { action, role: user.role } });
+    await audit({
+      actorId: user.id,
+      action: "authz.denied",
+      entity: resource,
+      diff: { action, role: user.role },
+    });
     throw new HttpError(403, "You do not have permission to do that.");
   }
   return user;
@@ -103,7 +109,12 @@ export async function requirePermission(action, resource) {
 export async function requirePermissionPage(action, resource, next = "/admin") {
   const user = await requireAdminPage({ next });
   if (!can(user, action, resource)) {
-    await audit({ actorId: user.id, action: "authz.denied", entity: resource, diff: { action, role: user.role, page: true } });
+    await audit({
+      actorId: user.id,
+      action: "authz.denied",
+      entity: resource,
+      diff: { action, role: user.role, page: true },
+    });
     redirect("/admin/forbidden");
   }
   return user;

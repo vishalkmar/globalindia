@@ -330,48 +330,48 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Mobile QA of long page
 
 ## Phase 14 — Enquiry, Quote & Contact System
-- [ ] 01 Contact page: address, phone, email tiles, map (click to load)
-- [ ] 02 Public contact form (no login required)
-- [ ] 03 Multi-step quote form (product, quantity, pack, location, contact)
-- [ ] 04 Sample request form
-- [ ] 05 Request callback form
-- [ ] 06 Zod validation client + server
-- [ ] 07 Cloudflare Turnstile on every public form
-- [ ] 08 Honeypot field + time-to-submit check
-- [ ] 09 Save Enquiry to DB with status NEW
-- [ ] 10 Brevo email to admin with enquiry details
-- [ ] 11 Brevo acknowledgement email to customer
-- [ ] 12 Admin enquiries inbox (filters, status, assign, notes)
-- [ ] 13 Enquiry detail with timeline
-- [ ] 14 Export enquiries CSV
-- [ ] 15 "Add to quote" basket across product pages (cookie, no PII)
-- [ ] 16 Success page with next steps
-- [ ] 17 Rate limit per IP and email
-- [ ] 18 Spam score and block list
-- [ ] 19 Notification bell in admin for new enquiries
-- [ ] 20 E2E test of each form
+- [x] 01 Contact page: address, phone, email tiles, map (click to load)
+- [x] 02 Public contact form (no login required)
+- [x] 03 Multi-step quote form (product, quantity, pack, location, contact)
+- [x] 04 Sample request form
+- [x] 05 Request callback form
+- [x] 06 Zod validation client + server
+- [x] 07 Cloudflare Turnstile on every public form (wired; needs TURNSTILE_SECRET + site key before launch, fails closed in production without them)
+- [x] 08 Honeypot field + time-to-submit check
+- [x] 09 Save Enquiry to DB with status NEW
+- [x] 10 Brevo email to admin with enquiry details
+- [x] 11 Brevo acknowledgement email to customer
+- [x] 12 Admin enquiries inbox (filters, status, assign, notes)
+- [x] 13 Enquiry detail with timeline
+- [x] 14 Export enquiries CSV
+- [x] 15 "Add to quote" basket across product pages (cookie, no PII)
+- [x] 16 Success page with next steps
+- [x] 17 Rate limit per IP and email
+- [x] 18 Spam score and block list
+- [x] 19 Notification bell in admin for new enquiries
+- [x] 20 E2E test of each form
 
 ## Phase 15 — Industries, Insights, FAQ, Legal
-- [ ] 01 Industries list page
-- [ ] 02 Industry detail template (needs, products, FAQs)
-- [ ] 03 Write 8 industry pages (food, cosmetics, pharma, detergents, soap, textile, auto care, labs)
-- [ ] 04 Insights (blog) list with categories and pagination
-- [ ] 05 Post editor (Tiptap, cover image, author, SEO)
-- [ ] 06 Post detail with table of contents
-- [ ] 07 Write 3 starter posts (human tone)
-- [ ] 08 Global FAQ page grouped by topic
-- [ ] 09 Privacy policy page
-- [ ] 10 Terms of use page
-- [ ] 11 Cookie policy page
-- [ ] 12 Shipping & returns / dispatch policy page
-- [ ] 13 Disclaimer on indicative specs
-- [ ] 14 Testimonials manager
-- [ ] 15 Client logos manager
-- [ ] 16 Downloads page (brochure PDF)
-- [ ] 17 Newsletter signup (Brevo list, double opt-in)
-- [ ] 18 All pages editable in admin
-- [ ] 19 Internal linking between industries and products
-- [ ] 20 Content review for human tone
+- [x] 01 Industries list page
+- [x] 02 Industry detail template (needs, products, FAQs)
+- [x] 03 Write 8 industry pages (food, cosmetics, pharma, detergents, soap, textile, auto care, labs)
+- [x] 04 Insights (blog) list with categories and pagination
+- [x] 05 Post editor (Tiptap, cover image, author, SEO)
+- [x] 06 Post detail with table of contents
+- [x] 07 Write 3 starter posts (human tone)
+- [x] 08 Global FAQ page grouped by topic
+- [x] 09 Privacy policy page
+- [x] 10 Terms of use page
+- [x] 11 Cookie policy page
+- [x] 12 Shipping & returns / dispatch policy page
+- [x] 13 Disclaimer on indicative specs
+- [x] 14 Testimonials manager (empty on purpose: only real customer quotes)
+- [x] 15 Client logos manager (empty on purpose: only logos with permission)
+- [x] 16 Downloads page (brochure PDF) — page and "downloads" section ready; brochure PDF from owner
+- [x] 17 Newsletter signup (Brevo list, double opt-in) — list sync needs BREVO_LIST_ID
+- [x] 18 All pages editable in admin
+- [x] 19 Internal linking between industries and products
+- [x] 20 Content review for human tone
 
 ## Phase 16 — Admin Completion, Backups & Polish
 - [ ] 01 Dashboard charts (enquiries per week, top products)

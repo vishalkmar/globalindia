@@ -10,8 +10,16 @@
 export const COLOR_TOKENS = [
   { key: "primary", label: "Primary", hint: "Buttons, headings, footer background" },
   { key: "primaryInk", label: "Text on primary", hint: "Text and icons placed on the primary colour" },
-  { key: "accent", label: "Accent", hint: "Thin lines, active underline, focus ring. Keep under 5% of a screen" },
-  { key: "accentText", label: "Accent text", hint: "Accent used as small text (eyebrows, stat numbers) — must pass AA" },
+  {
+    key: "accent",
+    label: "Accent",
+    hint: "Thin lines, active underline, focus ring. Keep under 5% of a screen",
+  },
+  {
+    key: "accentText",
+    label: "Accent text",
+    hint: "Accent used as small text (eyebrows, stat numbers) — must pass AA",
+  },
   { key: "band", label: "Dark band", hint: "Footer, CTA band and other dark full-width sections" },
   { key: "bandInk", label: "Text on dark band", hint: "Text placed on the dark band" },
   { key: "bg", label: "Page background", hint: "Main page background" },
@@ -161,7 +169,11 @@ export const THEME_PRESETS = [
   {
     slug: "graphite-saffron",
     name: "Graphite & Saffron",
-    tokens: { ...baseTokens, fonts: { display: "source-serif", body: "ibm-plex-sans", data: "ibm-plex-mono" }, colors: graphiteSaffron },
+    tokens: {
+      ...baseTokens,
+      fonts: { display: "source-serif", body: "ibm-plex-sans", data: "ibm-plex-mono" },
+      colors: graphiteSaffron,
+    },
   },
 ];
 

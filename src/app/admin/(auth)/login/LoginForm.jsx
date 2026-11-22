@@ -18,7 +18,9 @@ export function LoginForm() {
   const next = safeNext(params.get("next"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(params.get("expired") ? "Your sign-in step timed out. Please start again." : "");
+  const [error, setError] = useState(
+    params.get("expired") ? "Your sign-in step timed out. Please start again." : "",
+  );
   const [fields, setFields] = useState({});
   const [busy, setBusy] = useState(false);
   const [checking, setChecking] = useState(Boolean(params.get("next")));
@@ -95,7 +97,13 @@ export function LoginForm() {
           />
         </Field>
         <Field label="Password" error={fields.password}>
-          <PasswordInput name="password" autoComplete="current-password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          <PasswordInput
+            name="password"
+            autoComplete="current-password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </Field>
         <Button type="submit" size="lg" loading={busy} disabled={!email || !password}>
           Continue

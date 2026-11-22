@@ -51,7 +51,11 @@ export function ResetForm() {
   return (
     <AuthCard
       title={invite ? "Set your password" : "Choose a new password"}
-      description={invite ? "Welcome to the Global India admin panel. Choose a password, then sign in and add an authenticator app." : "After this, every device signed in to your account is signed out."}
+      description={
+        invite
+          ? "Welcome to the Global India admin panel. Choose a password, then sign in and add an authenticator app."
+          : "After this, every device signed in to your account is signed out."
+      }
       footer={
         <Link href="/admin/login" className="font-semibold text-primary underline underline-offset-4">
           Back to sign in
@@ -68,7 +72,13 @@ export function ResetForm() {
       ) : (
         <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
           {error ? <Alert tone="error">{error}</Alert> : null}
-          <NewPasswordFields value={pw} confirm={confirm} onChange={setPw} onConfirmChange={setConfirm} error={field} />
+          <NewPasswordFields
+            value={pw}
+            confirm={confirm}
+            onChange={setPw}
+            onConfirmChange={setConfirm}
+            error={field}
+          />
           <Button type="submit" size="lg" loading={busy} disabled={!passwordReady(pw, confirm)}>
             Save new password
           </Button>

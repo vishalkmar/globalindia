@@ -28,6 +28,7 @@ export default defineConfig({
     url: "http://localhost:3100/admin/login",
     reuseExistingServer: false,
     timeout: 180_000,
-    env: { E2E_RELAXED_LIMITS: "1", NEXT_PUBLIC_SITE_URL: "http://localhost:3100" },
+    // The dev server compiles every route the suite visits; give it room (it ran out of the default heap).
+    env: { E2E_RELAXED_LIMITS: "1", NEXT_PUBLIC_SITE_URL: "http://localhost:3100", NODE_OPTIONS: "--max-old-space-size=6144" },
   },
 });

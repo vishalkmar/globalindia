@@ -37,7 +37,10 @@ export function SetupWizard({ mustChangePassword, mfaSetupDone }) {
     setBusy(true);
     setError("");
     setFields({});
-    const res = await adminJson("/api/auth/password/change", { method: "POST", json: { currentPassword: current, newPassword: pw } });
+    const res = await adminJson("/api/auth/password/change", {
+      method: "POST",
+      json: { currentPassword: current, newPassword: pw },
+    });
     setBusy(false);
     if (!res.ok) {
       setError(res.data?.error ?? "Could not change the password.");
@@ -59,16 +62,28 @@ export function SetupWizard({ mustChangePassword, mfaSetupDone }) {
           const done = step === "done" || i < idx;
           const active = s.id === step;
           return (
-            <li key={s.id} className="flex flex-1 items-center gap-2" aria-current={active ? "step" : undefined}>
+            <li
+              key={s.id}
+              className="flex flex-1 items-center gap-2"
+              aria-current={active ? "step" : undefined}
+            >
               <span
                 className={cn(
                   "inline-flex size-7 shrink-0 items-center justify-center rounded-full border text-[0.8125rem] font-bold",
-                  done ? "border-primary bg-primary text-primary-ink" : active ? "border-primary text-primary" : "border-line text-muted",
+                  done
+                    ? "border-primary bg-primary text-primary-ink"
+                    : active
+                      ? "border-primary text-primary"
+                      : "border-line text-muted",
                 )}
               >
                 {done ? <Check aria-hidden="true" className="size-4" strokeWidth={2.5} /> : i + 1}
               </span>
-              <span className={cn("hidden text-sm font-semibold sm:inline", active ? "text-ink" : "text-muted")}>{s.label}</span>
+              <span
+                className={cn("hidden text-sm font-semibold sm:inline", active ? "text-ink" : "text-muted")}
+              >
+                {s.label}
+              </span>
               {i < STEPS.length - 1 ? <span aria-hidden="true" className="h-px flex-1 bg-line" /> : null}
             </li>
           );
@@ -80,13 +95,26 @@ export function SetupWizard({ mustChangePassword, mfaSetupDone }) {
           <form onSubmit={savePassword} noValidate className="flex flex-col gap-5">
             <div className="flex flex-col gap-1">
               <h2 className="text-h3">Choose your own password</h2>
-              <p className="text-muted">The password you signed in with was set by the system. Replace it before continuing.</p>
+              <p className="text-muted">
+                The password you signed in with was set by the system. Replace it before continuing.
+              </p>
             </div>
             {error ? <Alert tone="error">{error}</Alert> : null}
             <Field label="Current password" error={fields.currentPassword}>
-              <Input type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} />
+              <Input
+                type="password"
+                autoComplete="current-password"
+                value={current}
+                onChange={(e) => setCurrent(e.target.value)}
+              />
             </Field>
-            <NewPasswordFields value={pw} confirm={confirm} onChange={setPw} onConfirmChange={setConfirm} error={fields.newPassword} />
+            <NewPasswordFields
+              value={pw}
+              confirm={confirm}
+              onChange={setPw}
+              onConfirmChange={setConfirm}
+              error={fields.newPassword}
+            />
             <Button type="submit" size="lg" loading={busy} disabled={!current || !passwordReady(pw, confirm)}>
               Save password and continue
             </Button>
@@ -97,7 +125,9 @@ export function SetupWizard({ mustChangePassword, mfaSetupDone }) {
           <div className="flex flex-col gap-5">
             <div className="flex flex-col gap-1">
               <h2 className="text-h3">Add an authenticator app</h2>
-              <p className="text-muted">Every admin account uses a phone app as its second step. It works without internet or SMS.</p>
+              <p className="text-muted">
+                Every admin account uses a phone app as its second step. It works without internet or SMS.
+              </p>
             </div>
             <AuthenticatorEnroll
               onEnabled={({ recoveryCodes }) => {

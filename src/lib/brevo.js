@@ -15,7 +15,11 @@ import { logger } from "@/lib/logger";
  */
 
 const API = "https://api.brevo.com/v3/smtp/email";
-const clean = (s, max = 300) => String(s ?? "").replace(/[\r\n]+/g, " ").trim().slice(0, max);
+const clean = (s, max = 300) =>
+  String(s ?? "")
+    .replace(/[\r\n]+/g, " ")
+    .trim()
+    .slice(0, max);
 
 /**
  * @param {{ to: string, toName?: string, subject: string, html: string, text: string, tags?: string[] }} msg
@@ -47,7 +51,11 @@ export async function sendEmail({ to, toName, subject, html, text, tags = [] }) 
     const dir = join(process.cwd(), ".dev-mail");
     await mkdir(dir, { recursive: true });
     const file = join(dir, `${Date.now()}-${tags[0] ?? "mail"}.html`);
-    await writeFile(file, `<!-- To: ${payload.to[0].email} | Subject: ${payload.subject} -->\n${html}`, "utf8");
+    await writeFile(
+      file,
+      `<!-- To: ${payload.to[0].email} | Subject: ${payload.subject} -->\n${html}`,
+      "utf8",
+    );
     logger.info("email.dev_outbox", { tags, file: file.split(/[\\/]/).pop() });
     return true;
   }
@@ -67,6 +75,38 @@ export async function sendEmail({ to, toName, subject, html, text, tags = [] }) 
     return true;
   } catch (err) {
     logger.error("email.send_error", { err, tags });
+    return false;
+  }
+}
+
+/**
+ * Add a confirmed subscriber to the Brevo list (Phase 15 todo 17). Only after double opt-in.
+ * Needs BREVO_API_KEY and BREVO_LIST_ID; without them (development) it is a logged no-op.
+ * @returns {Promise<boolean>}
+ */
+export async function addContactToList(email) {
+  const apiKey = optionalEnv("BREVO_API_KEY");
+  const listId = Number(optionalEnv("BREVO_LIST_ID", "0"));
+  if (isTest) return true;
+  if (!apiKey || !listId) {
+    logger.info("newsletter.brevo_not_configured");
+    return !isProduction;
+  }
+  try {
+    const res = await fetch("https://api.brevo.com/v3/contacts", {
+      method: "POST",
+      headers: { "api-key": apiKey, "content-type": "application/json", accept: "application/json" },
+      body: JSON.stringify({ email: clean(email, 254), listIds: [listId], updateEnabled: true }),
+      signal: AbortSignal.timeout(8000),
+      cache: "no-store",
+    });
+    if (!res.ok && res.status !== 204) {
+      logger.error("newsletter.brevo_failed", { status: res.status });
+      return false;
+    }
+    return true;
+  } catch (err) {
+    logger.error("newsletter.brevo_error", { err });
     return false;
   }
 }

@@ -28,7 +28,8 @@ export async function userFromMfaTicket() {
   const ticket = await verifyMfaTicket(store.get(COOKIE.mfaPending)?.value);
   if (!ticket) throw new HttpError(401, MFA_TICKET_EXPIRED);
   const user = await db.adminUser.findUnique({ where: { id: ticket.userId } });
-  if (!user || user.status !== "ACTIVE" || user.tokenVersion !== ticket.tv) throw new HttpError(401, MFA_TICKET_EXPIRED);
+  if (!user || user.status !== "ACTIVE" || user.tokenVersion !== ticket.tv)
+    throw new HttpError(401, MFA_TICKET_EXPIRED);
   if (user.lockedUntil && user.lockedUntil > new Date()) throw new HttpError(401, MFA_TICKET_EXPIRED);
   return user;
 }
@@ -42,7 +43,10 @@ export function nextPathFor(user) {
 export async function completeLogin(user, req, method) {
   const ip = clientIp(req.headers);
   const ipHash = hashIp(ip);
-  const { accessToken, refreshToken } = await createSession(user, { userAgent: req.headers.get("user-agent") ?? "", ipHash });
+  const { accessToken, refreshToken } = await createSession(user, {
+    userAgent: req.headers.get("user-agent") ?? "",
+    ipHash,
+  });
   await db.adminUser.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } });
   await audit({ actorId: user.id, action: "auth.login.success", diff: { method }, ipHash });
   const headers = req.headers;
@@ -64,7 +68,10 @@ export async function sendLoginOtp(user) {
  */
 export async function defaultAdminContact() {
   const setting = await db.siteSetting.findUnique({ where: { key: "security" } });
-  const email = typeof setting?.value?.defaultAdminEmail === "string" ? setting.value.defaultAdminEmail.toLowerCase() : "";
+  const email =
+    typeof setting?.value?.defaultAdminEmail === "string"
+      ? setting.value.defaultAdminEmail.toLowerCase()
+      : "";
   if (email) {
     const owner = await db.adminUser.findUnique({ where: { email }, select: { id: true } });
     return { email, userId: owner?.id ?? null };
@@ -106,6 +113,12 @@ export async function requestMfaChange({ actor, target, method, enable }) {
     },
   });
   await sendEmail({ to: contact.email, ...mail, tags: ["otp-mfa-toggle"] });
-  await audit({ actorId: actor.id, action: "mfa.change.requested", entity: "AdminUser", entityId: target.id, diff: { method, enable } });
+  await audit({
+    actorId: actor.id,
+    action: "mfa.change.requested",
+    entity: "AdminUser",
+    entityId: target.id,
+    diff: { method, enable },
+  });
   return { requestId: otp.id, sentTo: maskEmail(contact.email) };
 }

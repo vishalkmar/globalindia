@@ -12,7 +12,8 @@ import { rateLimit } from "@/lib/security/rateLimit";
 import { resetRequestSchema } from "@/lib/validation/auth";
 
 const RESET_TTL_MS = 15 * 60 * 1000;
-const SAME_ANSWER = "If an account exists for that email, a reset link is on its way. It works for 15 minutes.";
+const SAME_ANSWER =
+  "If an account exists for that email, a reset link is on its way. It works for 15 minutes.";
 
 /**
  * POST /api/auth/reset/request { email }
@@ -26,23 +27,39 @@ export const POST = route(async (req) => {
 
   const byIp = await rateLimit("resetRequest", `ip:${ip}`);
   const byEmail = await rateLimit("resetRequest", `em:${hmac(email, authEnv.ipHashSalt)}`);
-  if (!byIp.success || !byEmail.success) return errorResponse(429, undefined, { retryAfter: Math.max(byIp.retryAfter, byEmail.retryAfter) });
+  if (!byIp.success || !byEmail.success)
+    return errorResponse(429, undefined, { retryAfter: Math.max(byIp.retryAfter, byEmail.retryAfter) });
 
   const ipHash = hashIp(ip);
   after(async () => {
-    const user = await db.adminUser.findUnique({ where: { email }, select: { id: true, email: true, name: true, status: true } });
+    const user = await db.adminUser.findUnique({
+      where: { email },
+      select: { id: true, email: true, name: true, status: true },
+    });
     if (!user || user.status !== "ACTIVE") {
       await audit({ action: "auth.reset.requested_unknown", ipHash });
       return;
     }
     const token = randomToken(32);
     await db.$transaction([
-      db.passwordResetToken.updateMany({ where: { userId: user.id, usedAt: null }, data: { usedAt: new Date() } }),
+      db.passwordResetToken.updateMany({
+        where: { userId: user.id, usedAt: null },
+        data: { usedAt: new Date() },
+      }),
       db.passwordResetToken.create({
-        data: { userId: user.id, tokenHash: hmac(token, authEnv.refreshPepper), expiresAt: new Date(Date.now() + RESET_TTL_MS) },
+        data: {
+          userId: user.id,
+          tokenHash: hmac(token, authEnv.refreshPepper),
+          expiresAt: new Date(Date.now() + RESET_TTL_MS),
+        },
       }),
     ]);
-    await sendEmail({ to: user.email, toName: user.name, ...passwordResetEmail({ token }), tags: ["password-reset"] });
+    await sendEmail({
+      to: user.email,
+      toName: user.name,
+      ...passwordResetEmail({ token }),
+      tags: ["password-reset"],
+    });
     await audit({ actorId: user.id, action: "auth.reset.requested", ipHash });
   });
 

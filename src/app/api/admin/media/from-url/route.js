@@ -21,16 +21,23 @@ export const POST = route(async (req) => {
   assertSameOrigin(req);
   const user = await requirePermission("create", "media");
   const limited = await rateLimit("upload", user.id);
-  if (!limited.success) return errorResponse(429, "Upload limit reached for this hour. Try again later.", { retryAfter: limited.retryAfter });
+  if (!limited.success)
+    return errorResponse(429, "Upload limit reached for this hour. Try again later.", {
+      retryAfter: limited.retryAfter,
+    });
 
   const { url, kind, folder, alt } = await readJson(req, fromUrlSchema);
   const limits = await uploadLimits();
 
   let fetched;
   try {
-    fetched = await safeFetch(url, { maxBytes: maxBytesFor(kind, limits), accept: kind === "pdf" ? PDF_MIME : IMAGE_MIME });
+    fetched = await safeFetch(url, {
+      maxBytes: maxBytesFor(kind, limits),
+      accept: kind === "pdf" ? PDF_MIME : IMAGE_MIME,
+    });
   } catch (err) {
-    if (err instanceof SafeFetchError) throw new HttpError(400, err.message, { body: { fields: { url: err.message } } });
+    if (err instanceof SafeFetchError)
+      throw new HttpError(400, err.message, { body: { fields: { url: err.message } } });
     throw err;
   }
 
@@ -53,16 +60,31 @@ export const POST = route(async (req) => {
         sha256: info.sha256,
         alt,
         folder,
-        originalName: decodeURIComponent(new URL(fetched.finalUrl).pathname.split("/").pop() || "").slice(0, 160).replace(/[^\w .()-]/g, "_") || null,
+        originalName:
+          decodeURIComponent(new URL(fetched.finalUrl).pathname.split("/").pop() || "")
+            .slice(0, 160)
+            .replace(/[^\w .()-]/g, "_") || null,
         sourceUrl: fetched.finalUrl.slice(0, 2000),
         uploadedById: user.id,
       },
       include: { uploadedBy: { select: { name: true, email: true } } },
     });
-    await audit({ actorId: user.id, action: "media.upload_url", entity: "MediaAsset", entityId: asset.id, diff: { host: new URL(fetched.finalUrl).host, bytes: info.bytes }, ipHash: hashIp(clientIp(req.headers)) });
+    await audit({
+      actorId: user.id,
+      action: "media.upload_url",
+      entity: "MediaAsset",
+      entityId: asset.id,
+      diff: { host: new URL(fetched.finalUrl).host, bytes: info.bytes },
+      ipHash: hashIp(clientIp(req.headers)),
+    });
     return json({ ok: true, asset: serializeAsset(asset) }, { status: 201 });
   } catch (err) {
-    await removeStored({ driver, publicId: stored.publicId, format: info.ext, type: kind === "pdf" ? "PDF" : "IMAGE" });
+    await removeStored({
+      driver,
+      publicId: stored.publicId,
+      format: info.ext,
+      type: kind === "pdf" ? "PDF" : "IMAGE",
+    });
     throw err;
   }
 });

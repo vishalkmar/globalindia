@@ -4,7 +4,10 @@ import { COLOR_TOKENS, FONT_WHITELIST } from "@/lib/theme/presets";
 
 /** Strict schema for Theme.tokens (Phase 8 todo 08-11). Pure: used by the editor and the API. */
 
-const hex = z.string().trim().regex(/^#[0-9a-fA-F]{6}$/, "Use a 6-digit hex colour like #0F3B3A.");
+const hex = z
+  .string()
+  .trim()
+  .regex(/^#[0-9a-fA-F]{6}$/, "Use a 6-digit hex colour like #0F3B3A.");
 const colorSet = z.strictObject(Object.fromEntries(COLOR_TOKENS.map((t) => [t.key, hex])));
 
 export const themeTokensSchema = z.strictObject({
@@ -28,7 +31,10 @@ export const themeNameSchema = z
 
 export const themeCreateSchema = z.strictObject({
   name: themeNameSchema,
-  fromId: z.string().regex(/^c[a-z0-9]{20,32}$/).optional(),
+  fromId: z
+    .string()
+    .regex(/^c[a-z0-9]{20,32}$/)
+    .optional(),
 });
 
 export const themeUpdateSchema = z

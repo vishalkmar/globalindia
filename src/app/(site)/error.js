@@ -20,7 +20,10 @@ export default function SiteError({ error, reset }) {
       <div className="container-site flex max-w-2xl flex-col items-start gap-5">
         <IconBox icon={TriangleAlert} size="lg" />
         <h1 className="text-h2">Something went wrong on this page.</h1>
-        <p className="text-lead">Please try again. If you were sending an enquiry, nothing was lost on our side until you see a confirmation.</p>
+        <p className="text-lead">
+          Please try again. If you were sending an enquiry, nothing was lost on our side until you see a
+          confirmation.
+        </p>
         {error?.digest ? <p className="font-data text-sm text-muted">Reference {error.digest}</p> : null}
         <div className="flex flex-wrap gap-3">
           <Button onClick={reset}>

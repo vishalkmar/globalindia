@@ -15,7 +15,9 @@ async function location(ctx) {
 async function tree(loc) {
   const items = await db.menuItem.findMany({ where: { location: loc }, orderBy: { order: "asc" } });
   const pick = (i) => ({ label: i.label, href: i.href, newTab: i.newTab, isVisible: i.isVisible });
-  return items.filter((i) => !i.parentId).map((p) => ({ ...pick(p), children: items.filter((c) => c.parentId === p.id).map(pick) }));
+  return items
+    .filter((i) => !i.parentId)
+    .map((p) => ({ ...pick(p), children: items.filter((c) => c.parentId === p.id).map(pick) }));
 }
 
 /** GET /api/admin/menus/:location — full tree including hidden items. */
@@ -39,18 +41,42 @@ export const PUT = route(async (req, ctx) => {
     await tx.menuItem.deleteMany({ where: { location: loc } });
     for (const [i, item] of items.entries()) {
       const parent = await tx.menuItem.create({
-        data: { location: loc, label: item.label, href: item.href, newTab: item.newTab, isVisible: item.isVisible, order: i },
+        data: {
+          location: loc,
+          label: item.label,
+          href: item.href,
+          newTab: item.newTab,
+          isVisible: item.isVisible,
+          order: i,
+        },
       });
       for (const [j, c] of (item.children ?? []).entries()) {
         await tx.menuItem.create({
-          data: { location: loc, parentId: parent.id, label: c.label, href: c.href, newTab: c.newTab, isVisible: c.isVisible, order: j },
+          data: {
+            location: loc,
+            parentId: parent.id,
+            label: c.label,
+            href: c.href,
+            newTab: c.newTab,
+            isVisible: c.isVisible,
+            order: j,
+          },
         });
       }
     }
-    await saveRevision({ entity: "menu", entityId: loc.toLowerCase(), data: { items }, authorId: user.id }, tx);
+    await saveRevision(
+      { entity: "menu", entityId: loc.toLowerCase(), data: { items }, authorId: user.id },
+      tx,
+    );
   });
 
   invalidate(TAGS.menuAt(loc));
-  await audit({ actorId: user.id, action: "menu.update", entity: "MenuItem", entityId: loc, diff: { count: items.length } });
+  await audit({
+    actorId: user.id,
+    action: "menu.update",
+    entity: "MenuItem",
+    entityId: loc,
+    diff: { count: items.length },
+  });
   return json({ ok: true, items: await tree(loc) });
 });

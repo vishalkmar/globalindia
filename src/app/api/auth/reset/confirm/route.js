@@ -32,12 +32,16 @@ export const POST = route(async (req) => {
   const tokenHash = hmac(token, authEnv.refreshPepper);
   const row = await db.passwordResetToken.findUnique({ where: { tokenHash }, include: { user: true } });
   // INVITED users set their first password through the same single-use link (48 h invite token).
-  if (!row || row.usedAt || row.expiresAt <= new Date() || !["ACTIVE", "INVITED"].includes(row.user.status)) return errorResponse(400, BAD_LINK);
+  if (!row || row.usedAt || row.expiresAt <= new Date() || !["ACTIVE", "INVITED"].includes(row.user.status))
+    return errorResponse(400, BAD_LINK);
 
   const policy = passwordPolicyError(newPassword, { email: row.user.email });
   if (policy) return errorResponse(400, policy, { body: { fields: { newPassword: policy } } });
 
-  const claimed = await db.passwordResetToken.updateMany({ where: { id: row.id, usedAt: null }, data: { usedAt: new Date() } });
+  const claimed = await db.passwordResetToken.updateMany({
+    where: { id: row.id, usedAt: null },
+    data: { usedAt: new Date() },
+  });
   if (claimed.count !== 1) return errorResponse(400, BAD_LINK);
 
   await db.$transaction([
@@ -52,7 +56,10 @@ export const POST = route(async (req) => {
         lockedUntil: null,
       },
     }),
-    db.passwordResetToken.updateMany({ where: { userId: row.userId, usedAt: null }, data: { usedAt: new Date() } }),
+    db.passwordResetToken.updateMany({
+      where: { userId: row.userId, usedAt: null },
+      data: { usedAt: new Date() },
+    }),
   ]);
   await revokeAllForUser(row.userId, "password_reset");
 

@@ -40,10 +40,13 @@ export const PATCH = route(async (req, ctx) => {
   if (self && (changes.role !== undefined || changes.status !== undefined)) {
     throw new HttpError(400, "You cannot change your own role or disable your own account.");
   }
-  if (user.status === "INVITED" && changes.status === "ACTIVE") throw new HttpError(400, "Invited users become active when they set their password.");
+  if (user.status === "INVITED" && changes.status === "ACTIVE")
+    throw new HttpError(400, "Invited users become active when they set their password.");
 
   const losesSuperAdmin =
-    user.role === "SUPER_ADMIN" && user.status === "ACTIVE" && ((changes.role && changes.role !== "SUPER_ADMIN") || changes.status === "DISABLED");
+    user.role === "SUPER_ADMIN" &&
+    user.status === "ACTIVE" &&
+    ((changes.role && changes.role !== "SUPER_ADMIN") || changes.status === "DISABLED");
   if (losesSuperAdmin && (await activeSuperAdminCount(user.id)) === 0) {
     throw new HttpError(400, "This is the last active super admin. Make someone else a super admin first.");
   }
@@ -56,11 +59,19 @@ export const PATCH = route(async (req, ctx) => {
 
   const updated = await db.adminUser.update({ where: { id: user.id }, data, select: USER_LIST_SELECT });
   const securityChange = data.role || data.status;
-  if (securityChange) await revokeAllForUser(user.id, data.status === "DISABLED" ? "disabled_by_admin" : "role_changed");
+  if (securityChange)
+    await revokeAllForUser(user.id, data.status === "DISABLED" ? "disabled_by_admin" : "role_changed");
 
   await audit({
     actorId: actor.id,
-    action: data.status === "DISABLED" ? "user.disable" : data.status === "ACTIVE" ? "user.enable" : data.role ? "user.role_change" : "user.update",
+    action:
+      data.status === "DISABLED"
+        ? "user.disable"
+        : data.status === "ACTIVE"
+          ? "user.enable"
+          : data.role
+            ? "user.role_change"
+            : "user.update",
     entity: "AdminUser",
     entityId: user.id,
     diff: { before: { role: user.role, status: user.status, name: user.name }, after: data },
@@ -68,7 +79,15 @@ export const PATCH = route(async (req, ctx) => {
   });
   if (securityChange && updated.status === "ACTIVE") {
     const headers = req.headers;
-    after(() => notifySecurityChange(user.id, headers, data.role ? `Your admin role is now ${data.role.replace("_", " ").toLowerCase()}` : "Your admin account was re-enabled"));
+    after(() =>
+      notifySecurityChange(
+        user.id,
+        headers,
+        data.role
+          ? `Your admin role is now ${data.role.replace("_", " ").toLowerCase()}`
+          : "Your admin account was re-enabled",
+      ),
+    );
   }
   return json({ ok: true, user: updated });
 });

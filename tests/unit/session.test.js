@@ -51,14 +51,19 @@ describe("refresh token rotation", () => {
     const live = await db.session.count({ where: { familyId: first.session.familyId, revokedAt: null } });
     expect(live).toBe(0);
 
-    const auditRow = await db.auditLog.findFirst({ where: { actorId: user.id, action: "auth.refresh.reuse_detected" } });
+    const auditRow = await db.auditLog.findFirst({
+      where: { actorId: user.id, action: "auth.refresh.reuse_detected" },
+    });
     expect(auditRow).not.toBeNull();
   });
 
   it("only one of two parallel refreshes can win", async () => {
     const { user } = await makeUser();
     const first = await createSession(user);
-    const results = await Promise.allSettled([rotateSession(first.refreshToken), rotateSession(first.refreshToken)]);
+    const results = await Promise.allSettled([
+      rotateSession(first.refreshToken),
+      rotateSession(first.refreshToken),
+    ]);
     expect(results.filter((r) => r.status === "fulfilled").length).toBeLessThanOrEqual(1);
   });
 
@@ -68,7 +73,10 @@ describe("refresh token rotation", () => {
 
     const { user } = await makeUser();
     const s = await createSession(user);
-    await db.session.update({ where: { id: s.session.id }, data: { expiresAt: new Date(Date.now() - 1000) } });
+    await db.session.update({
+      where: { id: s.session.id },
+      data: { expiresAt: new Date(Date.now() - 1000) },
+    });
     await expect(rotateSession(s.refreshToken)).rejects.toMatchObject({ reason: "expired" });
   });
 

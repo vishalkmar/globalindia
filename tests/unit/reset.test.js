@@ -13,13 +13,19 @@ const post = (handler, body) =>
   handler(
     new Request(`${ORIGIN}/api/x`, {
       method: "POST",
-      headers: { "content-type": "application/json", origin: ORIGIN, "x-forwarded-for": `10.0.0.${Math.floor(Math.random() * 250)}` },
+      headers: {
+        "content-type": "application/json",
+        origin: ORIGIN,
+        "x-forwarded-for": `10.0.0.${Math.floor(Math.random() * 250)}`,
+      },
       body: JSON.stringify(body),
     }),
   );
 const flush = () => new Promise((r) => setTimeout(r, 300)); // let after() callbacks finish
 const tokenFromMail = (to) => {
-  const m = sentMail().filter((x) => x.to === to && x.tags.includes("password-reset")).at(-1);
+  const m = sentMail()
+    .filter((x) => x.to === to && x.tags.includes("password-reset"))
+    .at(-1);
   return m?.text.match(/token=([A-Za-z0-9_-]+)/)?.[1];
 };
 
@@ -66,7 +72,10 @@ describe("password reset", () => {
     await post(resetRequest, { email: user.email });
     await flush();
     const token = tokenFromMail(user.email);
-    await db.passwordResetToken.updateMany({ where: { userId: user.id }, data: { expiresAt: new Date(Date.now() - 1000) } });
+    await db.passwordResetToken.updateMany({
+      where: { userId: user.id },
+      data: { expiresAt: new Date(Date.now() - 1000) },
+    });
     const res = await post(resetConfirm, { token, newPassword: "Fresh-Password-2026" });
     expect(res.status).toBe(400);
   });
@@ -81,7 +90,9 @@ describe("password reset", () => {
     const second = tokenFromMail(user.email);
     expect(second).not.toBe(first);
     expect((await post(resetConfirm, { token: first, newPassword: "Fresh-Password-2026" })).status).toBe(400);
-    expect((await post(resetConfirm, { token: second, newPassword: "Fresh-Password-2026" })).status).toBe(200);
+    expect((await post(resetConfirm, { token: second, newPassword: "Fresh-Password-2026" })).status).toBe(
+      200,
+    );
   });
 
   it("refuses requests from another origin", async () => {

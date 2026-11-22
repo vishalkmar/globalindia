@@ -33,7 +33,9 @@ export const POST = route(async (req) => {
   if (!limited.success) return errorResponse(429, undefined, { retryAfter: limited.retryAfter });
 
   const { requestId, code, totpCode } = await readJson(req, schema);
-  const pending = await db.otpCode.findFirst({ where: { id: requestId, userId: actor.id, purpose: "MFA_TOGGLE", consumedAt: null } });
+  const pending = await db.otpCode.findFirst({
+    where: { id: requestId, userId: actor.id, purpose: "MFA_TOGGLE", consumedAt: null },
+  });
   if (!pending?.meta) throw new HttpError(400, "This request has expired. Start again.");
   const { targetUserId, method, enable } = pending.meta;
 
@@ -47,7 +49,10 @@ export const POST = route(async (req) => {
   let totpSecretEnc = null;
   if (method === "totp" && enable) {
     if (target.id !== actor.id || !target.totpPendingEnc) throw new HttpError(400, "Scan the QR code again.");
-    if (!totpCode) throw new HttpError(400, "Enter the 6-digit code from your authenticator app.", { body: { fields: { totpCode: "Required." } } });
+    if (!totpCode)
+      throw new HttpError(400, "Enter the 6-digit code from your authenticator app.", {
+        body: { fields: { totpCode: "Required." } },
+      });
     totpStep = verifyTotp(open(target.totpPendingEnc, target.id), totpCode, { window: 1 });
     if (totpStep === null) {
       return errorResponse(400, "The authenticator code is not correct. Check the time on your phone.", {
@@ -60,7 +65,8 @@ export const POST = route(async (req) => {
   try {
     await verifyOtp(actor.id, "MFA_TOGGLE", code, { otpId: requestId });
   } catch (err) {
-    if (err instanceof OtpError) return errorResponse(400, otpErrorMessage(err), { body: { fields: { code: otpErrorMessage(err) } } });
+    if (err instanceof OtpError)
+      return errorResponse(400, otpErrorMessage(err), { body: { fields: { code: otpErrorMessage(err) } } });
     throw err;
   }
 
@@ -70,31 +76,54 @@ export const POST = route(async (req) => {
       const firstSetup = !target.mfaSetupAt;
       await tx.adminUser.update({
         where: { id: target.id },
-        data: { totpSecretEnc, totpPendingEnc: null, totpPendingAt: null, totpEnabled: true, totpLastStep: totpStep, ...(firstSetup ? { mfaSetupAt: new Date() } : {}) },
+        data: {
+          totpSecretEnc,
+          totpPendingEnc: null,
+          totpPendingAt: null,
+          totpEnabled: true,
+          totpLastStep: totpStep,
+          ...(firstSetup ? { mfaSetupAt: new Date() } : {}),
+        },
       });
       const haveCodes = await tx.recoveryCode.count({ where: { userId: target.id, usedAt: null } });
       if (firstSetup || haveCodes === 0) recoveryCodes = await regenerateRecoveryCodes(target.id, tx);
     } else if (method === "totp" && !enable) {
       await tx.adminUser.update({
         where: { id: target.id },
-        data: { totpEnabled: false, totpSecretEnc: null, totpPendingEnc: null, totpPendingAt: null, totpLastStep: null, emailOtpEnabled: true },
+        data: {
+          totpEnabled: false,
+          totpSecretEnc: null,
+          totpPendingEnc: null,
+          totpPendingAt: null,
+          totpLastStep: null,
+          emailOtpEnabled: true,
+        },
       });
     } else if (method === "email" && enable) {
       await tx.adminUser.update({ where: { id: target.id }, data: { emailOtpEnabled: true } });
     } else {
-      const fresh = await tx.adminUser.findUnique({ where: { id: target.id }, select: { totpEnabled: true } });
+      const fresh = await tx.adminUser.findUnique({
+        where: { id: target.id },
+        select: { totpEnabled: true },
+      });
       if (!fresh.totpEnabled) throw new HttpError(400, "Keep at least one sign-in method switched on.");
       await tx.adminUser.update({ where: { id: target.id }, data: { emailOtpEnabled: false } });
     }
   });
 
   const label = `${method === "totp" ? "Authenticator app" : "Email codes"} turned ${enable ? "on" : "off"}`;
-  await audit({ actorId: actor.id, action: `mfa.${method}.${enable ? "enabled" : "disabled"}`, entity: "AdminUser", entityId: target.id });
+  await audit({
+    actorId: actor.id,
+    action: `mfa.${method}.${enable ? "enabled" : "disabled"}`,
+    entity: "AdminUser",
+    entityId: target.id,
+  });
   const headers = req.headers;
   const contact = await defaultAdminContact();
   after(async () => {
     await notifySecurityChange(target.id, headers, `${label} for ${target.email}`);
-    if (contact.userId && contact.userId !== target.id) await notifySecurityChange(contact.userId, headers, `${label} for ${target.email}`);
+    if (contact.userId && contact.userId !== target.id)
+      await notifySecurityChange(contact.userId, headers, `${label} for ${target.email}`);
   });
 
   return json({ ok: true, change: label, recoveryCodes, next: recoveryCodes ? "save-codes" : "done" });

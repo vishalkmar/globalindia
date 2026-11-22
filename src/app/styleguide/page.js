@@ -42,8 +42,9 @@ export default function StyleguidePage() {
         <Container className="flex flex-col gap-3">
           <Eyebrow>Design system</Eyebrow>
           <h1 className="text-display">Global India styleguide</h1>
-          <p className="text-lead measure">
-            Every base component with the active theme tokens. Change the theme in the admin panel and this page follows.
+          <p className="measure text-lead">
+            Every base component with the active theme tokens. Change the theme in the admin panel and this
+            page follows.
           </p>
         </Container>
       </Section>
@@ -51,14 +52,23 @@ export default function StyleguidePage() {
       {/* Colours */}
       <Section>
         <Container className="flex flex-col gap-10">
-          <SectionHeading eyebrow="01 Colour" title="Three colours and neutrals" intro="Primary carries the brand, accent is only for thin lines and small highlights, surface separates sections." />
+          <SectionHeading
+            eyebrow="01 Colour"
+            title="Three colours and neutrals"
+            intro="Primary carries the brand, accent is only for thin lines and small highlights, surface separates sections."
+          />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {COLOR_TOKENS.map((t) => (
               <div key={t.key} className="overflow-hidden rounded-card border border-line bg-card">
-                <div className="h-20 border-b border-line" style={{ background: `var(--c-${t.key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)})` }} />
+                <div
+                  className="h-20 border-b border-line"
+                  style={{ background: `var(--c-${t.key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)})` }}
+                />
                 <div className="flex flex-col gap-0.5 p-3">
                   <span className="text-sm font-semibold">{t.label}</span>
-                  <span className="text-data text-[0.75rem] text-muted">{preset.tokens.colors.light[t.key]}</span>
+                  <span className="text-data text-[0.75rem] text-muted">
+                    {preset.tokens.colors.light[t.key]}
+                  </span>
                 </div>
               </div>
             ))}
@@ -92,8 +102,9 @@ export default function StyleguidePage() {
             <p className="text-h2">Twenty-four years of supplying the people who make things.</p>
             <p className="text-h3">Pack sizes that match real orders</p>
             <Eyebrow>Chemical raw materials · Delhi · Since 2002</Eyebrow>
-            <p className="text-body measure">
-              We stock Light Liquid Paraffin in 50 L carboys and 210 L drums. Viscosity and grade are confirmed on the COA that travels with every batch.
+            <p className="measure text-body">
+              We stock Light Liquid Paraffin in 50 L carboys and 210 L drums. Viscosity and grade are
+              confirmed on the COA that travels with every batch.
             </p>
             <p className="text-small text-muted">Small / label text — 14 px, used for captions and meta.</p>
             <p className="text-data">CAS 8012-95-1 · MOQ 50 L · Purity 99.5%</p>
@@ -109,7 +120,9 @@ export default function StyleguidePage() {
             <Button>Request a quote</Button>
             <Button variant="secondary">See all products</Button>
             <Button variant="ghost">Ghost</Button>
-            <Button variant="link" href="/styleguide">Text link</Button>
+            <Button variant="link" href="/styleguide">
+              Text link
+            </Button>
             <Button loading>Saving</Button>
             <Button disabled>Disabled</Button>
           </div>
@@ -144,9 +157,21 @@ export default function StyleguidePage() {
           <SectionHeading eyebrow="04 Cards and icons" title="Cards with bordered icon squares" />
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { icon: Package, title: "One supplier, many raw materials", text: "Buy your surfactants, glycols, paraffins and food additives from one desk." },
-              { icon: Truck, title: "Delhi stock, India-wide dispatch", text: "Orders usually leave our Burari Road warehouse within seven working days." },
-              { icon: ShieldCheck, title: "Clear paperwork", text: "GST invoice, COA and safety data sheets travel with the material where applicable." },
+              {
+                icon: Package,
+                title: "One supplier, many raw materials",
+                text: "Buy your surfactants, glycols, paraffins and food additives from one desk.",
+              },
+              {
+                icon: Truck,
+                title: "Delhi stock, India-wide dispatch",
+                text: "Orders usually leave our Burari Road warehouse within seven working days.",
+              },
+              {
+                icon: ShieldCheck,
+                title: "Clear paperwork",
+                text: "GST invoice, COA and safety data sheets travel with the material where applicable.",
+              },
             ].map((c) => (
               <Card key={c.title} interactive className="flex flex-col gap-4">
                 <IconBox icon={c.icon} />
@@ -210,9 +235,15 @@ export default function StyleguidePage() {
       <Section tone="surface">
         <Container className="flex flex-col gap-6">
           <SectionHeading eyebrow="06 Feedback" title="Alerts and skeletons" />
-          <Alert title="Quote request received">We will reply with a written quote, usually the same working day.</Alert>
-          <Alert tone="success" title="Saved">Product updated and published.</Alert>
-          <Alert tone="error" title="Could not send">Check the highlighted fields and try again.</Alert>
+          <Alert title="Quote request received">
+            We will reply with a written quote, usually the same working day.
+          </Alert>
+          <Alert tone="success" title="Saved">
+            Product updated and published.
+          </Alert>
+          <Alert tone="error" title="Could not send">
+            Check the highlighted fields and try again.
+          </Alert>
           <div className="grid gap-6 md:grid-cols-3">
             <div className="flex flex-col gap-4 rounded-card border border-line bg-card p-6">
               <Skeleton className="size-11" />

@@ -29,7 +29,10 @@ export async function getActiveTheme() {
   "use cache";
   tag(TAGS.theme);
   try {
-    const t = await db.theme.findFirst({ where: { isActive: true }, select: { id: true, name: true, mode: true, tokens: true } });
+    const t = await db.theme.findFirst({
+      where: { isActive: true },
+      select: { id: true, name: true, mode: true, tokens: true },
+    });
     if (t) return t;
   } catch (err) {
     logger.error("site_data.theme_failed", { err });
@@ -63,7 +66,18 @@ export async function getMedia(id) {
   try {
     return await db.mediaAsset.findFirst({
       where: { id, deletedAt: null },
-      select: { id: true, url: true, alt: true, width: true, height: true, focalX: true, focalY: true, type: true, format: true },
+      select: {
+        id: true,
+        url: true,
+        alt: true,
+        width: true,
+        height: true,
+        focalX: true,
+        focalY: true,
+        type: true,
+        format: true,
+        bytes: true,
+      },
     });
   } catch {
     return null;

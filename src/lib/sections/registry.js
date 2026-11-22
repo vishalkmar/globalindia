@@ -11,10 +11,19 @@ import { COMPANY_SECTIONS } from "./registry-company.js";
  * Rendering components live in src/components/sections (server components), keyed by the same type.
  */
 
-const t = (max, msg = "Too long.") => z.string().trim().max(max, msg).refine((v) => !/[<>]/.test(v), "Cannot contain < or >.");
+const t = (max, msg = "Too long.") =>
+  z
+    .string()
+    .trim()
+    .max(max, msg)
+    .refine((v) => !/[<>]/.test(v), "Cannot contain < or >.");
 const req = (max, msg) => t(max).refine((v) => v.length > 0, msg);
 const cta = z.strictObject({ text: t(40), href: safeHref });
-const mediaId = z.string().regex(/^c[a-z0-9]{20,32}$/).nullable().default(null);
+const mediaId = z
+  .string()
+  .regex(/^c[a-z0-9]{20,32}$/)
+  .nullable()
+  .default(null);
 const icon = z.enum(ICON_KEYS);
 
 const heading = { eyebrow: t(80), title: t(140), intro: t(400) };
@@ -29,7 +38,11 @@ const ctaFields = (name, label) => ({
   type: "group",
   fields: [
     { name: "text", label: "Button text" },
-    { name: "href", label: "Link", hint: "Page path like /contact or https:// link. Leave both empty to hide." },
+    {
+      name: "href",
+      label: "Link",
+      hint: "Page path like /contact or https:// link. Leave both empty to hide.",
+    },
   ],
 });
 
@@ -85,7 +98,13 @@ export const SECTIONS = {
           { name: "label", label: "Label", placeholder: "Supplying since" },
         ],
       },
-      { name: "imageId", label: "Hero photo", type: "media", folder: "pages", hint: "A real photo of the warehouse, drums or bags, at least 1600 px wide. Without a photo the product list below is shown." },
+      {
+        name: "imageId",
+        label: "Hero photo",
+        type: "media",
+        folder: "pages",
+        hint: "A real photo of the warehouse, drums or bags, at least 1600 px wide. Without a photo the product list below is shown.",
+      },
       {
         name: "highlights",
         label: "Product list shown next to the title (when there is no photo)",
@@ -103,15 +122,33 @@ export const SECTIONS = {
   featureTriad: {
     label: "Three reasons",
     description: "Three short cards with an icon each.",
-    schema: z.strictObject({ ...heading, items: z.array(z.strictObject({ icon, title: req(70, "Enter a title."), text: t(260) })).min(1).max(4) }),
+    schema: z.strictObject({
+      ...heading,
+      items: z
+        .array(z.strictObject({ icon, title: req(70, "Enter a title."), text: t(260) }))
+        .min(1)
+        .max(4),
+    }),
     defaults: {
       eyebrow: "",
       title: "",
       intro: "",
       items: [
-        { icon: "boxes", title: "One supplier, many raw materials", text: "Buy your surfactants, glycols, paraffins and food additives from one desk. Fewer vendors, one invoice, one person to call." },
-        { icon: "package-check", title: "Pack sizes that match real orders", text: "Not every buyer needs a tanker. Most of our range ships in 25 kg or 50 kg packs, so small and mid-size plants can buy what they use." },
-        { icon: "truck", title: "Delhi stock, India-wide dispatch", text: "Our Burari Road warehouse sits close to North India's main transport routes. Orders usually leave within seven working days." },
+        {
+          icon: "boxes",
+          title: "One supplier, many raw materials",
+          text: "Buy your surfactants, glycols, paraffins and food additives from one desk. Fewer vendors, one invoice, one person to call.",
+        },
+        {
+          icon: "package-check",
+          title: "Pack sizes that match real orders",
+          text: "Not every buyer needs a tanker. Most of our range ships in 25 kg or 50 kg packs, so small and mid-size plants can buy what they use.",
+        },
+        {
+          icon: "truck",
+          title: "Delhi stock, India-wide dispatch",
+          text: "Our Burari Road warehouse sits close to North India's main transport routes. Orders usually leave within seven working days.",
+        },
       ],
     },
     fields: [
@@ -148,7 +185,8 @@ export const SECTIONS = {
       eyebrow: "About Global India",
       title: "Twenty-four years of supplying the people who make things.",
       text: "We started in 2002 as a small trading business in North Delhi. Today a team of 35 handles sourcing, storage, packing and dispatch for manufacturers of soaps, detergents, cosmetics, food products and industrial goods. The idea has not changed: give the buyer the right grade, the right paperwork and a straight answer on price and timing.",
-      quote: "Most of our customers found us for one product and stayed for ten. That only happens when the material is the same every time.",
+      quote:
+        "Most of our customers found us for one product and stayed for ten. That only happens when the material is the same every time.",
       quoteAuthor: "Akash Rathod",
       quoteRole: "Proprietor",
       imageId: null,
@@ -172,12 +210,18 @@ export const SECTIONS = {
     schema: z.strictObject({
       ...heading,
       showCounts: z.boolean(),
-      items: z.array(z.strictObject({ family: z.enum(FAMILY_KEYS), title: req(70, "Enter a title."), text: t(220) })).min(1).max(6),
+      items: z
+        .array(
+          z.strictObject({ family: z.enum(FAMILY_KEYS), title: req(70, "Enter a title."), text: t(220) }),
+        )
+        .min(1)
+        .max(6),
     }),
     defaults: {
       eyebrow: "What we supply",
       title: "Six families of raw materials, one order desk.",
-      intro: "Most buyers come to us for two or three of these. Pick a family to see the grades, pack sizes and minimum quantities.",
+      intro:
+        "Most buyers come to us for two or three of these. Pick a family to see the grades, pack sizes and minimum quantities.",
       showCounts: true,
       items: FAMILIES.map((f) => ({ family: f.key, title: f.name, text: f.text })),
     },
@@ -191,7 +235,12 @@ export const SECTIONS = {
         itemLabel: "card",
         max: 6,
         fields: [
-          { name: "family", label: "Family", type: "select", options: FAMILIES.map((f) => ({ value: f.key, label: f.name })) },
+          {
+            name: "family",
+            label: "Family",
+            type: "select",
+            options: FAMILIES.map((f) => ({ value: f.key, label: f.name })),
+          },
           { name: "title", label: "Card title" },
           { name: "text", label: "Card text", type: "textarea", rows: 2 },
         ],
@@ -206,30 +255,81 @@ export const SECTIONS = {
     defaults: {
       eyebrow: "Most asked for",
       title: "Products buyers order from us every month.",
-      intro: "Each one is kept in stock all year. Specifications are indicative; the COA with your batch is the final word.",
+      intro:
+        "Each one is kept in stock all year. Specifications are indicative; the COA with your batch is the final word.",
       limit: 6,
       cta: { text: "See all products", href: "/products" },
     },
-    fields: [...headingFields, { name: "limit", label: "How many products", type: "number" }, ctaFields("cta", "Link button")],
+    fields: [
+      ...headingFields,
+      { name: "limit", label: "How many products", type: "number" },
+      ctaFields("cta", "Link button"),
+    ],
   },
 
   industries: {
     label: "Industries we serve",
     description: "Icon cards for the industries you supply.",
-    schema: z.strictObject({ ...heading, items: z.array(z.strictObject({ icon, title: req(60, "Enter a title."), text: t(200), href: safeHref })).min(1).max(12) }),
+    schema: z.strictObject({
+      ...heading,
+      items: z
+        .array(z.strictObject({ icon, title: req(60, "Enter a title."), text: t(200), href: safeHref }))
+        .min(1)
+        .max(12),
+    }),
     defaults: {
       eyebrow: "Industries",
       title: "Who buys from us.",
       intro: "From one-person soap units to large detergent plants. These are the trades we supply most.",
       items: [
-        { icon: "utensils", title: "Food & Beverage", text: "Xanthan gum, malic acid, citric acid, sodium citrate, MSG, maltodextrin, sorbitol and preservatives.", href: "/industries/food-beverage" },
-        { icon: "droplet", title: "Cosmetics & Personal Care", text: "Light liquid paraffin, glycerine, CAPB, shampoo bases, soap bases and silicone oils.", href: "/industries/cosmetics-personal-care" },
-        { icon: "pill", title: "Pharmaceuticals", text: "IP and USP grades of paraffin, glycerine, propylene glycol and sorbitol.", href: "/industries/pharmaceuticals" },
-        { icon: "washing-machine", title: "Detergents & Home Care", text: "SLES, LABSA, AOS, SLS, acid thickeners, foam boosters and phenyl concentrates.", href: "/industries/detergents-home-care" },
-        { icon: "sparkles", title: "Soap Making", text: "Natural, goat milk and shea butter soap bases, soap noodles, stearic and lauric acids.", href: "/industries/soap-making" },
-        { icon: "factory", title: "Textile & Industrial", text: "Caustic soda, soda ash, sodium silicate, guar gum, pine oil and solvents.", href: "/industries/textile-industrial" },
-        { icon: "car", title: "Automotive Care", text: "Tyre polish, dashboard polish, car shampoo and silicone emulsions.", href: "/industries/automotive-care" },
-        { icon: "flask", title: "Laboratories", text: "Lauric and myristic acids, denatured ethanol, hydrogen peroxide and reagent-grade surfactants.", href: "/industries/laboratories" },
+        {
+          icon: "utensils",
+          title: "Food & Beverage",
+          text: "Xanthan gum, malic acid, citric acid, sodium citrate, MSG, maltodextrin, sorbitol and preservatives.",
+          href: "/industries/food-beverage",
+        },
+        {
+          icon: "droplet",
+          title: "Cosmetics & Personal Care",
+          text: "Light liquid paraffin, glycerine, CAPB, shampoo bases, soap bases and silicone oils.",
+          href: "/industries/cosmetics-personal-care",
+        },
+        {
+          icon: "pill",
+          title: "Pharmaceuticals",
+          text: "IP and USP grades of paraffin, glycerine, propylene glycol and sorbitol.",
+          href: "/industries/pharmaceuticals",
+        },
+        {
+          icon: "washing-machine",
+          title: "Detergents & Home Care",
+          text: "SLES, LABSA, AOS, SLS, acid thickeners, foam boosters and phenyl concentrates.",
+          href: "/industries/detergents-home-care",
+        },
+        {
+          icon: "sparkles",
+          title: "Soap Making",
+          text: "Natural, goat milk and shea butter soap bases, soap noodles, stearic and lauric acids.",
+          href: "/industries/soap-making",
+        },
+        {
+          icon: "factory",
+          title: "Textile & Industrial",
+          text: "Caustic soda, soda ash, sodium silicate, guar gum, pine oil and solvents.",
+          href: "/industries/textile-industrial",
+        },
+        {
+          icon: "car",
+          title: "Automotive Care",
+          text: "Tyre polish, dashboard polish, car shampoo and silicone emulsions.",
+          href: "/industries/automotive-care",
+        },
+        {
+          icon: "flask",
+          title: "Laboratories",
+          text: "Lauric and myristic acids, denatured ethanol, hydrogen peroxide and reagent-grade surfactants.",
+          href: "/industries/laboratories",
+        },
       ],
     },
     fields: [
@@ -253,27 +353,53 @@ export const SECTIONS = {
   numberedValues: {
     label: "Numbered values",
     description: "Four short promises, numbered 01 to 04.",
-    schema: z.strictObject({ ...heading, items: z.array(z.strictObject({ title: req(60, "Enter a title."), text: t(240) })).min(1).max(6) }),
+    schema: z.strictObject({
+      ...heading,
+      items: z
+        .array(z.strictObject({ title: req(60, "Enter a title."), text: t(240) }))
+        .min(1)
+        .max(6),
+    }),
     defaults: {
       eyebrow: "How we work",
       title: "Four things we hold to on every order.",
       intro: "",
       items: [
-        { title: "Honest specifications", text: "We tell you the grade, purity and pack exactly as it is. If we do not have it, we say so." },
-        { title: "Consistent stock", text: "Our core lines are kept in stock all year so your production does not wait on us." },
-        { title: "Clear paperwork", text: "GST invoice, COA and safety data sheets travel with the material where applicable." },
+        {
+          title: "Honest specifications",
+          text: "We tell you the grade, purity and pack exactly as it is. If we do not have it, we say so.",
+        },
+        {
+          title: "Consistent stock",
+          text: "Our core lines are kept in stock all year so your production does not wait on us.",
+        },
+        {
+          title: "Clear paperwork",
+          text: "GST invoice, COA and safety data sheets travel with the material where applicable.",
+        },
         { title: "Fair dealing", text: "Rates are quoted in writing and held for the period we commit to." },
       ],
     },
     fields: [
       ...headingFields,
-      { name: "items", label: "Values", type: "repeater", itemLabel: "value", max: 6, fields: [{ name: "title", label: "Title" }, { name: "text", label: "Text", type: "textarea", rows: 2 }] },
+      {
+        name: "items",
+        label: "Values",
+        type: "repeater",
+        itemLabel: "value",
+        max: 6,
+        fields: [
+          { name: "title", label: "Title" },
+          { name: "text", label: "Text", type: "textarea", rows: 2 },
+        ],
+      },
     ],
   },
 
   stats: {
     label: "Numbers strip",
-    description: "Key numbers. 'Automatic' values are counted from the website data; the typed value is used until there is data.",
+    description:
+      "Key numbers. 'Automatic' values are counted from the website data; the typed value is used until there is data.",
     schema: z.strictObject({
       items: z
         .array(
@@ -326,22 +452,48 @@ export const SECTIONS = {
   process: {
     label: "How ordering works",
     description: "Numbered steps from enquiry to delivery.",
-    schema: z.strictObject({ ...heading, steps: z.array(z.strictObject({ title: req(60, "Enter a title."), text: t(240) })).min(2).max(6), cta }),
+    schema: z.strictObject({
+      ...heading,
+      steps: z
+        .array(z.strictObject({ title: req(60, "Enter a title."), text: t(240) }))
+        .min(2)
+        .max(6),
+      cta,
+    }),
     defaults: {
       eyebrow: "Ordering",
       title: "How an order works.",
       intro: "Most first orders are confirmed within two working days of the enquiry.",
       steps: [
-        { title: "Send your enquiry", text: "Product, grade, quantity, pack size and delivery city. A phone call works just as well." },
-        { title: "Get a written quote", text: "Usually the same working day, with a sample if you need one." },
+        {
+          title: "Send your enquiry",
+          text: "Product, grade, quantity, pack size and delivery city. A phone call works just as well.",
+        },
+        {
+          title: "Get a written quote",
+          text: "Usually the same working day, with a sample if you need one.",
+        },
         { title: "Confirm and pay", text: "The material is packed, labelled and dispatched by road." },
-        { title: "Receive with documents", text: "GST invoice, COA and SDS where applicable, with every consignment." },
+        {
+          title: "Receive with documents",
+          text: "GST invoice, COA and SDS where applicable, with every consignment.",
+        },
       ],
       cta: { text: "Start an enquiry", href: "/contact#quote" },
     },
     fields: [
       ...headingFields,
-      { name: "steps", label: "Steps", type: "repeater", itemLabel: "step", max: 6, fields: [{ name: "title", label: "Title" }, { name: "text", label: "Text", type: "textarea", rows: 2 }] },
+      {
+        name: "steps",
+        label: "Steps",
+        type: "repeater",
+        itemLabel: "step",
+        max: 6,
+        fields: [
+          { name: "title", label: "Title" },
+          { name: "text", label: "Text", type: "textarea", rows: 2 },
+        ],
+      },
       ctaFields("cta", "Button"),
     ],
   },
@@ -379,33 +531,80 @@ export const SECTIONS = {
       limit: 3,
       cta: { text: "All insights", href: "/insights" },
     },
-    fields: [...headingFields, { name: "limit", label: "How many articles", type: "number" }, ctaFields("cta", "Link button")],
+    fields: [
+      ...headingFields,
+      { name: "limit", label: "How many articles", type: "number" },
+      ctaFields("cta", "Link button"),
+    ],
   },
 
   faq: {
     label: "FAQ",
     description: "Questions and answers. Also sent to Google as FAQ structured data.",
-    schema: z.strictObject({ ...heading, items: z.array(z.strictObject({ q: req(160, "Enter the question."), a: req(800, "Enter the answer.") })).min(1).max(12) }),
+    schema: z.strictObject({
+      ...heading,
+      items: z
+        .array(z.strictObject({ q: req(160, "Enter the question."), a: req(800, "Enter the answer.") }))
+        .min(1)
+        .max(12),
+    }),
     defaults: {
       eyebrow: "Questions",
       title: "Asked before almost every first order.",
       intro: "",
       items: [
-        { q: "What is your minimum order?", a: "For most products 50 kg or 50 L. A few items such as soap bases start at 25 kg." },
-        { q: "Do you supply outside Delhi?", a: "Yes. We dispatch across India by road transport and can arrange FOB for export enquiries." },
-        { q: "Can I get a sample first?", a: "Samples are available for most products. Mention it in your enquiry." },
-        { q: "Do you provide COA and SDS?", a: "Yes, where the producer issues them. Ask for them with your quote." },
-        { q: "Do you manufacture everything you sell?", a: "No. We manufacture and blend some products and supply others from established producers. Each product page states its source." },
-        { q: "How do I get today's price?", a: "Prices move with raw material markets, so we quote on request. Use the quote form or call us." },
+        {
+          q: "What is your minimum order?",
+          a: "For most products 50 kg or 50 L. A few items such as soap bases start at 25 kg.",
+        },
+        {
+          q: "Do you supply outside Delhi?",
+          a: "Yes. We dispatch across India by road transport and can arrange FOB for export enquiries.",
+        },
+        {
+          q: "Can I get a sample first?",
+          a: "Samples are available for most products. Mention it in your enquiry.",
+        },
+        {
+          q: "Do you provide COA and SDS?",
+          a: "Yes, where the producer issues them. Ask for them with your quote.",
+        },
+        {
+          q: "Do you manufacture everything you sell?",
+          a: "No. We manufacture and blend some products and supply others from established producers. Each product page states its source.",
+        },
+        {
+          q: "How do I get today's price?",
+          a: "Prices move with raw material markets, so we quote on request. Use the quote form or call us.",
+        },
       ],
     },
-    fields: [...headingFields, { name: "items", label: "Questions", type: "repeater", itemLabel: "question", max: 12, fields: [{ name: "q", label: "Question" }, { name: "a", label: "Answer", type: "textarea", rows: 3 }] }],
+    fields: [
+      ...headingFields,
+      {
+        name: "items",
+        label: "Questions",
+        type: "repeater",
+        itemLabel: "question",
+        max: 12,
+        fields: [
+          { name: "q", label: "Question" },
+          { name: "a", label: "Answer", type: "textarea", rows: 3 },
+        ],
+      },
+    ],
   },
 
   ctaBand: {
     label: "Call to action band",
     description: "Dark band with a quote button and the phone number.",
-    schema: z.strictObject({ eyebrow: t(80), title: req(140, "Enter a title."), text: t(300), cta, showPhone: z.boolean() }),
+    schema: z.strictObject({
+      eyebrow: t(80),
+      title: req(140, "Enter a title."),
+      text: t(300),
+      cta,
+      showPhone: z.boolean(),
+    }),
     defaults: {
       eyebrow: "Ready to order",
       title: "Tell us the product, grade and quantity. We will reply with a written quote.",
@@ -448,7 +647,8 @@ export const HOME_LAYOUT = [
 
 /** Validate one section's data; unknown types are refused. */
 export function parseSection(type, data) {
-  if (!Object.hasOwn(SECTIONS, type)) return { success: false, error: { issues: [{ path: ["type"], message: "Unknown section type." }] } };
+  if (!Object.hasOwn(SECTIONS, type))
+    return { success: false, error: { issues: [{ path: ["type"], message: "Unknown section type." }] } };
   return SECTIONS[type].schema.safeParse(data);
 }
 

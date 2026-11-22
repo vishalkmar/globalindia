@@ -15,7 +15,10 @@ import { hmac } from "./crypto";
 const ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O, 1/I
 export const RECOVERY_CODE_COUNT = 10;
 
-const normalise = (code) => String(code).toUpperCase().replace(/[^A-Z0-9]/g, "");
+const normalise = (code) =>
+  String(code)
+    .toUpperCase()
+    .replace(/[^A-Z0-9]/g, "");
 const hashCode = (userId, code) => hmac(`recovery:${userId}:${normalise(code)}`, authEnv.otpPepper);
 
 function makeCode() {

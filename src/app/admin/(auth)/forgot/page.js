@@ -44,7 +44,14 @@ export default function ForgotPage() {
         <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
           {error ? <Alert tone="error">{error}</Alert> : null}
           <Field label="Email">
-            <Input type="email" autoComplete="username" required autoFocus value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input
+              type="email"
+              autoComplete="username"
+              required
+              autoFocus
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </Field>
           <Button type="submit" size="lg" loading={busy} disabled={!email}>
             Send reset link

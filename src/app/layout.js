@@ -25,7 +25,9 @@ export async function generateMetadata() {
       siteName: seo.siteName,
       type: "website",
       locale: "en_IN",
-      images: og ? [{ url: og.url, width: og.width ?? undefined, height: og.height ?? undefined, alt: og.alt }] : undefined,
+      images: og
+        ? [{ url: og.url, width: og.width ?? undefined, height: og.height ?? undefined, alt: og.alt }]
+        : undefined,
     },
     twitter: { card: og ? "summary_large_image" : "summary" },
     verification: {
@@ -51,7 +53,12 @@ export default async function RootLayout({ children }) {
       <head>
         {/* Safe: themeToCss only emits validated hex colours, whitelisted font variables and clamped numbers. */}
         <style id="gi-theme" dangerouslySetInnerHTML={{ __html: themeToCss(theme.tokens) }} />
-        <meta name="theme-color" content={isHexColor(theme.tokens?.colors?.light?.primary) ? theme.tokens.colors.light.primary : "#0F3B3A"} />
+        <meta
+          name="theme-color"
+          content={
+            isHexColor(theme.tokens?.colors?.light?.primary) ? theme.tokens.colors.light.primary : "#0F3B3A"
+          }
+        />
       </head>
       <body>
         <ToastProvider>{children}</ToastProvider>

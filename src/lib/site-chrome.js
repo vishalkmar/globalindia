@@ -9,7 +9,19 @@ import { getMedia, getMenu, getSetting } from "@/lib/site-data";
  * All values come from admin settings and menus — nothing is hard-coded in the components.
  */
 export async function getSiteChrome() {
-  const [business, topbar, header, footer, social, analytics, headerMenu, megaMenu, quickLinks, productLinks, legalLinks] = await Promise.all([
+  const [
+    business,
+    topbar,
+    header,
+    footer,
+    social,
+    analytics,
+    headerMenu,
+    megaMenu,
+    quickLinks,
+    productLinks,
+    legalLinks,
+  ] = await Promise.all([
     getSetting("business"),
     getSetting("topbar"),
     getSetting("header"),
@@ -22,7 +34,10 @@ export async function getSiteChrome() {
     getMenu("FOOTER_PRODUCTS"),
     getMenu("FOOTER_LEGAL"),
   ]);
-  const [logoLight, logoDark] = await Promise.all([getMedia(header.logoLightId), getMedia(header.logoDarkId)]);
+  const [logoLight, logoDark] = await Promise.all([
+    getMedia(header.logoLightId),
+    getMedia(header.logoDarkId),
+  ]);
   const phone = business.phones?.[0]?.number ?? "";
   const email = business.emails?.[0]?.email ?? "";
   return {
@@ -32,7 +47,13 @@ export async function getSiteChrome() {
     footer,
     social,
     analyticsEnabled: Boolean(analytics.ga4Id || analytics.clarityId),
-    menus: { header: headerMenu, mega: megaMenu, quick: quickLinks, products: productLinks, legal: legalLinks },
+    menus: {
+      header: headerMenu,
+      mega: megaMenu,
+      quick: quickLinks,
+      products: productLinks,
+      legal: legalLinks,
+    },
     logo: { light: logoLight, dark: logoDark },
     contact: {
       phone,

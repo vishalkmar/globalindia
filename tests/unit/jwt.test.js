@@ -41,7 +41,15 @@ describe("access token", () => {
     const header = base64url.encode(JSON.stringify({ alg: "none", typ: "JWT" }));
     const now = Math.floor(Date.now() / 1000);
     const payload = base64url.encode(
-      JSON.stringify({ ...claims, iss: process.env.JWT_ISSUER, aud: process.env.JWT_AUDIENCE, iat: now, nbf: now, exp: now + 600, jti: "x" }),
+      JSON.stringify({
+        ...claims,
+        iss: process.env.JWT_ISSUER,
+        aud: process.env.JWT_AUDIENCE,
+        iat: now,
+        nbf: now,
+        exp: now + 600,
+        jti: "x",
+      }),
     );
     expect(await verifyAccessToken(`${header}.${payload}.`)).toBeNull();
   });

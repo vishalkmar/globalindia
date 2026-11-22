@@ -642,6 +642,7 @@ model NewsletterSubscriber {
   email            String           @unique
   status           SubscriberStatus @default(PENDING)
   confirmTokenHash String?          @unique
+  tokenExpiresAt   DateTime? // confirmation link stops working after this (7 days)
   ipHash           String           @default("")
   createdAt        DateTime         @default(now())
   confirmedAt      DateTime?

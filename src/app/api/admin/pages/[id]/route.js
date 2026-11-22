@@ -23,7 +23,16 @@ export const PUT = route(async (req, ctx) => {
   const { page } = await loadPageForEditor(id);
   const draft = await readJson(req, pageDraftSchema, { maxBytes: 256 * 1024 });
   await assertSectionMedia(draft.sections);
-  await db.page.update({ where: { id: page.id }, data: { draftData: draft, draftAt: new Date(), draftById: user.id } });
-  await audit({ actorId: user.id, action: "page.draft_save", entity: "Page", entityId: page.id, diff: { sections: draft.sections.length } });
+  await db.page.update({
+    where: { id: page.id },
+    data: { draftData: draft, draftAt: new Date(), draftById: user.id },
+  });
+  await audit({
+    actorId: user.id,
+    action: "page.draft_save",
+    entity: "Page",
+    entityId: page.id,
+    diff: { sections: draft.sections.length },
+  });
   return json({ ok: true, page: editorShape(await loadPageForEditor(id)) });
 });

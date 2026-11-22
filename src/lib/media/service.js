@@ -37,23 +37,39 @@ const fmt = (bytes) => `${(bytes / (1024 * 1024)).toFixed(bytes < 1024 * 1024 ? 
 export function validateBuffer(buffer, expectedKind, limits) {
   const max = maxBytesFor(expectedKind, limits);
   if (!buffer?.length) throw new HttpError(400, "The file is empty.");
-  if (buffer.length > max) throw new HttpError(413, `The file is ${fmt(buffer.length)}; the limit is ${fmt(max)}.`);
-  if (looksLikeMarkup(buffer)) throw new HttpError(415, "SVG, HTML and XML files are not accepted. Upload JPG, PNG, WEBP, AVIF or PDF.");
+  if (buffer.length > max)
+    throw new HttpError(413, `The file is ${fmt(buffer.length)}; the limit is ${fmt(max)}.`);
+  if (looksLikeMarkup(buffer))
+    throw new HttpError(415, "SVG, HTML and XML files are not accepted. Upload JPG, PNG, WEBP, AVIF or PDF.");
   const type = detectFileType(buffer);
   if (!type) throw new HttpError(415, "This file type is not accepted. Upload JPG, PNG, WEBP, AVIF or PDF.");
-  if (type.kind !== expectedKind) throw new HttpError(415, expectedKind === "pdf" ? "Please choose a PDF file." : "Please choose an image file.");
+  if (type.kind !== expectedKind)
+    throw new HttpError(
+      415,
+      expectedKind === "pdf" ? "Please choose a PDF file." : "Please choose an image file.",
+    );
 
   let width = null;
   let height = null;
   if (type.kind === "image") {
     const size = imageSize(buffer, type.ext);
-    if (!dimensionsAcceptable(size)) throw new HttpError(415, "The image dimensions could not be read or are too large (max 12,000 px per side).");
+    if (!dimensionsAcceptable(size))
+      throw new HttpError(
+        415,
+        "The image dimensions could not be read or are too large (max 12,000 px per side).",
+      );
     ({ width, height } = size);
   } else {
     const reason = pdfActiveContent(buffer);
     if (reason) throw new HttpError(415, `This PDF ${reason}, so it was not accepted.`);
   }
-  return { ...type, width, height, bytes: buffer.length, sha256: createHash("sha256").update(buffer).digest("hex") };
+  return {
+    ...type,
+    width,
+    height,
+    bytes: buffer.length,
+    sha256: createHash("sha256").update(buffer).digest("hex"),
+  };
 }
 
 /** Store validated bytes (URL uploads, local driver). Returns delivery facts. */
@@ -61,7 +77,14 @@ export async function storeBuffer(driver, id, kind, buffer, info, { overwrite = 
   if (driver === "local") {
     await localSave(id, info.ext, buffer);
     if (overwrite) await localDeleteOthers(id, info.ext);
-    return { publicId: id, url: localUrl(id, info.ext), bytes: info.bytes, format: info.ext, width: info.width, height: info.height };
+    return {
+      publicId: id,
+      url: localUrl(id, info.ext),
+      bytes: info.bytes,
+      format: info.ext,
+      width: info.width,
+      height: info.height,
+    };
   }
   const r = await cloud.uploadBuffer(id, kind, buffer, { overwrite });
   return { ...r, format: r.format ?? info.ext };
@@ -80,7 +103,15 @@ export async function inspectUploaded(driver, id, kind, limits) {
       try {
         const info = validateBuffer(buf, kind, limits);
         if (info.ext !== ext) throw new HttpError(415, "The file content does not match its type.");
-        return { publicId: id, url: localUrl(id, ext), bytes: info.bytes, format: ext, width: info.width, height: info.height, sha256: info.sha256 };
+        return {
+          publicId: id,
+          url: localUrl(id, ext),
+          bytes: info.bytes,
+          format: ext,
+          width: info.width,
+          height: info.height,
+          sha256: info.sha256,
+        };
       } catch (err) {
         await localDelete(id, ext);
         throw err;
@@ -96,7 +127,15 @@ export async function inspectUploaded(driver, id, kind, limits) {
     if (res.bytes > max) throw new HttpError(413, `The file is ${fmt(res.bytes)}; the limit is ${fmt(max)}.`);
     const buf = await cloud.downloadStored(res.url, max);
     const info = validateBuffer(buf, kind, limits);
-    return { publicId: fullId, url: res.url, bytes: res.bytes, format: res.format ?? info.ext, width: res.width ?? info.width, height: res.height ?? info.height, sha256: info.sha256 };
+    return {
+      publicId: fullId,
+      url: res.url,
+      bytes: res.bytes,
+      format: res.format ?? info.ext,
+      width: res.width ?? info.width,
+      height: res.height ?? info.height,
+      sha256: info.sha256,
+    };
   } catch (err) {
     await cloud.destroy(fullId, kind);
     if (err instanceof HttpError) throw err;
@@ -141,10 +180,19 @@ export function serializeAsset(a) {
  */
 export async function assetUsage(id) {
   const [categories, products, gallery, docs, industries, posts, logos, galleryItems] = await Promise.all([
-    db.productCategory.findMany({ where: { imageId: id, deletedAt: null }, select: { id: true, name: true } }),
+    db.productCategory.findMany({
+      where: { imageId: id, deletedAt: null },
+      select: { id: true, name: true },
+    }),
     db.product.findMany({ where: { imageId: id, deletedAt: null }, select: { id: true, name: true } }),
-    db.productImage.findMany({ where: { mediaId: id }, select: { product: { select: { id: true, name: true } } } }),
-    db.productDocument.findMany({ where: { mediaId: id }, select: { type: true, product: { select: { id: true, name: true } } } }),
+    db.productImage.findMany({
+      where: { mediaId: id },
+      select: { product: { select: { id: true, name: true } } },
+    }),
+    db.productDocument.findMany({
+      where: { mediaId: id },
+      select: { type: true, product: { select: { id: true, name: true } } },
+    }),
     db.industry.findMany({ where: { imageId: id, deletedAt: null }, select: { id: true, name: true } }),
     db.post.findMany({ where: { coverId: id, deletedAt: null }, select: { id: true, title: true } }),
     db.clientLogo.findMany({ where: { mediaId: id }, select: { id: true, name: true } }),
@@ -152,7 +200,9 @@ export async function assetUsage(id) {
   ]);
   const pattern = `%${id}%`;
   const [sections, settings, seoPages] = await Promise.all([
-    db.$queryRaw(Prisma.sql`SELECT s."id", p."title", p."id" AS "pageId" FROM "Section" s JOIN "Page" p ON p."id" = s."pageId" WHERE s."data"::text LIKE ${pattern}`),
+    db.$queryRaw(
+      Prisma.sql`SELECT s."id", p."title", p."id" AS "pageId" FROM "Section" s JOIN "Page" p ON p."id" = s."pageId" WHERE s."data"::text LIKE ${pattern}`,
+    ),
     db.$queryRaw(Prisma.sql`SELECT "key" FROM "SiteSetting" WHERE "value"::text LIKE ${pattern}`),
     db.$queryRaw(Prisma.sql`SELECT "id", "title" FROM "Page" WHERE "seo"::text LIKE ${pattern}`),
   ]);
@@ -160,8 +210,14 @@ export async function assetUsage(id) {
   return [
     ...categories.map((c) => ({ label: `Category: ${c.name}`, href: `/admin/categories/${c.id}` })),
     ...products.map((p) => ({ label: `Product image: ${p.name}`, href: `/admin/products/${p.id}` })),
-    ...gallery.map((g) => ({ label: `Product gallery: ${g.product.name}`, href: `/admin/products/${g.product.id}` })),
-    ...docs.map((d) => ({ label: `${d.type} document: ${d.product.name}`, href: `/admin/products/${d.product.id}` })),
+    ...gallery.map((g) => ({
+      label: `Product gallery: ${g.product.name}`,
+      href: `/admin/products/${g.product.id}`,
+    })),
+    ...docs.map((d) => ({
+      label: `${d.type} document: ${d.product.name}`,
+      href: `/admin/products/${d.product.id}`,
+    })),
     ...industries.map((i) => ({ label: `Industry: ${i.name}`, href: `/admin/industries/${i.id}` })),
     ...posts.map((p) => ({ label: `Insight cover: ${p.title}`, href: `/admin/insights/${p.id}` })),
     ...logos.map((l) => ({ label: `Client logo: ${l.name}`, href: null })),
@@ -179,7 +235,9 @@ export async function assetUsage(id) {
 export async function assertUsableMedia(id, kind = "image") {
   const a = await db.mediaAsset.findFirst({ where: { id, deletedAt: null } });
   if (!a) throw new HttpError(400, "The chosen file no longer exists.");
-  if ((kind === "image") !== (a.type === "IMAGE")) throw new HttpError(400, kind === "image" ? "Choose an image." : "Choose a PDF.");
-  if (a.type === "IMAGE" && !a.alt.trim()) throw new HttpError(400, "Add alt text to the image before using it.");
+  if ((kind === "image") !== (a.type === "IMAGE"))
+    throw new HttpError(400, kind === "image" ? "Choose an image." : "Choose a PDF.");
+  if (a.type === "IMAGE" && !a.alt.trim())
+    throw new HttpError(400, "Add alt text to the image before using it.");
   return a;
 }

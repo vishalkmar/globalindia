@@ -30,7 +30,9 @@ export const REVISION_ENTITIES = {
  */
 export async function saveRevision({ entity, entityId, data, authorId = null, note = null }, tx = db) {
   if (!(entity in REVISION_ENTITIES)) throw new Error(`No revisions for entity ${entity}`);
-  await tx.revision.create({ data: { entity, entityId, data: redact(data), authorId, note: note?.slice(0, 200) ?? null } });
+  await tx.revision.create({
+    data: { entity, entityId, data: redact(data), authorId, note: note?.slice(0, 200) ?? null },
+  });
   const old = await tx.revision.findMany({
     where: { entity, entityId },
     orderBy: { createdAt: "desc" },

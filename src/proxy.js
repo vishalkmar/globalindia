@@ -10,7 +10,13 @@ import { NextResponse } from "next/server";
  *    (the login page then tries a silent refresh before asking for the password).
  */
 
-const PUBLIC_ADMIN = ["/admin/login", "/admin/verify", "/admin/forgot", "/admin/reset", "/admin/confirm-email"];
+const PUBLIC_ADMIN = [
+  "/admin/login",
+  "/admin/verify",
+  "/admin/forgot",
+  "/admin/reset",
+  "/admin/confirm-email",
+];
 const ACCESS_COOKIES = ["__Host-gi_at", "gi_at"];
 
 export function proxy(request) {

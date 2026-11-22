@@ -19,7 +19,13 @@ export const GET = route(async (req) => {
     },
   });
   const [rows, total] = await Promise.all([
-    db.adminUser.findMany({ where: q.where, orderBy: q.orderBy, skip: q.skip, take: q.take, select: USER_LIST_SELECT }),
+    db.adminUser.findMany({
+      where: q.where,
+      orderBy: q.orderBy,
+      skip: q.skip,
+      take: q.take,
+      select: USER_LIST_SELECT,
+    }),
     db.adminUser.count({ where: q.where }),
   ]);
   return json(listResponse({ rows, total, page: q.page, pageSize: q.pageSize }));
@@ -32,7 +38,10 @@ export const POST = route(async (req) => {
   const data = await readJson(req, inviteSchema);
 
   const exists = await db.adminUser.findUnique({ where: { email: data.email }, select: { id: true } });
-  if (exists) throw new HttpError(400, "That email already has an account.", { body: { fields: { email: "Already has an account." } } });
+  if (exists)
+    throw new HttpError(400, "That email already has an account.", {
+      body: { fields: { email: "Already has an account." } },
+    });
 
   const user = await db.adminUser.create({
     data: {
@@ -46,6 +55,13 @@ export const POST = route(async (req) => {
     select: { id: true, email: true, name: true, role: true },
   });
   await sendInvite(user, actor.name || actor.email);
-  await audit({ actorId: actor.id, action: "user.invite", entity: "AdminUser", entityId: user.id, diff: { email: user.email, role: user.role }, ipHash: hashIp(clientIp(req.headers)) });
+  await audit({
+    actorId: actor.id,
+    action: "user.invite",
+    entity: "AdminUser",
+    entityId: user.id,
+    diff: { email: user.email, role: user.role },
+    ipHash: hashIp(clientIp(req.headers)),
+  });
   return json({ ok: true, user }, { status: 201 });
 });

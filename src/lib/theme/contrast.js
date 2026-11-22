@@ -13,7 +13,11 @@ export function hexToRgb(hex) {
   const m = String(hex).trim().match(HEX);
   if (!m) throw new Error("Invalid hex colour");
   let h = m[1];
-  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  if (h.length === 3)
+    h = h
+      .split("")
+      .map((c) => c + c)
+      .join("");
   const n = parseInt(h, 16);
   return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
 }

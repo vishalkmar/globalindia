@@ -23,7 +23,8 @@ export default function cloudinaryLoader({ src, width, quality }) {
  */
 export function cropUrl(asset, aspect) {
   const { url } = asset;
-  if (!aspect || !url.startsWith("https://res.cloudinary.com/") || !url.includes("/image/upload/")) return url;
+  if (!aspect || !url.startsWith("https://res.cloudinary.com/") || !url.includes("/image/upload/"))
+    return url;
   const gravity =
     asset.focalX != null && asset.focalY != null && asset.width && asset.height
       ? `g_xy_center,x_${Math.round(asset.focalX * asset.width)},y_${Math.round(asset.focalY * asset.height)}`

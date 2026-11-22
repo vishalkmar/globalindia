@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 
 import { managedMetadata, ManagedPage } from "@/components/site/ManagedPage";
-import { PAGE_SLUG, publishedPageSlugs } from "@/lib/pages";
+import { isNestedPageSlug, PAGE_SLUG, publishedPageSlugs } from "@/lib/pages";
 
 /**
  * Admin-managed company pages: /about, /why-us, /quality, /gallery, /careers and any page added later
@@ -20,12 +20,12 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }) {
   const { page } = await params;
-  if (!PAGE_SLUG.test(page) || page === "home") return {};
+  if (!PAGE_SLUG.test(page) || page === "home" || isNestedPageSlug(page)) return {};
   return managedMetadata(page, `/${page}`);
 }
 
 export default async function CompanyPage({ params }) {
   const { page } = await params;
-  if (!PAGE_SLUG.test(page) || page === "home") notFound();
+  if (!PAGE_SLUG.test(page) || page === "home" || isNestedPageSlug(page)) notFound();
   return <ManagedPage slug={page} />;
 }

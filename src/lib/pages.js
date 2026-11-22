@@ -23,10 +23,24 @@ export async function getPublishedPage(slug) {
   try {
     const page = await db.page.findFirst({
       where: { slug, status: "PUBLISHED", deletedAt: null },
-      select: { id: true, slug: true, title: true, seo: true, updatedAt: true, sections: { orderBy: { order: "asc" } } },
+      select: {
+        id: true,
+        slug: true,
+        title: true,
+        seo: true,
+        updatedAt: true,
+        sections: { orderBy: { order: "asc" } },
+      },
     });
     if (!page) return null;
-    return { id: page.id, slug: page.slug, title: page.title, seo: page.seo ?? {}, updatedAt: page.updatedAt, sections: shapeSections(page.sections) };
+    return {
+      id: page.id,
+      slug: page.slug,
+      title: page.title,
+      seo: page.seo ?? {},
+      updatedAt: page.updatedAt,
+      sections: shapeSections(page.sections),
+    };
   } catch (err) {
     logger.error("pages.read_failed", { slug, err });
     return null;
@@ -37,7 +51,15 @@ export async function getPublishedPage(slug) {
 export async function getPreviewPage(slug) {
   const page = await db.page.findFirst({
     where: { slug, deletedAt: null },
-    select: { id: true, slug: true, title: true, seo: true, draftData: true, updatedAt: true, sections: { orderBy: { order: "asc" } } },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      seo: true,
+      draftData: true,
+      updatedAt: true,
+      sections: { orderBy: { order: "asc" } },
+    },
   });
   if (!page) return null;
   const draft = page.draftData;
@@ -52,6 +74,9 @@ export async function getPreviewPage(slug) {
   };
 }
 
+/** Pages served under their own folder (/legal/privacy is the page "legal-privacy"), never at /<slug>. */
+export const isNestedPageSlug = (slug) => slug.startsWith("legal-");
+
 /** URL-safe page slug: lowercase words joined by single hyphens (also guards the [page] route). */
 export const PAGE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+){0,6}$/;
 
@@ -61,8 +86,11 @@ export const PAGE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+){0,6}$/;
  */
 export async function publishedPageSlugs() {
   try {
-    const pages = await db.page.findMany({ where: { status: "PUBLISHED", deletedAt: null, slug: { not: "home" } }, select: { slug: true } });
-    const slugs = pages.map((p) => p.slug).filter((s) => PAGE_SLUG.test(s));
+    const pages = await db.page.findMany({
+      where: { status: "PUBLISHED", deletedAt: null, slug: { not: "home" } },
+      select: { slug: true },
+    });
+    const slugs = pages.map((p) => p.slug).filter((s) => PAGE_SLUG.test(s) && !isNestedPageSlug(s));
     return slugs.length ? slugs : ["about"];
   } catch (err) {
     logger.warn("pages.slugs", { message: err.message });

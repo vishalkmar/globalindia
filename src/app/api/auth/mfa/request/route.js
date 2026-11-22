@@ -31,23 +31,29 @@ export const POST = route(async (req) => {
   if (!target) throw new HttpError(404);
 
   if (method === "totp" && enable) {
-    if (target.id !== actor.id) throw new HttpError(403, "Only the account owner can add an authenticator app.");
+    if (target.id !== actor.id)
+      throw new HttpError(403, "Only the account owner can add an authenticator app.");
     if (!target.totpPendingEnc) throw new HttpError(400, "Scan the QR code first.");
   }
   if (!enable) {
     // Turning the authenticator off always leaves email codes on (forced on in /confirm).
     // Turning email codes off is only allowed while the authenticator is on.
-    if (method === "email" && !target.totpEnabled) throw new HttpError(400, "Keep at least one sign-in method switched on.");
-    if (method === "totp" && !target.totpEnabled) throw new HttpError(400, "The authenticator app is already off.");
-    if (method === "email" && !target.emailOtpEnabled) throw new HttpError(400, "Email codes are already off.");
+    if (method === "email" && !target.totpEnabled)
+      throw new HttpError(400, "Keep at least one sign-in method switched on.");
+    if (method === "totp" && !target.totpEnabled)
+      throw new HttpError(400, "The authenticator app is already off.");
+    if (method === "email" && !target.emailOtpEnabled)
+      throw new HttpError(400, "Email codes are already off.");
   }
-  if (enable && method === "email" && target.emailOtpEnabled) throw new HttpError(400, "Email codes are already on.");
+  if (enable && method === "email" && target.emailOtpEnabled)
+    throw new HttpError(400, "Email codes are already on.");
 
   try {
     const { requestId, sentTo } = await requestMfaChange({ actor, target, method, enable });
     return json({ ok: true, next: "confirm", requestId, sentTo });
   } catch (err) {
-    if (err instanceof OtpError) return errorResponse(429, otpErrorMessage(err), { retryAfter: err.retryAfter });
+    if (err instanceof OtpError)
+      return errorResponse(429, otpErrorMessage(err), { retryAfter: err.retryAfter });
     throw err;
   }
 });

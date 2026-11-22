@@ -10,6 +10,7 @@ import { Drawer } from "@/components/ui/Dialog";
 import { can } from "@/lib/auth/permissions";
 import { cn } from "@/lib/utils";
 
+import { EnquiryBell } from "./EnquiryBell";
 import { NAV_GROUPS, SEGMENT_LABELS } from "./nav";
 
 const ROLE_LABEL = { SUPER_ADMIN: "Super admin", EDITOR: "Editor", VIEWER: "Viewer" };
@@ -274,6 +275,7 @@ export function AdminShell({ user, children }) {
           <div className="min-w-0 flex-1">
             <Breadcrumb pathname={pathname} />
           </div>
+          {can(user, "read", "enquiries") ? <EnquiryBell /> : null}
           <UserMenu user={user} />
         </header>
         <main

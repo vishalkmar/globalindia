@@ -18,7 +18,11 @@ export const POST = route(async (req, ctx) => {
   if (!idSchema.safeParse(id).success) throw new HttpError(404);
   const theme = await db.theme.findUnique({ where: { id } });
   if (!theme) throw new HttpError(404);
-  if (!themeTokensSchema.safeParse(theme.tokens).success) throw new HttpError(400, "This theme has invalid values. Open it, fix the highlighted fields and save first.");
+  if (!themeTokensSchema.safeParse(theme.tokens).success)
+    throw new HttpError(
+      400,
+      "This theme has invalid values. Open it, fix the highlighted fields and save first.",
+    );
 
   const previous = await db.theme.findFirst({ where: { isActive: true }, select: { id: true, name: true } });
   await db.$transaction([
@@ -26,6 +30,12 @@ export const POST = route(async (req, ctx) => {
     db.theme.update({ where: { id }, data: { isActive: true } }),
   ]);
   invalidate(TAGS.theme);
-  await audit({ actorId: user.id, action: "theme.activate", entity: "Theme", entityId: id, diff: { from: previous?.name ?? null, to: theme.name } });
+  await audit({
+    actorId: user.id,
+    action: "theme.activate",
+    entity: "Theme",
+    entityId: id,
+    diff: { from: previous?.name ?? null, to: theme.name },
+  });
   return json({ ok: true });
 });

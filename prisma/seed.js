@@ -14,6 +14,8 @@ import { THEME_PRESETS } from "../src/lib/theme/presets.js";
 import { categorySchema, productSchema } from "../src/lib/validation/catalogue.js";
 import { seedAdmin } from "./seed-admin.js";
 import { seedCatalogue } from "./seed-catalogue.js";
+import { seedContent } from "./seed-content.js";
+import { LEGAL_PAGES } from "./seed-legal.js";
 import { COMPANY_PAGES } from "./seed-pages.js";
 import { assertSeedAllowed, log, upsertSetting } from "./seed-utils.js";
 
@@ -24,7 +26,13 @@ async function seedThemes() {
     await db.theme.upsert({
       where: { slug: preset.slug },
       update: {},
-      create: { slug: preset.slug, name: preset.name, tokens: preset.tokens, isPreset: true, isActive: false },
+      create: {
+        slug: preset.slug,
+        name: preset.name,
+        tokens: preset.tokens,
+        isPreset: true,
+        isActive: false,
+      },
     });
     if (i === 0) {
       const active = await db.theme.count({ where: { isActive: true } });
@@ -37,7 +45,9 @@ async function seedThemes() {
 async function seedSettings() {
   // Real defaults from docs/Content.md and Memory.md. Existing admin edits are never overwritten.
   for (const [key, value] of Object.entries(SETTING_DEFAULTS)) await upsertSetting(db, key, value);
-  await upsertSetting(db, "security", { defaultAdminEmail: process.env.SEED_ADMIN_EMAIL?.toLowerCase() ?? "" });
+  await upsertSetting(db, "security", {
+    defaultAdminEmail: process.env.SEED_ADMIN_EMAIL?.toLowerCase() ?? "",
+  });
   log("settings", Object.keys(SETTING_DEFAULTS).join(", "));
 }
 
@@ -45,9 +55,13 @@ async function seedMenus() {
   for (const [location, items] of Object.entries(MENU_DEFAULTS)) {
     if ((await db.menuItem.count({ where: { location } })) > 0) continue;
     for (const [i, item] of items.entries()) {
-      const parent = await db.menuItem.create({ data: { location, label: item.label, href: item.href, order: i } });
+      const parent = await db.menuItem.create({
+        data: { location, label: item.label, href: item.href, order: i },
+      });
       for (const [j, c] of (item.children ?? []).entries()) {
-        await db.menuItem.create({ data: { location, parentId: parent.id, label: c.label, href: c.href, order: j } });
+        await db.menuItem.create({
+          data: { location, parentId: parent.id, label: c.label, href: c.href, order: j },
+        });
       }
     }
   }
@@ -64,18 +78,30 @@ async function seedHomePage() {
       status: "PUBLISHED",
       publishedAt: new Date(),
       seo: { title: "", description: "" },
-      sections: { create: HOME_LAYOUT.map((type, order) => ({ type, order, data: SECTIONS[type].defaults, isVisible: true })) },
+      sections: {
+        create: HOME_LAYOUT.map((type, order) => ({
+          type,
+          order,
+          data: SECTIONS[type].defaults,
+          isVisible: true,
+        })),
+      },
     },
   });
   log("pages", `home with ${HOME_LAYOUT.length} sections`);
 }
 
+const ALL_PAGES = [...COMPANY_PAGES, ...LEGAL_PAGES.map((p) => ({ status: "PUBLISHED", ...p }))];
+
 async function seedCompanyPages() {
-  for (const page of COMPANY_PAGES) {
+  for (const page of ALL_PAGES) {
     if (await db.page.findUnique({ where: { slug: page.slug } })) continue;
     for (const sec of page.sections) {
       const r = SECTIONS[sec.type].schema.safeParse(sec.data);
-      if (!r.success) throw new Error(`Seed copy for ${page.slug}/${sec.type} is invalid: ${r.error.issues[0].path.join(".")} ${r.error.issues[0].message}`);
+      if (!r.success)
+        throw new Error(
+          `Seed copy for ${page.slug}/${sec.type} is invalid: ${r.error.issues[0].path.join(".")} ${r.error.issues[0].message}`,
+        );
     }
     await db.page.create({
       data: {
@@ -84,11 +110,18 @@ async function seedCompanyPages() {
         status: page.status,
         publishedAt: page.status === "PUBLISHED" ? new Date() : null,
         seo: page.seo,
-        sections: { create: page.sections.map((sec, order) => ({ type: sec.type, order, data: sec.data, isVisible: true })) },
+        sections: {
+          create: page.sections.map((sec, order) => ({
+            type: sec.type,
+            order,
+            data: sec.data,
+            isVisible: true,
+          })),
+        },
       },
     });
   }
-  log("pages", COMPANY_PAGES.map((p) => `${p.slug}${p.status === "DRAFT" ? " (draft)" : ""}`).join(", "));
+  log("pages", ALL_PAGES.map((p) => `${p.slug}${p.status === "DRAFT" ? " (draft)" : ""}`).join(", "));
 }
 
 async function main() {
@@ -101,6 +134,7 @@ async function main() {
   await seedCompanyPages();
   await seedCatalogue(db, { categorySchema, productSchema }, log);
   await seedAdmin(db);
+  await seedContent(db, log);
   console.log("Seed complete.");
 }
 

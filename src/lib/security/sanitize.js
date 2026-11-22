@@ -10,8 +10,35 @@ import sanitizeHtmlLib from "sanitize-html";
  * - Images are not allowed inside rich text (images go through the media library with alt text).
  */
 const OPTIONS = {
-  allowedTags: ["p", "br", "strong", "em", "u", "s", "h2", "h3", "h4", "ul", "ol", "li", "blockquote", "a", "code", "hr", "table", "thead", "tbody", "tr", "th", "td"],
-  allowedAttributes: { a: ["href", "target", "rel"], th: ["scope", "colspan", "rowspan"], td: ["colspan", "rowspan"] },
+  allowedTags: [
+    "p",
+    "br",
+    "strong",
+    "em",
+    "u",
+    "s",
+    "h2",
+    "h3",
+    "h4",
+    "ul",
+    "ol",
+    "li",
+    "blockquote",
+    "a",
+    "code",
+    "hr",
+    "table",
+    "thead",
+    "tbody",
+    "tr",
+    "th",
+    "td",
+  ],
+  allowedAttributes: {
+    a: ["href", "target", "rel"],
+    th: ["scope", "colspan", "rowspan"],
+    td: ["colspan", "rowspan"],
+  },
   allowedSchemes: ["http", "https", "mailto", "tel"],
   allowedSchemesAppliedToAttributes: ["href"],
   allowProtocolRelative: false,
@@ -43,5 +70,7 @@ export function sanitizeRichText(html) {
 /** Plain text only (titles, alt text, meta descriptions). */
 export function stripTags(text, max = 5000) {
   if (typeof text !== "string") return "";
-  return sanitizeHtmlLib(text.slice(0, max), { allowedTags: [], allowedAttributes: {} }).replace(/\s+/g, " ").trim();
+  return sanitizeHtmlLib(text.slice(0, max), { allowedTags: [], allowedAttributes: {} })
+    .replace(/\s+/g, " ")
+    .trim();
 }

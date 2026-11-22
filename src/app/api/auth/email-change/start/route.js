@@ -30,9 +30,14 @@ export const POST = route(async (req) => {
   const user = await db.adminUser.findUnique({ where: { id: me.id } });
   if (!(await verifyPassword(user.passwordHash, currentPassword))) {
     await audit({ actorId: me.id, action: "auth.email_change.bad_password" });
-    return errorResponse(400, "Current password is not correct.", { body: { fields: { currentPassword: "Not correct." } } });
+    return errorResponse(400, "Current password is not correct.", {
+      body: { fields: { currentPassword: "Not correct." } },
+    });
   }
-  if (newEmail === user.email) return errorResponse(400, "That is already your email address.", { body: { fields: { newEmail: "Same as current." } } });
+  if (newEmail === user.email)
+    return errorResponse(400, "That is already your email address.", {
+      body: { fields: { newEmail: "Same as current." } },
+    });
 
   const request = await db.emailChangeRequest.create({
     data: {
@@ -52,10 +57,16 @@ export const POST = route(async (req) => {
       tags: ["otp-email-change"],
     });
   } catch (err) {
-    if (err instanceof OtpError) return errorResponse(429, otpErrorMessage(err), { retryAfter: err.retryAfter });
+    if (err instanceof OtpError)
+      return errorResponse(429, otpErrorMessage(err), { retryAfter: err.retryAfter });
     throw err;
   }
 
-  await audit({ actorId: me.id, action: "auth.email_change.started", entity: "EmailChangeRequest", entityId: request.id });
+  await audit({
+    actorId: me.id,
+    action: "auth.email_change.started",
+    entity: "EmailChangeRequest",
+    entityId: request.id,
+  });
   return json({ ok: true, next: "verify", requestId: request.id, sentTo: maskEmail(user.email) });
 });

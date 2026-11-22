@@ -20,7 +20,9 @@ const ALG = "HS256";
 const encoder = new TextEncoder();
 
 function keyRing() {
-  const ring = { current: { kid: optionalEnv("JWT_ACCESS_KID", "k1"), key: encoder.encode(authEnv.jwtSecret) } };
+  const ring = {
+    current: { kid: optionalEnv("JWT_ACCESS_KID", "k1"), key: encoder.encode(authEnv.jwtSecret) },
+  };
   const prev = optionalEnv("JWT_ACCESS_SECRET_PREVIOUS");
   if (prev) ring.previous = { kid: optionalEnv("JWT_ACCESS_KID_PREVIOUS", "k0"), key: encoder.encode(prev) };
   return ring;
@@ -67,7 +69,8 @@ export async function verifyAccessToken(token) {
         maxTokenAge: `${ACCESS_TOKEN_TTL_SECONDS + 5}s`,
       },
     );
-    if (typeof payload.sub !== "string" || typeof payload.sid !== "string" || !Number.isInteger(payload.tv)) return null;
+    if (typeof payload.sub !== "string" || typeof payload.sid !== "string" || !Number.isInteger(payload.tv))
+      return null;
     if (!["SUPER_ADMIN", "EDITOR", "VIEWER"].includes(payload.role)) return null;
     return { sub: payload.sub, role: payload.role, tv: payload.tv, sid: payload.sid, jti: payload.jti };
   } catch {

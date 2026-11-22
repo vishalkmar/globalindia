@@ -24,7 +24,10 @@ export const POST = route(async (req) => {
   const claims = await verifyAccessToken(store.get(COOKIE.access)?.value);
   if (claims) {
     userId ??= claims.sub;
-    const s = await db.session.findUnique({ where: { id: claims.sid }, select: { familyId: true, userId: true } });
+    const s = await db.session.findUnique({
+      where: { id: claims.sid },
+      select: { familyId: true, userId: true },
+    });
     if (s && s.userId === claims.sub) await revokeFamily(s.familyId, "logout");
   }
 

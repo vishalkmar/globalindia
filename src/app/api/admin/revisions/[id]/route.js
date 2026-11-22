@@ -10,5 +10,14 @@ export const GET = route(async (_req, ctx) => {
   const rev = await getRevision(id);
   if (!rev || !(rev.entity in REVISION_ENTITIES)) throw new HttpError(404);
   await requirePermission("read", REVISION_ENTITIES[rev.entity]);
-  return json({ ok: true, revision: { id: rev.id, entity: rev.entity, entityId: rev.entityId, data: rev.data, createdAt: rev.createdAt } });
+  return json({
+    ok: true,
+    revision: {
+      id: rev.id,
+      entity: rev.entity,
+      entityId: rev.entityId,
+      data: rev.data,
+      createdAt: rev.createdAt,
+    },
+  });
 });

@@ -14,11 +14,19 @@ export const hashEmailChangeToken = (token) => hmac(`email-change:${token}`, aut
  * the setting follows the change so MFA approvals keep reaching the owner.
  */
 export async function applyEmailChange(tx, { userId, oldEmail, newEmail }) {
-  await tx.adminUser.update({ where: { id: userId }, data: { email: newEmail, tokenVersion: { increment: 1 } } });
-  await tx.session.updateMany({ where: { userId, revokedAt: null }, data: { revokedAt: new Date(), revokeReason: "email_changed" } });
+  await tx.adminUser.update({
+    where: { id: userId },
+    data: { email: newEmail, tokenVersion: { increment: 1 } },
+  });
+  await tx.session.updateMany({
+    where: { userId, revokedAt: null },
+    data: { revokedAt: new Date(), revokeReason: "email_changed" },
+  });
   const setting = await tx.siteSetting.findUnique({ where: { key: "security" } });
   if (setting?.value?.defaultAdminEmail?.toLowerCase() === oldEmail.toLowerCase()) {
-    await tx.siteSetting.update({ where: { key: "security" }, data: { value: { ...setting.value, defaultAdminEmail: newEmail } } });
+    await tx.siteSetting.update({
+      where: { key: "security" },
+      data: { value: { ...setting.value, defaultAdminEmail: newEmail } },
+    });
   }
 }
-

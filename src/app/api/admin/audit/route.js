@@ -28,7 +28,15 @@ export const GET = route(async (req) => {
       orderBy: q.orderBy,
       skip: q.skip,
       take: q.take,
-      select: { id: true, action: true, entity: true, entityId: true, diff: true, at: true, actor: { select: { email: true, name: true } } },
+      select: {
+        id: true,
+        action: true,
+        entity: true,
+        entityId: true,
+        diff: true,
+        at: true,
+        actor: { select: { email: true, name: true } },
+      },
     }),
     db.auditLog.count({ where: q.where }),
   ]);

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Card";
 import { IconBox, Skeleton } from "@/components/ui/Static";
 import { requirePermissionPage } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
+import { pagePublicPath } from "@/lib/pagePath";
 
 export const metadata = { title: "Pages" };
 
@@ -60,7 +61,7 @@ async function List() {
                 {p.draftAt ? <Badge tone="accent">Unpublished changes</Badge> : null}
               </p>
               <p className="text-sm text-muted">
-                <span className="font-data">{p.slug === "home" ? "/" : `/${p.slug}`}</span> ·{" "}
+                <span className="font-data">{pagePublicPath(p.slug)}</span> ·{" "}
                 {p._count.sections} sections · published {when(p.publishedAt)}
               </p>
             </div>

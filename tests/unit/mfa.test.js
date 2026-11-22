@@ -13,7 +13,18 @@ describe("TOTP (RFC 6238 / RFC 4226)", () => {
   // RFC 4226 Appendix D: secret "12345678901234567890"
   const rfcSecret = Buffer.from("12345678901234567890");
   it("matches the RFC 4226 HOTP vectors", () => {
-    const expected = ["755224", "287082", "359152", "969429", "338314", "254676", "287922", "162583", "399871", "520489"];
+    const expected = [
+      "755224",
+      "287082",
+      "359152",
+      "969429",
+      "338314",
+      "254676",
+      "287922",
+      "162583",
+      "399871",
+      "520489",
+    ];
     expected.forEach((code, counter) => expect(hotp(rfcSecret, counter)).toBe(code));
   });
 
@@ -85,7 +96,8 @@ describe("email OTP", () => {
     const { user } = await makeUser();
     const { code } = await issueOtp(user.id, "LOGIN");
     const wrong = code === "000000" ? "111111" : "000000";
-    for (let i = 0; i < OTP_MAX_ATTEMPTS - 1; i++) await expect(verifyOtp(user.id, "LOGIN", wrong)).rejects.toMatchObject({ reason: "invalid" });
+    for (let i = 0; i < OTP_MAX_ATTEMPTS - 1; i++)
+      await expect(verifyOtp(user.id, "LOGIN", wrong)).rejects.toMatchObject({ reason: "invalid" });
     await expect(verifyOtp(user.id, "LOGIN", wrong)).rejects.toMatchObject({ reason: "burnt" });
     await expect(verifyOtp(user.id, "LOGIN", code)).rejects.toBeInstanceOf(OtpError); // even the right code is dead now
   });

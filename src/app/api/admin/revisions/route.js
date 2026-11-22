@@ -10,11 +10,17 @@ export const GET = route(async (req) => {
   const entityId = params.get("entityId");
   // Records have cuid ids; settings and menus use their key / location as the id.
   const keyLike = ["settings", "menu", "gallery"].includes(entity) && /^[a-z_]{2,40}$/.test(entityId ?? "");
-  if (!Object.hasOwn(REVISION_ENTITIES, entity ?? "") || !(keyLike || idSchema.safeParse(entityId).success)) throw new HttpError(400);
+  if (!Object.hasOwn(REVISION_ENTITIES, entity ?? "") || !(keyLike || idSchema.safeParse(entityId).success))
+    throw new HttpError(400);
   await requirePermission("read", REVISION_ENTITIES[entity]);
   const rows = await listRevisions(entity, entityId);
   return json({
     ok: true,
-    revisions: rows.map((r) => ({ id: r.id, note: r.note, createdAt: r.createdAt, author: r.author?.name || r.author?.email || "System" })),
+    revisions: rows.map((r) => ({
+      id: r.id,
+      note: r.note,
+      createdAt: r.createdAt,
+      author: r.author?.name || r.author?.email || "System",
+    })),
   });
 });

@@ -20,11 +20,20 @@ export const galleryItemSchema = z.strictObject({
 });
 
 export const gallerySchema = z
-  .strictObject({ items: z.array(galleryItemSchema).max(GALLERY_MAX_ITEMS, `The gallery holds up to ${GALLERY_MAX_ITEMS} photos.`) })
+  .strictObject({
+    items: z
+      .array(galleryItemSchema)
+      .max(GALLERY_MAX_ITEMS, `The gallery holds up to ${GALLERY_MAX_ITEMS} photos.`),
+  })
   .superRefine(({ items }, ctx) => {
     const seen = new Set();
     items.forEach((item, i) => {
-      if (seen.has(item.mediaId)) ctx.addIssue({ code: "custom", path: ["items", i, "mediaId"], message: "This photo is already in the gallery." });
+      if (seen.has(item.mediaId))
+        ctx.addIssue({
+          code: "custom",
+          path: ["items", i, "mediaId"],
+          message: "This photo is already in the gallery.",
+        });
       seen.add(item.mediaId);
     });
   });

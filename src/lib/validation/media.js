@@ -13,7 +13,11 @@ export const altSchema = z
 export const signSchema = z.strictObject({
   kind: z.enum(["image", "pdf"]),
   mime: z.enum([...IMAGE_MIME, ...PDF_MIME]),
-  bytes: z.number().int().positive().max(50 * 1024 * 1024),
+  bytes: z
+    .number()
+    .int()
+    .positive()
+    .max(50 * 1024 * 1024),
   replaceId: idSchema.optional(),
 });
 

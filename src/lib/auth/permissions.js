@@ -27,7 +27,18 @@ export const RESOURCES = {
 };
 
 const ALL = ["read", "create", "update", "delete", "publish"];
-const CONTENT = ["pages", "products", "categories", "media", "enquiries", "insights", "industries", "menus", "siteSettings", "seo"];
+const CONTENT = [
+  "pages",
+  "products",
+  "categories",
+  "media",
+  "enquiries",
+  "insights",
+  "industries",
+  "menus",
+  "siteSettings",
+  "seo",
+];
 
 /** @type {Record<string, Record<string, string[]>>} */
 export const MATRIX = {
@@ -60,7 +71,8 @@ export function can(user, action, resource) {
 export function matrixMarkdown() {
   const head = `| Resource | ${ROLES.join(" | ")} |\n|---|${ROLES.map(() => "---").join("|")}|`;
   const rows = Object.entries(RESOURCES).map(
-    ([key, label]) => `| ${label} | ${ROLES.map((r) => (MATRIX[r][key] ?? []).join(", ") || "none").join(" | ")} |`,
+    ([key, label]) =>
+      `| ${label} | ${ROLES.map((r) => (MATRIX[r][key] ?? []).join(", ") || "none").join(" | ")} |`,
   );
   return [head, ...rows].join("\n");
 }

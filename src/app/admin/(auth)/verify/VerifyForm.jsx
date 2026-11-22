@@ -15,9 +15,21 @@ import { safeNext } from "@/lib/client/safeNext";
 import { cn } from "@/lib/utils";
 
 const METHODS = {
-  totp: { label: "Authenticator app", icon: Smartphone, hint: "Open your authenticator app and enter the 6-digit code for Global India." },
-  email: { label: "Email code", icon: Mail, hint: "We email a 6-digit code to your admin address. It works once, for 5 minutes." },
-  recovery: { label: "Recovery code", icon: KeyRound, hint: "Use one of the 10 backup codes you saved when you set up the authenticator." },
+  totp: {
+    label: "Authenticator app",
+    icon: Smartphone,
+    hint: "Open your authenticator app and enter the 6-digit code for Global India.",
+  },
+  email: {
+    label: "Email code",
+    icon: Mail,
+    hint: "We email a 6-digit code to your admin address. It works once, for 5 minutes.",
+  },
+  recovery: {
+    label: "Recovery code",
+    icon: KeyRound,
+    hint: "Use one of the 10 backup codes you saved when you set up the authenticator.",
+  },
 };
 
 function useCountdown() {
@@ -34,9 +46,7 @@ export function VerifyForm() {
   const router = useRouter();
   const params = useSearchParams();
   const next = safeNext(params.get("next"));
-  const available = (params.get("m") ?? "email")
-    .split(",")
-    .filter((m) => m in METHODS);
+  const available = (params.get("m") ?? "email").split(",").filter((m) => m in METHODS);
   const methods = available.length ? available : ["email"];
 
   const [method, setMethod] = useState(methods[0]);
@@ -86,11 +96,15 @@ export function VerifyForm() {
   }, [method, methods.length, sendEmailCode]);
 
   async function verify(value) {
-    const payload = method === "recovery" ? recovery : value ?? code;
+    const payload = method === "recovery" ? recovery : (value ?? code);
     if (!payload) return;
     setError("");
     setBusy(true);
-    const url = { totp: "/api/auth/verify-totp", email: "/api/auth/verify-otp", recovery: "/api/auth/verify-recovery" }[method];
+    const url = {
+      totp: "/api/auth/verify-totp",
+      email: "/api/auth/verify-otp",
+      recovery: "/api/auth/verify-recovery",
+    }[method];
     const res = await postJson(url, { code: payload });
     if (expired(res.status)) return;
     if (!res.ok) {
@@ -118,7 +132,12 @@ export function VerifyForm() {
     >
       <div className="flex flex-col gap-5">
         {methods.length > 1 ? (
-          <div role="radiogroup" aria-label="Verification method" className="grid gap-2" style={{ gridTemplateColumns: `repeat(${methods.length}, minmax(0,1fr))` }}>
+          <div
+            role="radiogroup"
+            aria-label="Verification method"
+            className="grid gap-2"
+            style={{ gridTemplateColumns: `repeat(${methods.length}, minmax(0,1fr))` }}
+          >
             {methods.map((m) => {
               const Icon = METHODS[m].icon;
               const active = m === method;
@@ -136,7 +155,9 @@ export function VerifyForm() {
                   }}
                   className={cn(
                     "flex flex-col items-center gap-1.5 rounded-btn border px-2 py-3 text-[0.8125rem] font-semibold transition-colors",
-                    active ? "border-primary bg-[color-mix(in_oklab,var(--c-primary)_6%,var(--c-card))] text-primary" : "border-line text-muted hover:text-ink",
+                    active
+                      ? "border-primary bg-[color-mix(in_oklab,var(--c-primary)_6%,var(--c-card))] text-primary"
+                      : "border-line text-muted hover:text-ink",
                   )}
                 >
                   <Icon aria-hidden="true" className="size-5" strokeWidth={1.5} />
@@ -168,7 +189,12 @@ export function VerifyForm() {
                 className="font-data tracking-widest uppercase"
               />
             </Field>
-            <Button type="submit" size="lg" loading={busy} disabled={recovery.replace(/-/g, "").length !== 10}>
+            <Button
+              type="submit"
+              size="lg"
+              loading={busy}
+              disabled={recovery.replace(/-/g, "").length !== 10}
+            >
               Verify and sign in
             </Button>
           </form>
@@ -187,7 +213,12 @@ export function VerifyForm() {
             ) : (
               <>
                 <Field label="6-digit code">
-                  <CodeInput value={code} onChange={setCode} onComplete={(c) => !busy && verify(c)} disabled={busy} />
+                  <CodeInput
+                    value={code}
+                    onChange={setCode}
+                    onComplete={(c) => !busy && verify(c)}
+                    disabled={busy}
+                  />
                 </Field>
                 <Button type="submit" size="lg" loading={busy} disabled={code.length !== 6}>
                   Verify and sign in

@@ -13,6 +13,7 @@ import { useToast } from "@/components/ui/Feedback";
 import { Checkbox, Field, Input, Textarea } from "@/components/ui/Field";
 import { Alert, Skeleton } from "@/components/ui/Static";
 import { adminJson } from "@/lib/client/adminFetch";
+import { pagePublicPath } from "@/lib/pagePath";
 import { normaliseSection, SECTIONS } from "@/lib/sections/registry";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +23,7 @@ let seq = 0;
 const key = () => `s${Date.now().toString(36)}${(seq++).toString(36)}`;
 const withKeys = (content) => ({ ...content, sections: content.sections.map((s) => ({ ...s, key: key() })) });
 const strip = (content) => ({ ...content, sections: content.sections.map(({ key: _k, ...s }) => s) });
-const publicPath = (slug) => (slug === "home" ? "/" : `/${slug}`);
+const publicPath = pagePublicPath;
 
 function summary(s) {
   const d = s.data ?? {};

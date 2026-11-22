@@ -57,7 +57,12 @@ export async function createSession(user, { userAgent = "", ipHash = "" } = {}) 
       absoluteExpiresAt: new Date(now + SESSION_ABSOLUTE_HOURS * 3600 * 1000),
     },
   });
-  const accessToken = await signAccessToken({ sub: user.id, role: user.role, tv: user.tokenVersion, sid: session.id });
+  const accessToken = await signAccessToken({
+    sub: user.id,
+    role: user.role,
+    tv: user.tokenVersion,
+    sid: session.id,
+  });
   return { accessToken, refreshToken: token, session };
 }
 
@@ -76,7 +81,13 @@ export async function rotateSession(presentedToken, { userAgent = "", ipHash = "
   // Reuse of an already rotated/revoked token -> revoke the whole family.
   if (current.revokedAt || current.replacedById) {
     await revokeFamily(current.familyId, "refresh_token_reuse");
-    await audit({ actorId: current.userId, action: "auth.refresh.reuse_detected", entity: "Session", entityId: current.familyId, ipHash });
+    await audit({
+      actorId: current.userId,
+      action: "auth.refresh.reuse_detected",
+      entity: "Session",
+      entityId: current.familyId,
+      ipHash,
+    });
     logger.warn("auth.refresh.reuse_detected", { userId: current.userId });
     throw new RefreshError("reused", current.userId);
   }
@@ -108,7 +119,9 @@ export async function rotateSession(presentedToken, { userAgent = "", ipHash = "
         ipHash: ipHash || current.ipHash,
         createdAt: current.createdAt, // family start, shown in the sessions list
         lastUsedAt: now,
-        expiresAt: new Date(Math.min(now.getTime() + REFRESH_TOKEN_TTL_SECONDS * 1000, current.absoluteExpiresAt.getTime())),
+        expiresAt: new Date(
+          Math.min(now.getTime() + REFRESH_TOKEN_TTL_SECONDS * 1000, current.absoluteExpiresAt.getTime()),
+        ),
         absoluteExpiresAt: current.absoluteExpiresAt,
       },
     });
@@ -123,7 +136,12 @@ export async function rotateSession(presentedToken, { userAgent = "", ipHash = "
   }
 
   const user = current.user;
-  const accessToken = await signAccessToken({ sub: user.id, role: user.role, tv: user.tokenVersion, sid: next.id });
+  const accessToken = await signAccessToken({
+    sub: user.id,
+    role: user.role,
+    tv: user.tokenVersion,
+    sid: next.id,
+  });
   return { accessToken, refreshToken: token, session: next, user };
 }
 
@@ -136,20 +154,29 @@ export async function revokeSessionByToken(presentedToken, reason = "logout") {
 }
 
 export async function revokeFamily(familyId, reason) {
-  return db.session.updateMany({ where: { familyId, revokedAt: null }, data: { revokedAt: new Date(), revokeReason: reason } });
+  return db.session.updateMany({
+    where: { familyId, revokedAt: null },
+    data: { revokedAt: new Date(), revokeReason: reason },
+  });
 }
 
 /** Revoke every session of a user and invalidate all access tokens (tokenVersion++). */
 export async function revokeAllForUser(userId, reason) {
   await db.$transaction([
-    db.session.updateMany({ where: { userId, revokedAt: null }, data: { revokedAt: new Date(), revokeReason: reason } }),
+    db.session.updateMany({
+      where: { userId, revokedAt: null },
+      data: { revokedAt: new Date(), revokeReason: reason },
+    }),
     db.adminUser.update({ where: { id: userId }, data: { tokenVersion: { increment: 1 } } }),
   ]);
 }
 
 /** Whether the session behind an access token is still live (latest row of a non-revoked family). */
 export async function isSessionActive(sessionId) {
-  const s = await db.session.findUnique({ where: { id: sessionId }, select: { revokedAt: true, absoluteExpiresAt: true } });
+  const s = await db.session.findUnique({
+    where: { id: sessionId },
+    select: { revokedAt: true, absoluteExpiresAt: true },
+  });
   return Boolean(s && !s.revokedAt && s.absoluteExpiresAt > new Date());
 }
 

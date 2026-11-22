@@ -24,8 +24,10 @@ const ascii = (buf, start, end) => Buffer.from(buf.subarray(start, end)).toStrin
 export function detectFileType(buf) {
   if (!buf || buf.length < 12) return null;
   if (startsWith(buf, [0xff, 0xd8, 0xff])) return { ext: "jpg", mime: IMAGE_TYPES.jpg, kind: "image" };
-  if (startsWith(buf, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return { ext: "png", mime: IMAGE_TYPES.png, kind: "image" };
-  if (ascii(buf, 0, 4) === "RIFF" && ascii(buf, 8, 12) === "WEBP") return { ext: "webp", mime: IMAGE_TYPES.webp, kind: "image" };
+  if (startsWith(buf, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]))
+    return { ext: "png", mime: IMAGE_TYPES.png, kind: "image" };
+  if (ascii(buf, 0, 4) === "RIFF" && ascii(buf, 8, 12) === "WEBP")
+    return { ext: "webp", mime: IMAGE_TYPES.webp, kind: "image" };
   if (ascii(buf, 4, 8) === "ftyp") {
     const brand = ascii(buf, 8, 12);
     if (brand === "avif" || brand === "avis") return { ext: "avif", mime: IMAGE_TYPES.avif, kind: "image" };
@@ -57,7 +59,8 @@ const STREAM_START = new RegExp("stream\\r?\\n", "g");
  */
 export function pdfActiveContent(buf) {
   const raw = Buffer.from(buf).toString("latin1");
-  if (/\/Encrypt\b/.test(raw)) return "is password-protected, so it cannot be checked. Save it as an unprotected PDF";
+  if (/\/Encrypt\b/.test(raw))
+    return "is password-protected, so it cannot be checked. Save it as an unprotected PDF";
 
   let text = raw;
   let budget = 40 * 1024 * 1024;
@@ -70,7 +73,9 @@ export function pdfActiveContent(buf) {
     const end = raw.indexOf("endstream", start);
     if (end < 0) break;
     try {
-      const out = inflateSync(Buffer.from(raw.slice(start, end), "latin1"), { maxOutputLength: 8 * 1024 * 1024 });
+      const out = inflateSync(Buffer.from(raw.slice(start, end), "latin1"), {
+        maxOutputLength: 8 * 1024 * 1024,
+      });
       budget -= out.length;
       text += "\n" + out.toString("latin1");
     } catch {

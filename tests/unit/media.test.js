@@ -28,11 +28,39 @@ function png(width, height) {
 }
 
 function jpeg(width, height) {
-  const sof = Buffer.from([0xff, 0xc0, 0x00, 0x11, 0x08, height >> 8, height & 255, width >> 8, width & 255, 0x03, 1, 0x22, 0, 2, 0x11, 1, 3, 0x11, 1]);
-  return Buffer.concat([Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]), Buffer.from("JFIF\0", "latin1"), Buffer.alloc(9), sof, Buffer.from([0xff, 0xd9])]);
+  const sof = Buffer.from([
+    0xff,
+    0xc0,
+    0x00,
+    0x11,
+    0x08,
+    height >> 8,
+    height & 255,
+    width >> 8,
+    width & 255,
+    0x03,
+    1,
+    0x22,
+    0,
+    2,
+    0x11,
+    1,
+    3,
+    0x11,
+    1,
+  ]);
+  return Buffer.concat([
+    Buffer.from([0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10]),
+    Buffer.from("JFIF\0", "latin1"),
+    Buffer.alloc(9),
+    sof,
+    Buffer.from([0xff, 0xd9]),
+  ]);
 }
 
-const cleanPdf = Buffer.from("%PDF-1.4\n1 0 obj <</Type/Catalog/Pages 2 0 R/OpenAction [3 0 R /Fit]>> endobj\ntrailer <</Root 1 0 R>>\n%%EOF");
+const cleanPdf = Buffer.from(
+  "%PDF-1.4\n1 0 obj <</Type/Catalog/Pages 2 0 R/OpenAction [3 0 R /Fit]>> endobj\ntrailer <</Root 1 0 R>>\n%%EOF",
+);
 const LIMITS = { imageBytes: 5 * 1024 * 1024, pdfBytes: 10 * 1024 * 1024, filesPerBatch: 20 };
 
 /* ---------- file type and content checks ---------- */
@@ -97,13 +125,21 @@ describe("validateBuffer (oversize, wrong type, SVG, bombs)", () => {
     expect(() => validateBuffer(png(10, 10), "pdf", LIMITS)).toThrow(/PDF/);
   });
   it("refuses SVG even when it claims to be an image", () => {
-    expect(() => validateBuffer(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'), "image", LIMITS)).toThrow(/SVG/);
+    expect(() =>
+      validateBuffer(
+        Buffer.from('<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'),
+        "image",
+        LIMITS,
+      ),
+    ).toThrow(/SVG/);
   });
   it("refuses decompression-bomb dimensions", () => {
     expect(() => validateBuffer(png(60000, 60000), "image", LIMITS)).toThrow(/dimensions/);
   });
   it("refuses a PDF with JavaScript", () => {
-    expect(() => validateBuffer(Buffer.from("%PDF-1.4 <</S/JavaScript/JS(x)>>"), "pdf", LIMITS)).toThrow(/JavaScript/);
+    expect(() => validateBuffer(Buffer.from("%PDF-1.4 <</S/JavaScript/JS(x)>>"), "pdf", LIMITS)).toThrow(
+      /JavaScript/,
+    );
   });
 });
 
@@ -131,10 +167,24 @@ vi.mock("node:dns", async (orig) => {
 
 describe("SSRF guard", () => {
   it("blocks private, loopback, link-local, metadata and mapped addresses", () => {
-    for (const ip of ["127.0.0.1", "10.1.2.3", "172.16.0.1", "192.168.1.1", "169.254.169.254", "100.64.0.1", "0.0.0.0", "::1", "fe80::1", "fd00::1", "::ffff:127.0.0.1", "224.0.0.1"]) {
+    for (const ip of [
+      "127.0.0.1",
+      "10.1.2.3",
+      "172.16.0.1",
+      "192.168.1.1",
+      "169.254.169.254",
+      "100.64.0.1",
+      "0.0.0.0",
+      "::1",
+      "fe80::1",
+      "fd00::1",
+      "::ffff:127.0.0.1",
+      "224.0.0.1",
+    ]) {
       expect(isBlockedAddress(ip), ip).toBe(true);
     }
-    for (const ip of ["93.184.216.34", "8.8.8.8", "2606:4700::6810:84e5"]) expect(isBlockedAddress(ip), ip).toBe(false);
+    for (const ip of ["93.184.216.34", "8.8.8.8", "2606:4700::6810:84e5"])
+      expect(isBlockedAddress(ip), ip).toBe(false);
   });
 
   it("refuses unsafe URL shapes before any network call", () => {
@@ -172,7 +222,9 @@ describe("upload intents", () => {
     expect(readIntent(token, "u1")).toMatchObject({ id, kind: "image", replaceId: null });
     expect(readIntent(token, "u2")).toBeNull();
     const [b64, mac] = token.split(".");
-    const forged = Buffer.from(Buffer.from(b64, "base64url").toString().replace("image", "pdf")).toString("base64url");
+    const forged = Buffer.from(Buffer.from(b64, "base64url").toString().replace("image", "pdf")).toString(
+      "base64url",
+    );
     expect(readIntent(`${forged}.${mac}`, "u1")).toBeNull();
     expect(readIntent("garbage", "u1")).toBeNull();
   });
@@ -191,12 +243,18 @@ describe("upload intents", () => {
 const cookieJar = { access: "" };
 vi.mock("next/headers", async (orig) => ({
   ...(await orig()),
-  cookies: async () => ({ get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined) }),
+  cookies: async () => ({
+    get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined),
+  }),
 }));
 
 const ORIGIN = "http://localhost:3000";
 const jsonReq = (method, body) =>
-  new Request(`${ORIGIN}/api/admin/media`, { method, headers: { "content-type": "application/json", origin: ORIGIN }, body: body ? JSON.stringify(body) : undefined });
+  new Request(`${ORIGIN}/api/admin/media`, {
+    method,
+    headers: { "content-type": "application/json", origin: ORIGIN },
+    body: body ? JSON.stringify(body) : undefined,
+  });
 
 async function asEditor() {
   const { user } = await makeUser({ role: "EDITOR" });
@@ -224,8 +282,21 @@ describe("media routes (local driver)", () => {
     const form = new FormData();
     form.set("intent", intent);
     form.set("file", new Blob([buffer]));
-    const up = await localUpload(new Request(`${ORIGIN}/api/admin/media/local-upload`, { method: "POST", headers: { origin: ORIGIN }, body: form }));
-    return { up, intent, confirmRes: up.status === 200 ? await confirm(jsonReq("POST", { intent, folder: "products", alt, originalName: "drum.png" })) : null };
+    const up = await localUpload(
+      new Request(`${ORIGIN}/api/admin/media/local-upload`, {
+        method: "POST",
+        headers: { origin: ORIGIN },
+        body: form,
+      }),
+    );
+    return {
+      up,
+      intent,
+      confirmRes:
+        up.status === 200
+          ? await confirm(jsonReq("POST", { intent, folder: "products", alt, originalName: "drum.png" }))
+          : null,
+    };
   }
 
   it("uploads an image end to end and stores the facts", async () => {
@@ -233,28 +304,45 @@ describe("media routes (local driver)", () => {
     const { confirmRes } = await upload(png(1024, 768), { alt: "Blue 200 L drums" });
     expect(confirmRes.status).toBe(201);
     const { asset } = await confirmRes.json();
-    expect(asset).toMatchObject({ type: "IMAGE", format: "png", width: 1024, height: 768, folder: "products", needsAlt: false });
+    expect(asset).toMatchObject({
+      type: "IMAGE",
+      format: "png",
+      width: 1024,
+      height: 768,
+      folder: "products",
+      needsAlt: false,
+    });
     const row = await db.mediaAsset.findUnique({ where: { id: asset.id } });
     expect(row.uploadedById).toBe(user.id);
-    expect(await db.auditLog.findFirst({ where: { action: "media.upload", entityId: asset.id } })).not.toBeNull();
+    expect(
+      await db.auditLog.findFirst({ where: { action: "media.upload", entityId: asset.id } }),
+    ).not.toBeNull();
   });
 
   it("refuses oversize and disallowed types at the sign step", async () => {
     await asEditor();
-    expect((await sign(jsonReq("POST", { kind: "image", mime: "image/png", bytes: 6 * 1024 * 1024 }))).status).toBe(413);
-    expect((await sign(jsonReq("POST", { kind: "image", mime: "image/svg+xml", bytes: 100 }))).status).toBe(400);
+    expect(
+      (await sign(jsonReq("POST", { kind: "image", mime: "image/png", bytes: 6 * 1024 * 1024 }))).status,
+    ).toBe(413);
+    expect((await sign(jsonReq("POST", { kind: "image", mime: "image/svg+xml", bytes: 100 }))).status).toBe(
+      400,
+    );
     expect((await sign(jsonReq("POST", { kind: "pdf", mime: "image/png", bytes: 100 }))).status).toBe(415);
   });
 
   it("refuses an SVG renamed to .png at the byte check", async () => {
     await asEditor();
-    const { up } = await upload(Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"></svg>'));
+    const { up } = await upload(
+      Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"></svg>'),
+    );
     expect(up.status).toBe(415);
   });
 
   it("refuses a URL that points inside the network", async () => {
     await asEditor();
-    const res = await fromUrl(jsonReq("POST", { url: "https://169.254.169.254/latest/meta-data/iam", kind: "image" }));
+    const res = await fromUrl(
+      jsonReq("POST", { url: "https://169.254.169.254/latest/meta-data/iam", kind: "image" }),
+    );
     expect(res.status).toBe(400);
     const res2 = await fromUrl(jsonReq("POST", { url: "https://evil-rebind.example/a.png", kind: "image" }));
     expect(res2.status).toBe(400);
@@ -264,7 +352,9 @@ describe("media routes (local driver)", () => {
     await asEditor();
     const { confirmRes } = await upload(png(400, 300), { alt: "Glycerine can" });
     const { asset } = await confirmRes.json();
-    await db.productCategory.create({ data: { slug: `test-cat-${Date.now()}`, name: "Test category", family: "FOOD", imageId: asset.id } });
+    await db.productCategory.create({
+      data: { slug: `test-cat-${Date.now()}`, name: "Test category", family: "FOOD", imageId: asset.id },
+    });
     const ctx = { params: Promise.resolve({ id: asset.id }) };
     const del = await item.DELETE(jsonReq("DELETE"), ctx);
     expect(del.status).toBe(409);
@@ -289,8 +379,16 @@ describe("media routes (local driver)", () => {
     const ctx = { params: Promise.resolve({ id: asset.id }) };
     const bad = await item.PATCH(jsonReq("PATCH", { alt: "<img src=x onerror=alert(1)>" }), ctx);
     expect(bad.status).toBe(400); // < and > refused by the schema
-    const ok = await item.PATCH(jsonReq("PATCH", { alt: "Soap noodles in 25 kg bags", focalX: 0.3, focalY: 0.6 }), ctx);
-    expect((await ok.json()).asset).toMatchObject({ alt: "Soap noodles in 25 kg bags", focalX: 0.3, focalY: 0.6, needsAlt: false });
+    const ok = await item.PATCH(
+      jsonReq("PATCH", { alt: "Soap noodles in 25 kg bags", focalX: 0.3, focalY: 0.6 }),
+      ctx,
+    );
+    expect((await ok.json()).asset).toMatchObject({
+      alt: "Soap noodles in 25 kg bags",
+      focalX: 0.3,
+      focalY: 0.6,
+      needsAlt: false,
+    });
     expect((await item.PATCH(jsonReq("PATCH", { focalX: 2, focalY: 0.5 }), ctx)).status).toBe(400);
   });
 
@@ -298,12 +396,20 @@ describe("media routes (local driver)", () => {
     await asEditor();
     const { confirmRes } = await upload(png(500, 500), { alt: "Old photo" });
     const { asset } = await confirmRes.json();
-    const s = await sign(jsonReq("POST", { kind: "image", mime: "image/jpeg", bytes: 200, replaceId: asset.id }));
+    const s = await sign(
+      jsonReq("POST", { kind: "image", mime: "image/jpeg", bytes: 200, replaceId: asset.id }),
+    );
     const { intent } = await s.json();
     const form = new FormData();
     form.set("intent", intent);
     form.set("file", new Blob([jpeg(640, 480)]));
-    expect((await localUpload(new Request(`${ORIGIN}/x`, { method: "POST", headers: { origin: ORIGIN }, body: form }))).status).toBe(200);
+    expect(
+      (
+        await localUpload(
+          new Request(`${ORIGIN}/x`, { method: "POST", headers: { origin: ORIGIN }, body: form }),
+        )
+      ).status,
+    ).toBe(200);
     const done = await confirm(jsonReq("POST", { intent, folder: "library", alt: "", originalName: "" }));
     const { asset: replaced } = await done.json();
     expect(replaced.id).toBe(asset.id);
@@ -325,12 +431,22 @@ describe("product documents (COA / SDS / TDS)", () => {
       const form = new FormData();
       form.set("intent", intent);
       form.set("file", new Blob([buffer]));
-      await localUpload(new Request(`${ORIGIN}/x`, { method: "POST", headers: { origin: ORIGIN }, body: form }));
-      return (await (await confirm(jsonReq("POST", { intent, folder: "documents", alt, originalName: "coa.pdf" }))).json()).asset;
+      await localUpload(
+        new Request(`${ORIGIN}/x`, { method: "POST", headers: { origin: ORIGIN }, body: form }),
+      );
+      return (
+        await (
+          await confirm(jsonReq("POST", { intent, folder: "documents", alt, originalName: "coa.pdf" }))
+        ).json()
+      ).asset;
     }
 
-    const cat = await db.productCategory.create({ data: { slug: `docs-cat-${Date.now()}`, name: "Docs", family: "PERSONAL_CARE" } });
-    const product = await db.product.create({ data: { slug: `glycerine-${Date.now()}`, name: "Refined Glycerine 99.5%", categoryId: cat.id } });
+    const cat = await db.productCategory.create({
+      data: { slug: `docs-cat-${Date.now()}`, name: "Docs", family: "PERSONAL_CARE" },
+    });
+    const product = await db.product.create({
+      data: { slug: `glycerine-${Date.now()}`, name: "Refined Glycerine 99.5%", categoryId: cat.id },
+    });
     const pdf = await put(cleanPdf, "pdf", "application/pdf", "");
     const img = await put(png(100, 100), "image", "image/png", "Drum");
     const ctx = { params: Promise.resolve({ id: product.id }) };

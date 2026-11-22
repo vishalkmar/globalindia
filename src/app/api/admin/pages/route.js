@@ -8,10 +8,24 @@ export const GET = route(async () => {
   const pages = await db.page.findMany({
     where: { deletedAt: null },
     orderBy: { slug: "asc" },
-    select: { id: true, slug: true, title: true, status: true, publishedAt: true, updatedAt: true, draftAt: true, _count: { select: { sections: true } } },
+    select: {
+      id: true,
+      slug: true,
+      title: true,
+      status: true,
+      publishedAt: true,
+      updatedAt: true,
+      draftAt: true,
+      _count: { select: { sections: true } },
+    },
   });
   return json({
     ok: true,
-    pages: pages.map((p) => ({ ...p, sectionCount: p._count.sections, hasDraft: Boolean(p.draftAt), _count: undefined })),
+    pages: pages.map((p) => ({
+      ...p,
+      sectionCount: p._count.sections,
+      hasDraft: Boolean(p.draftAt),
+      _count: undefined,
+    })),
   });
 });

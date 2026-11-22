@@ -30,7 +30,10 @@ export const POST = route(async (req) => {
   const fresh = new Date(Date.now() - PENDING_REUSE_MS);
   const candidate = generateTotpSecret();
   const claimed = await db.adminUser.updateMany({
-    where: { id: me.id, OR: [{ totpPendingEnc: null }, { totpPendingAt: null }, { totpPendingAt: { lt: fresh } }] },
+    where: {
+      id: me.id,
+      OR: [{ totpPendingEnc: null }, { totpPendingAt: null }, { totpPendingAt: { lt: fresh } }],
+    },
     data: { totpPendingEnc: seal(candidate, me.id), totpPendingAt: new Date() },
   });
 
@@ -43,7 +46,12 @@ export const POST = route(async (req) => {
   }
 
   const uri = otpauthUri({ secret, account: me.email });
-  const qrSvg = await QRCode.toString(uri, { type: "svg", margin: 1, errorCorrectionLevel: "M", color: { dark: "#16201F", light: "#FFFFFF" } });
+  const qrSvg = await QRCode.toString(uri, {
+    type: "svg",
+    margin: 1,
+    errorCorrectionLevel: "M",
+    color: { dark: "#16201F", light: "#FFFFFF" },
+  });
 
   return json({
     ok: true,

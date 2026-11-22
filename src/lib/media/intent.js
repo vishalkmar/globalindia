@@ -42,6 +42,7 @@ export function readIntent(token, userId) {
   if (!safeEqual(sign(payload), mac)) return null;
   const [id, kind, uid, replaceId, driver, exp] = payload.split("|");
   if (uid !== userId || Number(exp) < Date.now()) return null;
-  if (!PUBLIC_ID_RE.test(id) || !["image", "pdf"].includes(kind) || !["cloudinary", "local"].includes(driver)) return null;
+  if (!PUBLIC_ID_RE.test(id) || !["image", "pdf"].includes(kind) || !["cloudinary", "local"].includes(driver))
+    return null;
   return { id, kind, userId: uid, replaceId: replaceId === "-" ? null : replaceId, driver };
 }

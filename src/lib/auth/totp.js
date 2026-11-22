@@ -29,7 +29,9 @@ export function base32Encode(buf) {
 }
 
 export function base32Decode(str) {
-  const clean = String(str).toUpperCase().replace(/[\s=-]/g, "");
+  const clean = String(str)
+    .toUpperCase()
+    .replace(/[\s=-]/g, "");
   let bits = 0;
   let value = 0;
   const out = [];
@@ -56,7 +58,8 @@ export function hotp(secretBuf, counter, digits = TOTP_DIGITS) {
   msg.writeBigUInt64BE(BigInt(counter));
   const mac = createHmac("sha1", secretBuf).update(msg).digest();
   const offset = mac[mac.length - 1] & 0x0f;
-  const bin = ((mac[offset] & 0x7f) << 24) | (mac[offset + 1] << 16) | (mac[offset + 2] << 8) | mac[offset + 3];
+  const bin =
+    ((mac[offset] & 0x7f) << 24) | (mac[offset + 1] << 16) | (mac[offset + 2] << 8) | mac[offset + 3];
   return String(bin % 10 ** digits).padStart(digits, "0");
 }
 
@@ -92,6 +95,12 @@ export function verifyTotp(secretBase32, code, { window = 1, lastStep = null, no
 /** otpauth:// URI for the QR code. Label shows "Global India (email)" in the app. */
 export function otpauthUri({ secret, account, issuer = "Global India" }) {
   const label = encodeURIComponent(`${issuer}:${account}`);
-  const params = new URLSearchParams({ secret, issuer, algorithm: "SHA1", digits: String(TOTP_DIGITS), period: String(TOTP_PERIOD) });
+  const params = new URLSearchParams({
+    secret,
+    issuer,
+    algorithm: "SHA1",
+    digits: String(TOTP_DIGITS),
+    period: String(TOTP_PERIOD),
+  });
   return `otpauth://totp/${label}?${params.toString()}`;
 }

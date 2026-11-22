@@ -1,6 +1,6 @@
 import "server-only";
 
-import { tag, TAGS } from "@/lib/cache";
+import { tag, TAGS, tagWithLife } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
@@ -94,7 +94,12 @@ export async function getClientLogos() {
       db.clientLogo.findMany({
         where: { isVisible: true, media: { deletedAt: null } },
         orderBy: { order: "asc" },
-        select: { id: true, name: true, url: true, media: { select: { url: true, alt: true, width: true, height: true } } },
+        select: {
+          id: true,
+          name: true,
+          url: true,
+          media: { select: { url: true, alt: true, width: true, height: true } },
+        },
       }),
     [],
   );
@@ -105,22 +110,37 @@ export async function getTestimonials() {
   tag(TAGS.testimonials);
   return safe(
     "testimonials",
-    () => db.testimonial.findMany({ where: { isVisible: true }, orderBy: { order: "asc" }, take: 6, select: { id: true, quote: true, name: true, role: true, company: true, city: true } }),
+    () =>
+      db.testimonial.findMany({
+        where: { isVisible: true },
+        orderBy: { order: "asc" },
+        take: 6,
+        select: { id: true, quote: true, name: true, role: true, company: true, city: true },
+      }),
     [],
   );
 }
 
 export async function getLatestPosts(limit = 3) {
   "use cache";
-  tag(TAGS.posts, TAGS.media);
+  tagWithLife("hours", TAGS.posts, TAGS.media); // scheduled posts appear within the hour
+
   return safe(
     "posts",
     () =>
       db.post.findMany({
-        where: { ...PUBLISHED, publishedAt: { not: null } },
+        where: { ...PUBLISHED, publishedAt: { lte: new Date() } },
         orderBy: { publishedAt: "desc" },
         take: limit,
-        select: { id: true, slug: true, title: true, excerpt: true, category: true, publishedAt: true, cover: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } } },
+        select: {
+          id: true,
+          slug: true,
+          title: true,
+          excerpt: true,
+          category: true,
+          publishedAt: true,
+          cover: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } },
+        },
       }),
     [],
   );
@@ -135,7 +155,12 @@ export async function getGalleryItems() {
       db.galleryItem.findMany({
         where: { isVisible: true, media: { deletedAt: null } },
         orderBy: [{ order: "asc" }, { createdAt: "asc" }],
-        select: { id: true, caption: true, category: true, media: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } } },
+        select: {
+          id: true,
+          caption: true,
+          category: true,
+          media: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } },
+        },
       }),
     [],
   );

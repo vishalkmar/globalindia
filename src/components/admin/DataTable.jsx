@@ -37,6 +37,7 @@ export function DataTable({
   empty,
   reloadKey = 0,
   caption,
+  onQuery,
 }) {
   const [q, setQ] = useState("");
   const [debounced, setDebounced] = useState("");
@@ -63,6 +64,11 @@ export function DataTable({
     for (const [k, v] of Object.entries(filterValues)) if (v) p.set(k, v);
     return p.toString();
   }, [page, debounced, sort, filterValues]);
+
+  // Lets the page build links that follow the current search and filters (e.g. "Export this view").
+  useEffect(() => {
+    onQuery?.(query);
+  }, [query, onQuery]);
 
   useEffect(() => {
     let live = true;

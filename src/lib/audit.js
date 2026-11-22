@@ -12,7 +12,14 @@ import { logger, redact } from "@/lib/logger";
 export async function audit({ actorId = null, action, entity, entityId, diff, ipHash = "" }) {
   try {
     await db.auditLog.create({
-      data: { actorId, action, entity: entity ?? null, entityId: entityId ?? null, diff: diff ? redact(diff) : undefined, ipHash },
+      data: {
+        actorId,
+        action,
+        entity: entity ?? null,
+        entityId: entityId ?? null,
+        diff: diff ? redact(diff) : undefined,
+        ipHash,
+      },
     });
   } catch (err) {
     logger.error("audit.write_failed", { action, err });

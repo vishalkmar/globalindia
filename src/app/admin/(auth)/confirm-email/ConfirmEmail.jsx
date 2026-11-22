@@ -29,7 +29,10 @@ export function ConfirmEmail() {
   }
 
   return (
-    <AuthCard title="Confirm new email" description="This makes this inbox the sign-in email for your admin account.">
+    <AuthCard
+      title="Confirm new email"
+      description="This makes this inbox the sign-in email for your admin account."
+    >
       {state === "done" ? (
         <div className="flex flex-col gap-5">
           <Alert tone="success" title="Email changed">

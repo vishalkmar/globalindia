@@ -72,7 +72,8 @@ export function assertSafeUrl(raw) {
     throw new SafeFetchError("That is not a valid web address.");
   }
   if (url.protocol !== "https:") throw new SafeFetchError("Only https:// links are allowed.");
-  if (url.username || url.password) throw new SafeFetchError("Links with a user name or password are not allowed.");
+  if (url.username || url.password)
+    throw new SafeFetchError("Links with a user name or password are not allowed.");
   if (url.port && url.port !== "443") throw new SafeFetchError("Only the standard https port is allowed.");
   const host = url.hostname.replace(/^\[|\]$/g, "");
   if (isIP(host) && isBlockedAddress(host)) throw new SafeFetchError("That address is not allowed.");
@@ -101,7 +102,10 @@ function once(url, { timeoutMs, maxBytes, accept }) {
       {
         method: "GET",
         lookup: guardedLookup,
-        headers: { "user-agent": "GlobalIndia-MediaFetch/1.0", accept: accept.length ? accept.join(", ") : "*/*" },
+        headers: {
+          "user-agent": "GlobalIndia-MediaFetch/1.0",
+          accept: accept.length ? accept.join(", ") : "*/*",
+        },
         timeout: timeoutMs,
       },
       (res) => {
@@ -114,7 +118,10 @@ function once(url, { timeoutMs, maxBytes, accept }) {
           res.resume();
           return reject(new SafeFetchError(`The link answered with status ${status}.`));
         }
-        const type = String(res.headers["content-type"] ?? "").split(";")[0].trim().toLowerCase();
+        const type = String(res.headers["content-type"] ?? "")
+          .split(";")[0]
+          .trim()
+          .toLowerCase();
         if (accept.length && !accept.includes(type)) {
           res.resume();
           return reject(new SafeFetchError("The link does not point to an allowed file type."));
@@ -133,12 +140,16 @@ function once(url, { timeoutMs, maxBytes, accept }) {
             reject(new SafeFetchError("The file at that link is too large."));
           } else chunks.push(c);
         });
-        res.on("end", () => resolve({ body: Buffer.concat(chunks), contentType: type, finalUrl: url.toString() }));
+        res.on("end", () =>
+          resolve({ body: Buffer.concat(chunks), contentType: type, finalUrl: url.toString() }),
+        );
         res.on("error", reject);
       },
     );
     req.on("timeout", () => req.destroy(new SafeFetchError("The link took too long to answer.")));
-    req.on("error", (e) => reject(e instanceof SafeFetchError ? e : new SafeFetchError("The link could not be reached.")));
+    req.on("error", (e) =>
+      reject(e instanceof SafeFetchError ? e : new SafeFetchError("The link could not be reached.")),
+    );
     req.end();
   });
 }

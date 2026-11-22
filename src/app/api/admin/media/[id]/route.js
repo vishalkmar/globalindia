@@ -12,7 +12,10 @@ import { assetUpdateSchema } from "@/lib/validation/media";
 async function load(ctx) {
   const { id } = await ctx.params;
   if (!idSchema.safeParse(id).success) throw new HttpError(404);
-  const asset = await db.mediaAsset.findFirst({ where: { id, deletedAt: null }, include: { uploadedBy: { select: { name: true, email: true } } } });
+  const asset = await db.mediaAsset.findFirst({
+    where: { id, deletedAt: null },
+    include: { uploadedBy: { select: { name: true, email: true } } },
+  });
   if (!asset) throw new HttpError(404);
   return asset;
 }
@@ -31,15 +34,23 @@ export const PATCH = route(async (req, ctx) => {
   const asset = await load(ctx);
   const changes = await readJson(req, assetUpdateSchema);
   if (changes.alt !== undefined) changes.alt = stripTags(changes.alt, 200);
-  if ((changes.focalX !== undefined) !== (changes.focalY !== undefined)) throw new HttpError(400, "Send both focal coordinates.");
-  if (asset.type === "PDF" && (changes.focalX !== undefined)) throw new HttpError(400, "PDFs have no focal point.");
+  if ((changes.focalX !== undefined) !== (changes.focalY !== undefined))
+    throw new HttpError(400, "Send both focal coordinates.");
+  if (asset.type === "PDF" && changes.focalX !== undefined)
+    throw new HttpError(400, "PDFs have no focal point.");
   const updated = await db.mediaAsset.update({
     where: { id: asset.id },
     data: changes,
     include: { uploadedBy: { select: { name: true, email: true } } },
   });
   invalidate(TAGS.mediaItem(asset.id), TAGS.media);
-  await audit({ actorId: user.id, action: "media.update", entity: "MediaAsset", entityId: asset.id, diff: changes });
+  await audit({
+    actorId: user.id,
+    action: "media.update",
+    entity: "MediaAsset",
+    entityId: asset.id,
+    diff: changes,
+  });
   return json({ ok: true, asset: serializeAsset(updated) });
 });
 
@@ -53,10 +64,19 @@ export const DELETE = route(async (req, ctx) => {
   const asset = await load(ctx);
   const usage = await assetUsage(asset.id);
   if (usage.length) {
-    throw new HttpError(409, "This file is still in use. Remove it from these places first.", { body: { usage } });
+    throw new HttpError(409, "This file is still in use. Remove it from these places first.", {
+      body: { usage },
+    });
   }
   await db.mediaAsset.update({ where: { id: asset.id }, data: { deletedAt: new Date() } });
   invalidate(TAGS.mediaItem(asset.id), TAGS.media);
-  await audit({ actorId: user.id, action: "media.delete", entity: "MediaAsset", entityId: asset.id, diff: { originalName: asset.originalName }, ipHash: hashIp(clientIp(req.headers)) });
+  await audit({
+    actorId: user.id,
+    action: "media.delete",
+    entity: "MediaAsset",
+    entityId: asset.id,
+    diff: { originalName: asset.originalName },
+    ipHash: hashIp(clientIp(req.headers)),
+  });
   return json({ ok: true });
 });

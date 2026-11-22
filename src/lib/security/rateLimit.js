@@ -24,6 +24,9 @@ export const LIMITS = {
   search: { limit: 60, windowSec: 60 }, // per IP
   consent: { limit: 30, windowSec: 60 }, // per IP
   upload: { limit: 60, windowSec: 60 * 60 }, // files per admin per hour (Phase 22 tunes this)
+  enquiryIp: { limit: 6, windowSec: 10 * 60 }, // public forms per IP
+  enquiryEmail: { limit: 5, windowSec: 60 * 60 }, // public forms per email address
+  newsletterIp: { limit: 5, windowSec: 60 * 60 },
 };
 
 /**
@@ -32,7 +35,8 @@ export const LIMITS = {
  */
 function effectiveLimit(name) {
   const cfg = LIMITS[name];
-  if (process.env.NODE_ENV !== "production" && process.env.E2E_RELAXED_LIMITS === "1") return { ...cfg, limit: cfg.limit * 20 };
+  if (process.env.NODE_ENV !== "production" && process.env.E2E_RELAXED_LIMITS === "1")
+    return { ...cfg, limit: cfg.limit * 20 };
   return cfg;
 }
 
@@ -46,7 +50,12 @@ function upstash(name, { limit, windowSec }) {
   if (!upstashCache.has(name)) {
     upstashCache.set(
       name,
-      new Ratelimit({ redis, limiter: Ratelimit.slidingWindow(limit, `${windowSec} s`), prefix: `gi:rl:${name}`, analytics: false }),
+      new Ratelimit({
+        redis,
+        limiter: Ratelimit.slidingWindow(limit, `${windowSec} s`),
+        prefix: `gi:rl:${name}`,
+        analytics: false,
+      }),
     );
   }
   return upstashCache.get(name);

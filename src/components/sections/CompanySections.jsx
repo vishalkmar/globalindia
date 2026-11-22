@@ -1,4 +1,4 @@
-import { ArrowRight, Check, ImageIcon, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Check, FileDown, ImageIcon, Mail, MapPin, Phone } from "lucide-react";
 
 import { Breadcrumb } from "@/components/site/Breadcrumb";
 import { Button } from "@/components/ui/Button";
@@ -10,7 +10,7 @@ import { getGalleryItems } from "@/lib/sections/data";
 import { iconFor } from "@/lib/sections/icons";
 import { sanitizeRichText } from "@/lib/security/sanitize";
 import { getMedia } from "@/lib/site-data";
-import { cn } from "@/lib/utils";
+import { cn, formatBytes } from "@/lib/utils";
 
 import { GalleryGrid } from "./GalleryGrid";
 
@@ -444,6 +444,49 @@ export function Openings({ data, tone, ctx }) {
             ) : null}
           </p>
         ) : null}
+      </Container>
+    </Section>
+  );
+}
+
+/* Downloads (Phase 15 todo 16): PDFs from the media library */
+export async function Downloads({ data, tone }) {
+  const files = (
+    await Promise.all(data.items.map(async (i) => ({ ...i, media: await getMedia(i.mediaId) })))
+  ).filter((f) => f.media?.type === "PDF");
+  return (
+    <Section tone={tone}>
+      <Container className="flex flex-col gap-8">
+        <Heading d={data} />
+        {files.length ? (
+          <ul className="grid gap-3 md:grid-cols-2" data-testid="downloads">
+            {files.map((f) => (
+              <li key={f.mediaId}>
+                <a
+                  href={f.media.url}
+                  download
+                  className="flex items-start gap-4 rounded-card border border-line bg-card px-5 py-4 transition-colors hover:border-primary"
+                >
+                  <FileDown aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" />
+                  <span className="flex flex-col gap-0.5">
+                    <span className="font-semibold text-ink">{f.title}</span>
+                    {f.text ? <span className="text-sm text-muted">{f.text}</span> : null}
+                    <span className="text-[0.8125rem] text-muted">
+                      PDF{f.media.bytes ? ` · ${formatBytes(f.media.bytes)}` : ""}
+                    </span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="flex flex-col items-start gap-4 rounded-card border border-dashed border-line p-8">
+            <p className="text-muted">{data.emptyText}</p>
+            <Button href="/contact#contact" variant="secondary" size="sm">
+              Ask for the product list
+            </Button>
+          </div>
+        )}
       </Container>
     </Section>
   );

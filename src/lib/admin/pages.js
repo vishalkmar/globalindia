@@ -37,6 +37,10 @@ export async function assertSectionMedia(sections) {
     for (const key of ["imageId"]) {
       if (s.data?.[key]) await assertUsableMedia(s.data[key], "image");
     }
+    // Downloads section: every file must be a live PDF.
+    for (const item of s.type === "downloads" ? (s.data?.items ?? []) : []) {
+      if (item.mediaId) await assertUsableMedia(item.mediaId, "pdf");
+    }
   }
 }
 

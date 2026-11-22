@@ -22,8 +22,16 @@ export const GET = route(async (_req, ctx) => {
   const row = await db.siteSetting.findUnique({ where: { key } });
   const value = normaliseSetting(key, row?.value);
   const ids = (MEDIA_FIELDS[key] ?? []).map((f) => value[f]).filter(Boolean);
-  const assets = ids.length ? await db.mediaAsset.findMany({ where: { id: { in: ids }, deletedAt: null } }) : [];
-  return json({ ok: true, key, value, updatedAt: row?.updatedAt ?? null, media: Object.fromEntries(assets.map((a) => [a.id, serializeAsset(a)])) });
+  const assets = ids.length
+    ? await db.mediaAsset.findMany({ where: { id: { in: ids }, deletedAt: null } })
+    : [];
+  return json({
+    ok: true,
+    key,
+    value,
+    updatedAt: row?.updatedAt ?? null,
+    media: Object.fromEntries(assets.map((a) => [a.id, serializeAsset(a)])),
+  });
 });
 
 /**
@@ -40,13 +48,26 @@ export const PUT = route(async (req, ctx) => {
 
   const before = await db.siteSetting.findUnique({ where: { key } });
   const saved = await db.$transaction(async (tx) => {
-    const row = await tx.siteSetting.upsert({ where: { key }, update: { value, updatedBy: user.id }, create: { key, value, updatedBy: user.id } });
+    const row = await tx.siteSetting.upsert({
+      where: { key },
+      update: { value, updatedBy: user.id },
+      create: { key, value, updatedBy: user.id },
+    });
     await saveRevision({ entity: "settings", entityId: key, data: value, authorId: user.id }, tx);
     return row;
   });
 
   invalidate(TAGS.setting(key));
-  const action = key === "maintenance" && before?.value?.enabled !== value.enabled ? `settings.maintenance_${value.enabled ? "on" : "off"}` : "settings.update";
-  await audit({ actorId: user.id, action, entity: "SiteSetting", entityId: key, diff: { before: before?.value ?? null, after: value } });
+  const action =
+    key === "maintenance" && before?.value?.enabled !== value.enabled
+      ? `settings.maintenance_${value.enabled ? "on" : "off"}`
+      : "settings.update";
+  await audit({
+    actorId: user.id,
+    action,
+    entity: "SiteSetting",
+    entityId: key,
+    diff: { before: before?.value ?? null, after: value },
+  });
   return json({ ok: true, value, updatedAt: saved.updatedAt });
 });

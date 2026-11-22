@@ -23,6 +23,9 @@ export const TAGS = {
   category: (slug) => `category:${slug}`,
   redirects: "redirects",
   posts: "posts",
+  post: (slug) => `post:${slug}`,
+  industries: "industries",
+  faqs: "faqs",
   testimonials: "testimonials",
   clientLogos: "client-logos",
   gallery: "gallery",
@@ -33,6 +36,16 @@ export function tag(...tags) {
   try {
     cacheTag(...tags);
     cacheLife("max");
+  } catch {
+    /* not inside a cache scope (tests) */
+  }
+}
+
+/** Like tag(), with a shorter life (e.g. "hours") for data that changes with the clock (scheduled posts). */
+export function tagWithLife(profile, ...tags) {
+  try {
+    cacheTag(...tags);
+    cacheLife(profile);
   } catch {
     /* not inside a cache scope (tests) */
   }

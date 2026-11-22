@@ -100,6 +100,19 @@ export function assertSameOrigin(req) {
     if (!allowed.has(origin)) throw new HttpError(403, errorMessages[403]);
     return;
   }
-  if (fetchSite && fetchSite !== "same-origin" && fetchSite !== "none") throw new HttpError(403, errorMessages[403]);
+  if (fetchSite && fetchSite !== "same-origin" && fetchSite !== "none")
+    throw new HttpError(403, errorMessages[403]);
   if (!fetchSite && process.env.NODE_ENV === "production") throw new HttpError(403, errorMessages[403]);
+}
+
+/** Read one cookie from a request (NextRequest or a plain Request, e.g. in tests). */
+export function cookieValue(req, name) {
+  const fromNext = req.cookies?.get?.(name)?.value;
+  if (fromNext !== undefined) return fromNext;
+  const header = req.headers.get("cookie") ?? "";
+  for (const part of header.split(";")) {
+    const [k, ...v] = part.trim().split("=");
+    if (k === name) return decodeURIComponent(v.join("="));
+  }
+  return undefined;
 }

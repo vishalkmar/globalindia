@@ -1,4 +1,6 @@
 import {
+  BadgeCheck,
+  CircleHelp,
   Factory,
   FileText,
   FolderTree,
@@ -10,6 +12,7 @@ import {
   Newspaper,
   Package,
   Palette,
+  Quote,
   ScrollText,
   Search,
   Settings,
@@ -34,15 +37,18 @@ export const NAV_GROUPS = [
       { href: "/admin/pages", label: "Pages", icon: FileText, resource: "pages" },
       { href: "/admin/products", label: "Products", icon: Package, resource: "products" },
       { href: "/admin/categories", label: "Categories", icon: FolderTree, resource: "categories" },
-      { href: "/admin/industries", label: "Industries", icon: Factory, resource: "industries", phase: 15 },
-      { href: "/admin/insights", label: "Insights", icon: Newspaper, resource: "insights", phase: 15 },
+      { href: "/admin/industries", label: "Industries", icon: Factory, resource: "industries" },
+      { href: "/admin/insights", label: "Insights", icon: Newspaper, resource: "insights" },
       { href: "/admin/media", label: "Media", icon: Images, resource: "media" },
       { href: "/admin/gallery", label: "Gallery", icon: GalleryHorizontalEnd, resource: "media" },
+      { href: "/admin/faqs", label: "FAQ", icon: CircleHelp, resource: "pages" },
+      { href: "/admin/testimonials", label: "Testimonials", icon: Quote, resource: "pages" },
+      { href: "/admin/client-logos", label: "Client logos", icon: BadgeCheck, resource: "media" },
     ],
   },
   {
     label: "Leads",
-    items: [{ href: "/admin/enquiries", label: "Enquiries", icon: Inbox, resource: "enquiries", phase: 14 }],
+    items: [{ href: "/admin/enquiries", label: "Enquiries", icon: Inbox, resource: "enquiries" }],
   },
   {
     label: "Website",
@@ -71,4 +77,6 @@ export const SEGMENT_LABELS = {
   security: "My security",
   forbidden: "No access",
   components: "Components",
+  faqs: "FAQ",
+  "client-logos": "Client logos",
 };

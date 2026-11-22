@@ -1,6 +1,6 @@
 "use client";
 
-import { Plus, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Plus, Trash2, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -217,7 +217,17 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
 
   if (type === "repeater") {
     const list = Array.isArray(value) ? value : [];
-    const blank = Object.fromEntries(def.fields.map((s) => [s.name, s.type === "checkbox" ? false : ""]));
+    const blank = Object.fromEntries(
+      def.fields.map((s) => [
+        s.name,
+        s.default ?? (s.type === "checkbox" ? false : s.type === "media" ? null : ""),
+      ]),
+    );
+    const move = (i, step) => {
+      const next = [...list];
+      [next[i], next[i + step]] = [next[i + step], next[i]];
+      onChange(next);
+    };
     return (
       <fieldset className="flex flex-col gap-3 rounded-card border border-line p-4">
         <legend className="px-1 text-label text-ink">{def.label}</legend>
@@ -238,15 +248,38 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
                 />
               ))}
             </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              aria-label={`Remove ${def.itemLabel ?? "item"} ${i + 1}`}
-              onClick={() => onChange(list.filter((_, j) => j !== i))}
-              className="mt-6"
-            >
-              <Trash2 aria-hidden="true" />
-            </Button>
+            <div className="mt-6 flex flex-col gap-1">
+              {def.sortable ? (
+                <>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={`Move ${def.itemLabel ?? "item"} ${i + 1} up`}
+                    disabled={i === 0}
+                    onClick={() => move(i, -1)}
+                  >
+                    <ArrowUp aria-hidden="true" />
+                  </Button>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={`Move ${def.itemLabel ?? "item"} ${i + 1} down`}
+                    disabled={i === list.length - 1}
+                    onClick={() => move(i, 1)}
+                  >
+                    <ArrowDown aria-hidden="true" />
+                  </Button>
+                </>
+              ) : null}
+              <Button
+                size="icon"
+                variant="ghost"
+                aria-label={`Remove ${def.itemLabel ?? "item"} ${i + 1}`}
+                onClick={() => onChange(list.filter((_, j) => j !== i))}
+              >
+                <Trash2 aria-hidden="true" />
+              </Button>
+            </div>
           </div>
         ))}
         {error ? <p className="text-[0.8125rem] text-error">{error}</p> : null}

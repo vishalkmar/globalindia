@@ -14,7 +14,9 @@ import { makeUser } from "../helpers.js";
 const cookieJar = { access: "" };
 vi.mock("next/headers", async (orig) => ({
   ...(await orig()),
-  cookies: async () => ({ get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined) }),
+  cookies: async () => ({
+    get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined),
+  }),
 }));
 
 async function as(role) {
@@ -25,26 +27,59 @@ async function as(role) {
 }
 
 const ORIGIN = "http://localhost:3000";
-const put = (body) => new Request(`${ORIGIN}/api/admin/gallery`, { method: "PUT", headers: { "content-type": "application/json", origin: ORIGIN }, body: JSON.stringify(body) });
+const put = (body) =>
+  new Request(`${ORIGIN}/api/admin/gallery`, {
+    method: "PUT",
+    headers: { "content-type": "application/json", origin: ORIGIN },
+    body: JSON.stringify(body),
+  });
 
 let n = 0;
 async function asset(user, over = {}) {
   n += 1;
   return db.mediaAsset.create({
-    data: { publicId: `gi_gal${Date.now()}${n}`, url: `/g${n}.jpg`, type: "IMAGE", format: "jpg", bytes: 10, width: 800, height: 600, alt: `Photo ${n}`, uploadedById: user.id, driver: "local", ...over },
+    data: {
+      publicId: `gi_gal${Date.now()}${n}`,
+      url: `/g${n}.jpg`,
+      type: "IMAGE",
+      format: "jpg",
+      bytes: 10,
+      width: 800,
+      height: 600,
+      alt: `Photo ${n}`,
+      uploadedById: user.id,
+      driver: "local",
+      ...over,
+    },
   });
 }
 
 describe("company section types", () => {
   it("registers the 14 company types next to the 14 home types", () => {
-    for (const t of ["pageHero", "richText", "timeline", "factsTable", "visionMission", "valuesList", "proprietorMessage", "splitFeature", "brandList", "packaging", "iconCards", "contactBlock", "gallery", "openings"]) {
+    for (const t of [
+      "pageHero",
+      "richText",
+      "timeline",
+      "factsTable",
+      "visionMission",
+      "valuesList",
+      "proprietorMessage",
+      "splitFeature",
+      "brandList",
+      "packaging",
+      "iconCards",
+      "contactBlock",
+      "gallery",
+      "openings",
+    ]) {
       expect(SECTION_TYPES, t).toContain(t);
     }
-    expect(SECTION_TYPES).toHaveLength(28);
+    expect(SECTION_TYPES).toHaveLength(29); // + downloads (Phase 15)
   });
 
   it("rich text is sanitised on save: scripts, handlers and javascript: links are removed", () => {
-    const body = '<p onclick="x()">Hi <a href="javascript:alert(1)">link</a></p><script>alert(1)</script><img src=x onerror=alert(1)>';
+    const body =
+      '<p onclick="x()">Hi <a href="javascript:alert(1)">link</a></p><script>alert(1)</script><img src=x onerror=alert(1)>';
     const parsed = pageDraftSchema.parse({
       title: "About",
       seo: { title: "", description: "", noindex: false },
@@ -69,19 +104,35 @@ describe("company page seed copy", () => {
 
   it("covers about, why-us, quality and gallery (published) and careers (draft)", () => {
     const bySlug = Object.fromEntries(COMPANY_PAGES.map((p) => [p.slug, p.status]));
-    expect(bySlug).toEqual({ about: "PUBLISHED", "why-us": "PUBLISHED", quality: "PUBLISHED", gallery: "PUBLISHED", careers: "DRAFT" });
+    expect(bySlug).toEqual({
+      about: "PUBLISHED",
+      "why-us": "PUBLISHED",
+      quality: "PUBLISHED",
+      gallery: "PUBLISHED",
+      careers: "DRAFT",
+    });
   });
 
   it("brand names come with the supplier disclaimer", () => {
-    const brands = COMPANY_PAGES.find((p) => p.slug === "quality").sections.find((s) => s.type === "brandList");
+    const brands = COMPANY_PAGES.find((p) => p.slug === "quality").sections.find(
+      (s) => s.type === "brandList",
+    );
     expect(brands.data.disclaimer).toMatch(/not their manufacturer/);
   });
 });
 
 describe("[page] route", () => {
   it("prerenders published pages only, never home or drafts", async () => {
-    await db.page.upsert({ where: { slug: "about" }, update: { status: "PUBLISHED", deletedAt: null }, create: { slug: "about", title: "About", status: "PUBLISHED" } });
-    await db.page.upsert({ where: { slug: "careers" }, update: { status: "DRAFT" }, create: { slug: "careers", title: "Careers", status: "DRAFT" } });
+    await db.page.upsert({
+      where: { slug: "about" },
+      update: { status: "PUBLISHED", deletedAt: null },
+      create: { slug: "about", title: "About", status: "PUBLISHED" },
+    });
+    await db.page.upsert({
+      where: { slug: "careers" },
+      update: { status: "DRAFT" },
+      create: { slug: "careers", title: "Careers", status: "DRAFT" },
+    });
     const { publishedPageSlugs, PAGE_SLUG } = await import("@/lib/pages");
     const slugs = await publishedPageSlugs();
     expect(slugs.every((s) => PAGE_SLUG.test(s))).toBe(true);
@@ -96,18 +147,39 @@ describe("[page] route", () => {
 describe("gallery schema", () => {
   const id = "cm0000000000000000000abcd";
   it("needs a category, limits captions and refuses the same photo twice", () => {
-    expect(gallerySchema.safeParse({ items: [{ mediaId: id, caption: "", category: "  " }] }).success).toBe(false);
-    expect(gallerySchema.safeParse({ items: [{ mediaId: id, caption: "x".repeat(141), category: "Stock" }] }).success).toBe(false);
-    const dup = gallerySchema.safeParse({ items: [{ mediaId: id, category: "Stock" }, { mediaId: id, category: "Stock" }] });
+    expect(gallerySchema.safeParse({ items: [{ mediaId: id, caption: "", category: "  " }] }).success).toBe(
+      false,
+    );
+    expect(
+      gallerySchema.safeParse({ items: [{ mediaId: id, caption: "x".repeat(141), category: "Stock" }] })
+        .success,
+    ).toBe(false);
+    const dup = gallerySchema.safeParse({
+      items: [
+        { mediaId: id, category: "Stock" },
+        { mediaId: id, category: "Stock" },
+      ],
+    });
     expect(dup.success).toBe(false);
     expect(dup.error.issues[0].path).toEqual(["items", 1, "mediaId"]);
-    expect(gallerySchema.safeParse({ items: [{ mediaId: "../../etc", category: "Stock" }] }).success).toBe(false);
-    expect(gallerySchema.safeParse({ items: [{ mediaId: id, category: "Stock", extra: 1 }] }).success).toBe(false);
+    expect(gallerySchema.safeParse({ items: [{ mediaId: "../../etc", category: "Stock" }] }).success).toBe(
+      false,
+    );
+    expect(gallerySchema.safeParse({ items: [{ mediaId: id, category: "Stock", extra: 1 }] }).success).toBe(
+      false,
+    );
   });
 
   it("tidies whitespace", () => {
-    const r = gallerySchema.parse({ items: [{ mediaId: id, caption: "  Drums   ready ", category: " Dispatch " }] });
-    expect(r.items[0]).toEqual({ mediaId: id, caption: "Drums ready", category: "Dispatch", isVisible: true });
+    const r = gallerySchema.parse({
+      items: [{ mediaId: id, caption: "  Drums   ready ", category: " Dispatch " }],
+    });
+    expect(r.items[0]).toEqual({
+      mediaId: id,
+      caption: "Drums ready",
+      category: "Dispatch",
+      isVisible: true,
+    });
   });
 });
 
@@ -134,10 +206,16 @@ describe("gallery API", () => {
     expect(body.items.map((i) => i.mediaId)).toEqual([b.id, a.id, c.id]);
     expect(body.items[0].media.url).toBe(b.url);
 
-    const rows = await db.galleryItem.findMany({ where: { isVisible: true, media: { deletedAt: null } }, orderBy: { order: "asc" } });
+    const rows = await db.galleryItem.findMany({
+      where: { isVisible: true, media: { deletedAt: null } },
+      orderBy: { order: "asc" },
+    });
     expect(rows.map((r) => r.mediaId)).toEqual([b.id, a.id]);
 
-    const rev = await db.revision.findFirst({ where: { entity: "gallery", entityId: "gallery" }, orderBy: { createdAt: "desc" } });
+    const rev = await db.revision.findFirst({
+      where: { entity: "gallery", entityId: "gallery" },
+      orderBy: { createdAt: "desc" },
+    });
     expect(rev.data.items).toHaveLength(3);
     const log = await db.auditLog.findFirst({ where: { action: "gallery.update" }, orderBy: { at: "desc" } });
     expect(log.actorId).toBe(editor.id);
@@ -157,7 +235,14 @@ describe("gallery API", () => {
       [gone, /deleted/],
       [noAlt, /alt text/],
     ]) {
-      const res = await route.PUT(put({ items: [{ mediaId: ok.id, category: "Stock" }, { mediaId: bad.id, category: "Stock" }] }));
+      const res = await route.PUT(
+        put({
+          items: [
+            { mediaId: ok.id, category: "Stock" },
+            { mediaId: bad.id, category: "Stock" },
+          ],
+        }),
+      );
       expect(res.status).toBe(400);
       expect((await res.json()).fields["items.1.mediaId"]).toMatch(msg);
     }
@@ -179,7 +264,13 @@ describe("gallery API", () => {
   it("refuses cross-site requests", async () => {
     await as("EDITOR");
     const route = await import("@/app/api/admin/gallery/route");
-    const res = await route.PUT(new Request(`${ORIGIN}/api/admin/gallery`, { method: "PUT", headers: { "content-type": "application/json", origin: "https://evil.example" }, body: "{\"items\":[]}" }));
+    const res = await route.PUT(
+      new Request(`${ORIGIN}/api/admin/gallery`, {
+        method: "PUT",
+        headers: { "content-type": "application/json", origin: "https://evil.example" },
+        body: '{"items":[]}',
+      }),
+    );
     expect(res.status).toBe(403);
   });
 });

@@ -17,27 +17,41 @@ export const POST = route(async (req) => {
   assertSameOrigin(req);
   const user = await requirePermission("create", "media");
   const limited = await rateLimit("upload", user.id);
-  if (!limited.success) return errorResponse(429, "Upload limit reached for this hour. Try again later.", { retryAfter: limited.retryAfter });
+  if (!limited.success)
+    return errorResponse(429, "Upload limit reached for this hour. Try again later.", {
+      retryAfter: limited.retryAfter,
+    });
 
   const { kind, mime, bytes, replaceId } = await readJson(req, signSchema);
-  if ((kind === "pdf") !== (mime === "application/pdf")) throw new HttpError(415, "File type does not match.");
+  if ((kind === "pdf") !== (mime === "application/pdf"))
+    throw new HttpError(415, "File type does not match.");
   const limits = await uploadLimits();
   const max = maxBytesFor(kind, limits);
-  if (bytes > max) throw new HttpError(413, `This file is too large. The limit is ${Math.round(max / 1048576)} MB.`);
+  if (bytes > max)
+    throw new HttpError(413, `This file is too large. The limit is ${Math.round(max / 1048576)} MB.`);
 
   let id = newMediaId();
   if (replaceId) {
     await requirePermission("update", "media");
     const existing = await db.mediaAsset.findFirst({ where: { id: replaceId, deletedAt: null } });
     if (!existing) throw new HttpError(404);
-    if ((existing.type === "PDF") !== (kind === "pdf")) throw new HttpError(415, existing.type === "PDF" ? "Replace a PDF with a PDF." : "Replace an image with an image.");
+    if ((existing.type === "PDF") !== (kind === "pdf"))
+      throw new HttpError(
+        415,
+        existing.type === "PDF" ? "Replace a PDF with a PDF." : "Replace an image with an image.",
+      );
     id = existing.publicId.split("/").pop(); // same storage id -> same URL path, new version
   }
 
   const driver = activeDriver();
   const intent = createIntent({ id, kind, userId: user.id, replaceId: replaceId ?? null, driver });
   if (driver === "local") {
-    return json({ ok: true, driver, intent, upload: { url: "/api/admin/media/local-upload", fields: { intent } } });
+    return json({
+      ok: true,
+      driver,
+      intent,
+      upload: { url: "/api/admin/media/local-upload", fields: { intent } },
+    });
   }
   const form = directUploadForm(id, kind, { overwrite: Boolean(replaceId) });
   return json({ ok: true, driver, intent, upload: { url: form.url, fields: form.fields } });

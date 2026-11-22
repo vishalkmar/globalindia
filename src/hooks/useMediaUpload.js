@@ -37,26 +37,32 @@ export const kindOf = (file) => (file.type === "application/pdf" ? "pdf" : "imag
  * sign (server checks role/type/size) -> direct upload -> confirm (server checks the stored bytes).
  */
 export function useMediaUpload() {
-  const uploadFile = useCallback(async (file, { folder = "library", alt = "", replaceId, onProgress } = {}) => {
-    const kind = kindOf(file);
-    const signed = await adminJson("/api/admin/media/sign", {
-      method: "POST",
-      json: { kind, mime: file.type, bytes: file.size, ...(replaceId ? { replaceId } : {}) },
-    });
-    if (!signed.ok) throw new Error(signed.data?.error ?? "Upload not allowed.");
-    onProgress?.(1);
-    await xhrUpload(signed.data.upload.url, signed.data.upload.fields, file, onProgress);
-    const done = await adminJson("/api/admin/media/confirm", {
-      method: "POST",
-      json: { intent: signed.data.intent, folder, alt, originalName: file.name.slice(0, 160) },
-    });
-    if (!done.ok) throw new Error(done.data?.error ?? "The file was not accepted.");
-    onProgress?.(100);
-    return done.data.asset;
-  }, []);
+  const uploadFile = useCallback(
+    async (file, { folder = "library", alt = "", replaceId, onProgress } = {}) => {
+      const kind = kindOf(file);
+      const signed = await adminJson("/api/admin/media/sign", {
+        method: "POST",
+        json: { kind, mime: file.type, bytes: file.size, ...(replaceId ? { replaceId } : {}) },
+      });
+      if (!signed.ok) throw new Error(signed.data?.error ?? "Upload not allowed.");
+      onProgress?.(1);
+      await xhrUpload(signed.data.upload.url, signed.data.upload.fields, file, onProgress);
+      const done = await adminJson("/api/admin/media/confirm", {
+        method: "POST",
+        json: { intent: signed.data.intent, folder, alt, originalName: file.name.slice(0, 160) },
+      });
+      if (!done.ok) throw new Error(done.data?.error ?? "The file was not accepted.");
+      onProgress?.(100);
+      return done.data.asset;
+    },
+    [],
+  );
 
   const uploadFromUrl = useCallback(async (url, { kind = "image", folder = "library", alt = "" } = {}) => {
-    const res = await adminJson("/api/admin/media/from-url", { method: "POST", json: { url, kind, folder, alt } });
+    const res = await adminJson("/api/admin/media/from-url", {
+      method: "POST",
+      json: { url, kind, folder, alt },
+    });
     if (!res.ok) throw new Error(res.data?.error ?? "Could not fetch that link.");
     return res.data.asset;
   }, []);

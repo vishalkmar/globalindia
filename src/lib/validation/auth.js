@@ -15,7 +15,10 @@ export const loginSchema = z.strictObject({
   password: z.string().min(1, "Enter your password.").max(128, "Password is too long."),
 });
 
-export const otpCodeSchema = z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code.");
+export const otpCodeSchema = z
+  .string()
+  .trim()
+  .regex(/^\d{6}$/, "Enter the 6-digit code.");
 
 export const verifyCodeSchema = z.strictObject({ code: otpCodeSchema });
 

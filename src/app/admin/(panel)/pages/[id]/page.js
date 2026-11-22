@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/Static";
 import { requirePermissionPage } from "@/lib/auth/guard";
 import { can } from "@/lib/auth/permissions";
 import { db } from "@/lib/db";
+import { pagePublicPath } from "@/lib/pagePath";
 
 import { PageEditor } from "./PageEditor";
 
@@ -24,7 +25,7 @@ async function Content({ params }) {
     <>
       <PageHeader
         title={page.title}
-        description={`Address: ${page.slug === "home" ? "/" : `/${page.slug}`}`}
+        description={`Address: ${pagePublicPath(page.slug)}`}
       />
       <PageEditor
         pageId={id}

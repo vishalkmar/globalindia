@@ -1,4 +1,4 @@
-import { assertGalleryMedia,loadGallery } from "@/lib/admin/gallery";
+import { assertGalleryMedia, loadGallery } from "@/lib/admin/gallery";
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
 import { invalidate, TAGS } from "@/lib/cache";
@@ -25,11 +25,18 @@ export const PUT = route(async (req) => {
 
   await db.$transaction(async (tx) => {
     await tx.galleryItem.deleteMany({});
-    if (items.length) await tx.galleryItem.createMany({ data: items.map((item, order) => ({ ...item, order })) });
+    if (items.length)
+      await tx.galleryItem.createMany({ data: items.map((item, order) => ({ ...item, order })) });
     await saveRevision({ entity: "gallery", entityId: "gallery", data: { items }, authorId: user.id }, tx);
   });
 
   invalidate(TAGS.gallery);
-  await audit({ actorId: user.id, action: "gallery.update", entity: "GalleryItem", entityId: "gallery", diff: { count: items.length, hidden: items.filter((i) => !i.isVisible).length } });
+  await audit({
+    actorId: user.id,
+    action: "gallery.update",
+    entity: "GalleryItem",
+    entityId: "gallery",
+    diff: { count: items.length, hidden: items.filter((i) => !i.isVisible).length },
+  });
   return json({ ok: true, items: await loadGallery() });
 });

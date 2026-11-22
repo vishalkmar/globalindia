@@ -7,5 +7,8 @@ const LINE_SEP = new RegExp("\\u2028", "g");
 const PARA_SEP = new RegExp("\\u2029", "g");
 
 export function jsonLd(data) {
-  return JSON.stringify(data).replace(/</g, "\\u003c").replace(LINE_SEP, "\\u2028").replace(PARA_SEP, "\\u2029");
+  return JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(LINE_SEP, "\\u2028")
+    .replace(PARA_SEP, "\\u2029");
 }

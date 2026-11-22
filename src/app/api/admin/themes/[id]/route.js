@@ -35,17 +35,39 @@ export const PATCH = route(async (req, ctx) => {
   const changes = await readJson(req, themeUpdateSchema, { maxBytes: 32 * 1024 });
   const touchesLive = theme.isActive && (changes.tokens !== undefined || changes.mode !== undefined);
   if (touchesLive && !can(user, "publish", "theme")) {
-    await audit({ actorId: user.id, action: "authz.denied", entity: "theme", diff: { action: "publish", themeId: theme.id } });
-    throw new HttpError(403, "This theme is live. Only a super admin can change it — duplicate it to try changes.");
+    await audit({
+      actorId: user.id,
+      action: "authz.denied",
+      entity: "theme",
+      diff: { action: "publish", themeId: theme.id },
+    });
+    throw new HttpError(
+      403,
+      "This theme is live. Only a super admin can change it — duplicate it to try changes.",
+    );
   }
 
   const updated = await db.$transaction(async (tx) => {
     const t = await tx.theme.update({ where: { id: theme.id }, data: changes });
-    await saveRevision({ entity: "theme", entityId: theme.id, data: { name: t.name, mode: t.mode, tokens: t.tokens }, authorId: user.id }, tx);
+    await saveRevision(
+      {
+        entity: "theme",
+        entityId: theme.id,
+        data: { name: t.name, mode: t.mode, tokens: t.tokens },
+        authorId: user.id,
+      },
+      tx,
+    );
     return t;
   });
   if (theme.isActive) invalidate(TAGS.theme);
-  await audit({ actorId: user.id, action: touchesLive ? "theme.publish_edit" : "theme.update", entity: "Theme", entityId: theme.id, diff: { fields: Object.keys(changes) } });
+  await audit({
+    actorId: user.id,
+    action: touchesLive ? "theme.publish_edit" : "theme.update",
+    entity: "Theme",
+    entityId: theme.id,
+    diff: { fields: Object.keys(changes) },
+  });
   return json({ ok: true, theme: themeShape(updated) });
 });
 
@@ -55,8 +77,15 @@ export const DELETE = route(async (req, ctx) => {
   const user = await requirePermission("delete", "theme");
   const theme = await load(ctx);
   if (theme.isActive) throw new HttpError(400, "Activate another theme before deleting this one.");
-  if (theme.isPreset) throw new HttpError(400, "Built-in presets cannot be deleted. Duplicate one to make your own.");
+  if (theme.isPreset)
+    throw new HttpError(400, "Built-in presets cannot be deleted. Duplicate one to make your own.");
   await db.theme.delete({ where: { id: theme.id } });
-  await audit({ actorId: user.id, action: "theme.delete", entity: "Theme", entityId: theme.id, diff: { name: theme.name } });
+  await audit({
+    actorId: user.id,
+    action: "theme.delete",
+    entity: "Theme",
+    entityId: theme.id,
+    diff: { name: theme.name },
+  });
   return json({ ok: true });
 });

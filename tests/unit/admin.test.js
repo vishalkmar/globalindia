@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { containsAny,enumFilter, parseListQuery } from "@/lib/admin/listQuery";
+import { containsAny, enumFilter, parseListQuery } from "@/lib/admin/listQuery";
 import { can, MATRIX, RESOURCES } from "@/lib/auth/permissions";
-import { createSession,isSessionActive } from "@/lib/auth/session";
+import { createSession, isSessionActive } from "@/lib/auth/session";
 import { db } from "@/lib/db";
 import { sanitizeRichText, stripTags } from "@/lib/security/sanitize";
 
@@ -11,7 +11,9 @@ import { makeUser } from "../helpers.js";
 const cookieJar = { access: "" };
 vi.mock("next/headers", async (orig) => ({
   ...(await orig()),
-  cookies: async () => ({ get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined) }),
+  cookies: async () => ({
+    get: (name) => (name.endsWith("gi_at") ? { value: cookieJar.access } : undefined),
+  }),
 }));
 
 async function signInAs(role) {
@@ -25,7 +27,11 @@ async function signInAs(role) {
 const ORIGIN = "http://localhost:3000";
 const call = (handler, method, body, id) =>
   handler(
-    new Request(`${ORIGIN}/api/admin/users`, { method, headers: { "content-type": "application/json", origin: ORIGIN }, body: body ? JSON.stringify(body) : undefined }),
+    new Request(`${ORIGIN}/api/admin/users`, {
+      method,
+      headers: { "content-type": "application/json", origin: ORIGIN },
+      body: body ? JSON.stringify(body) : undefined,
+    }),
     { params: Promise.resolve({ id }) },
   );
 
@@ -61,14 +67,25 @@ describe("users API rules", () => {
   it("EDITOR cannot list or invite users", async () => {
     await signInAs("EDITOR");
     expect((await usersRoute.GET(new Request(`${ORIGIN}/api/admin/users`))).status).toBe(403);
-    expect((await call(usersRoute.POST, "POST", { email: "new@x.in", name: "New Person", role: "EDITOR" })).status).toBe(403);
+    expect(
+      (await call(usersRoute.POST, "POST", { email: "new@x.in", name: "New Person", role: "EDITOR" })).status,
+    ).toBe(403);
   });
 
   it("SUPER_ADMIN invites; role in body cannot be smuggled through extra keys", async () => {
     await signInAs("SUPER_ADMIN");
-    const res = await call(usersRoute.POST, "POST", { email: `inv-${Date.now()}@x.in`, name: "New Person", role: "VIEWER", status: "ACTIVE" });
+    const res = await call(usersRoute.POST, "POST", {
+      email: `inv-${Date.now()}@x.in`,
+      name: "New Person",
+      role: "VIEWER",
+      status: "ACTIVE",
+    });
     expect(res.status).toBe(400); // unknown key "status" rejected (strict schema)
-    const ok = await call(usersRoute.POST, "POST", { email: `inv-${Date.now()}@x.in`, name: "New Person", role: "VIEWER" });
+    const ok = await call(usersRoute.POST, "POST", {
+      email: `inv-${Date.now()}@x.in`,
+      name: "New Person",
+      role: "VIEWER",
+    });
     expect(ok.status).toBe(201);
     const { user } = await ok.json();
     const row = await db.adminUser.findUnique({ where: { id: user.id } });
@@ -98,7 +115,10 @@ describe("users API rules", () => {
     const me = await signInAs("SUPER_ADMIN");
     const { user: other } = await makeUser({ role: "SUPER_ADMIN" });
     // Only `me` and `other` stay active super admins.
-    await db.adminUser.updateMany({ where: { role: "SUPER_ADMIN", status: "ACTIVE", id: { notIn: [me.id, other.id] } }, data: { status: "DISABLED" } });
+    await db.adminUser.updateMany({
+      where: { role: "SUPER_ADMIN", status: "ACTIVE", id: { notIn: [me.id, other.id] } },
+      data: { status: "DISABLED" },
+    });
     expect((await call(userRoute.PATCH, "PATCH", { status: "DISABLED" }, other.id)).status).toBe(200);
     // `me` is now the last one and cannot remove themselves.
     expect((await call(userRoute.PATCH, "PATCH", { role: "EDITOR" }, me.id)).status).toBe(400);
@@ -107,7 +127,12 @@ describe("users API rules", () => {
 });
 
 describe("list query allow-list", () => {
-  const spec = { sortable: ["createdAt", "email"], defaultSort: ["createdAt", "desc"], search: containsAny(["email"]), filters: { role: enumFilter("role", ["EDITOR"]) } };
+  const spec = {
+    sortable: ["createdAt", "email"],
+    defaultSort: ["createdAt", "desc"],
+    search: containsAny(["email"]),
+    filters: { role: enumFilter("role", ["EDITOR"]) },
+  };
 
   it("ignores sort fields that are not allowed (no field injection)", () => {
     const q = parseListQuery(new URLSearchParams("sort=passwordHash&dir=asc"), spec);
@@ -116,7 +141,10 @@ describe("list query allow-list", () => {
 
   it("rejects unknown enum values and clamps page size", () => {
     expect(() => parseListQuery(new URLSearchParams("role=SUPER_ADMIN"), spec)).toThrow();
-    expect(parseListQuery(new URLSearchParams("pageSize=99999&page=-3"), spec)).toMatchObject({ pageSize: 100, page: 1 });
+    expect(parseListQuery(new URLSearchParams("pageSize=99999&page=-3"), spec)).toMatchObject({
+      pageSize: 100,
+      page: 1,
+    });
   });
 
   it("caps search length", () => {
@@ -132,11 +160,11 @@ describe("rich text sanitiser", () => {
     '<a href="javascript:alert(1)">x</a>',
     '<a href="JaVaScRiPt:alert(1)">x</a>',
     '<p onclick="alert(1)">x</p>',
-    '<svg><script>alert(1)</script></svg>',
+    "<svg><script>alert(1)</script></svg>",
     '<iframe src="https://evil.example"></iframe>',
     '<p style="background:url(javascript:alert(1))">x</p>',
     '<a href="//evil.example">x</a>',
-    "<math><mi xlink:href=\"javascript:alert(1)\">x</mi></math>",
+    '<math><mi xlink:href="javascript:alert(1)">x</mi></math>',
     '<form action="https://evil.example"><input name="p"></form>',
   ];
   it.each(payloads)("neutralises %s", (html) => {
@@ -145,7 +173,9 @@ describe("rich text sanitiser", () => {
   });
 
   it("keeps the allowed formatting and hardens external links", () => {
-    const out = sanitizeRichText('<h1>T</h1><p><strong>a</strong> <a href="https://x.in">x</a> <a href="/products">p</a></p><ul><li>i</li></ul>');
+    const out = sanitizeRichText(
+      '<h1>T</h1><p><strong>a</strong> <a href="https://x.in">x</a> <a href="/products">p</a></p><ul><li>i</li></ul>',
+    );
     expect(out).toContain("<h2>T</h2>");
     expect(out).toContain('rel="noopener noreferrer nofollow"');
     expect(out).toContain('<a href="/products">p</a>');
@@ -153,6 +183,6 @@ describe("rich text sanitiser", () => {
   });
 
   it("strips all tags for plain fields", () => {
-    expect(stripTags('<b>Glycerine</b> <script>x</script> 99%')).toBe("Glycerine 99%");
+    expect(stripTags("<b>Glycerine</b> <script>x</script> 99%")).toBe("Glycerine 99%");
   });
 });

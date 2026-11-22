@@ -21,7 +21,13 @@ export const GET = route(async (req) => {
   });
   const where = { AND: [q.where, { deletedAt: null }] };
   const [rows, total] = await Promise.all([
-    db.mediaAsset.findMany({ where, orderBy: q.orderBy, skip: q.skip, take: q.take, include: { uploadedBy: { select: { name: true, email: true } } } }),
+    db.mediaAsset.findMany({
+      where,
+      orderBy: q.orderBy,
+      skip: q.skip,
+      take: q.take,
+      include: { uploadedBy: { select: { name: true, email: true } } },
+    }),
     db.mediaAsset.count({ where }),
   ]);
   return json(listResponse({ rows: rows.map(serializeAsset), total, page: q.page, pageSize: q.pageSize }));

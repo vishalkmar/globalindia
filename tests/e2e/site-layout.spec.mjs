@@ -14,14 +14,7 @@ const stamp = Date.now();
  * Pages linked from the default menus that later phases build. The link check below fails for any
  * internal link that is neither working nor listed here — remove entries as the pages ship.
  */
-const PLANNED = {
-  "/industries": 15,
-  "/insights": 15,
-  "/contact": 14,
-  "/legal/privacy": 15,
-  "/legal/terms": 15,
-  "/legal/cookies": 15,
-};
+const PLANNED = {};
 const plannedFor = (path) => PLANNED[path] ?? null;
 
 const ownerEmail = `e2e-layout-owner-${stamp}@test.local`;
