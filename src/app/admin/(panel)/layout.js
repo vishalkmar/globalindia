@@ -9,7 +9,11 @@ import { requireAdminPage } from "@/lib/auth/guard";
  */
 async function Shell({ children }) {
   const user = await requireAdminPage();
-  return <AdminShell user={{ id: user.id, name: user.name, email: user.email, role: user.role }}>{children}</AdminShell>;
+  return (
+    <AdminShell user={{ id: user.id, name: user.name, email: user.email, role: user.role }}>
+      {children}
+    </AdminShell>
+  );
 }
 
 export default function PanelLayout({ children }) {

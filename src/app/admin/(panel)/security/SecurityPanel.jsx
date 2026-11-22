@@ -27,7 +27,8 @@ function Panel({ title, description, children }) {
   );
 }
 
-const when = (d) => new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(d));
+const when = (d) =>
+  new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(d));
 
 /* ---------- MFA toggle dialog (approval code to default admin email) ---------- */
 function MfaToggleDialog({ change, approvalEmail, onClose, onDone }) {
@@ -40,7 +41,10 @@ function MfaToggleDialog({ change, approvalEmail, onClose, onDone }) {
   async function send() {
     setBusy(true);
     setError("");
-    const res = await adminJson("/api/auth/mfa/request", { method: "POST", json: { method: change.method, enable: change.enable } });
+    const res = await adminJson("/api/auth/mfa/request", {
+      method: "POST",
+      json: { method: change.method, enable: change.enable },
+    });
     setBusy(false);
     if (!res.ok) return setError(res.data?.error ?? "Could not send the approval code.");
     setRequest(res.data);
@@ -50,7 +54,10 @@ function MfaToggleDialog({ change, approvalEmail, onClose, onDone }) {
     e.preventDefault();
     setBusy(true);
     setError("");
-    const res = await adminJson("/api/auth/mfa/confirm", { method: "POST", json: { requestId: request.requestId, code } });
+    const res = await adminJson("/api/auth/mfa/confirm", {
+      method: "POST",
+      json: { requestId: request.requestId, code },
+    });
     setBusy(false);
     if (!res.ok) {
       setCode("");
@@ -63,7 +70,11 @@ function MfaToggleDialog({ change, approvalEmail, onClose, onDone }) {
     <Dialog
       open={open}
       onClose={onClose}
-      title={change ? `${change.enable ? "Turn on" : "Turn off"} ${change.method === "totp" ? "authenticator app" : "email codes"}` : ""}
+      title={
+        change
+          ? `${change.enable ? "Turn on" : "Turn off"} ${change.method === "totp" ? "authenticator app" : "email codes"}`
+          : ""
+      }
       description={`For safety, this needs an approval code sent to the owner's inbox (${approvalEmail}).`}
     >
       <div className="flex flex-col gap-5">
@@ -104,7 +115,10 @@ function EmailChange({ currentEmail }) {
     setBusy(true);
     setError("");
     setFields({});
-    const res = await adminJson("/api/auth/email-change/start", { method: "POST", json: { newEmail, currentPassword: password } });
+    const res = await adminJson("/api/auth/email-change/start", {
+      method: "POST",
+      json: { newEmail, currentPassword: password },
+    });
     setBusy(false);
     setPassword("");
     if (!res.ok) {
@@ -119,7 +133,10 @@ function EmailChange({ currentEmail }) {
     e.preventDefault();
     setBusy(true);
     setError("");
-    const res = await adminJson("/api/auth/email-change/verify", { method: "POST", json: { requestId: request.requestId, code } });
+    const res = await adminJson("/api/auth/email-change/verify", {
+      method: "POST",
+      json: { requestId: request.requestId, code },
+    });
     setBusy(false);
     if (!res.ok) {
       setCode("");
@@ -138,10 +155,20 @@ function EmailChange({ currentEmail }) {
       {step === "form" ? (
         <form onSubmit={start} noValidate className="grid gap-4 sm:grid-cols-2">
           <Field label="New email" error={fields.newEmail}>
-            <Input type="email" autoComplete="email" value={newEmail} onChange={(e) => setNewEmail(e.target.value)} />
+            <Input
+              type="email"
+              autoComplete="email"
+              value={newEmail}
+              onChange={(e) => setNewEmail(e.target.value)}
+            />
           </Field>
           <Field label="Current password" error={fields.currentPassword}>
-            <Input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Input
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </Field>
           <div className="sm:col-span-2">
             <Button type="submit" variant="secondary" loading={busy} disabled={!newEmail || !password}>
@@ -163,8 +190,8 @@ function EmailChange({ currentEmail }) {
       ) : null}
       {step === "link" ? (
         <Alert tone="success" title="Almost done">
-          If {request.linkSentTo} can be used, a confirmation link is waiting there. Open it within 30 minutes to finish. Every device will then be signed
-          out.
+          If {request.linkSentTo} can be used, a confirmation link is waiting there. Open it within 30 minutes
+          to finish. Every device will then be signed out.
         </Alert>
       ) : null}
     </div>
@@ -186,7 +213,10 @@ function PasswordChange() {
     setBusy(true);
     setError("");
     setFields({});
-    const res = await adminJson("/api/auth/password/change", { method: "POST", json: { currentPassword: current, newPassword: pw } });
+    const res = await adminJson("/api/auth/password/change", {
+      method: "POST",
+      json: { currentPassword: current, newPassword: pw },
+    });
     setBusy(false);
     if (!res.ok) {
       setFields(res.data?.fields ?? {});
@@ -202,11 +232,27 @@ function PasswordChange() {
     <form onSubmit={onSubmit} noValidate className="flex max-w-md flex-col gap-4">
       {error ? <Alert tone="error">{error}</Alert> : null}
       <Field label="Current password" error={fields.currentPassword}>
-        <Input type="password" autoComplete="current-password" value={current} onChange={(e) => setCurrent(e.target.value)} />
+        <Input
+          type="password"
+          autoComplete="current-password"
+          value={current}
+          onChange={(e) => setCurrent(e.target.value)}
+        />
       </Field>
-      <NewPasswordFields value={pw} confirm={confirm} onChange={setPw} onConfirmChange={setConfirm} error={fields.newPassword} />
+      <NewPasswordFields
+        value={pw}
+        confirm={confirm}
+        onChange={setPw}
+        onConfirmChange={setConfirm}
+        error={fields.newPassword}
+      />
       <div>
-        <Button type="submit" variant="secondary" loading={busy} disabled={!current || !passwordReady(pw, confirm)}>
+        <Button
+          type="submit"
+          variant="secondary"
+          loading={busy}
+          disabled={!current || !passwordReady(pw, confirm)}
+        >
           Change password
         </Button>
       </div>
@@ -263,13 +309,18 @@ export function SecurityPanel() {
   const u = me.user;
   return (
     <div className="flex flex-col gap-6">
-      <Panel title="Sign-in methods" description={`Changes need an approval code sent to the owner's inbox (${me.approvalEmail}). At least one method always stays on.`}>
+      <Panel
+        title="Sign-in methods"
+        description={`Changes need an approval code sent to the owner's inbox (${me.approvalEmail}). At least one method always stays on.`}
+      >
         <ul className="flex flex-col divide-y divide-line">
           <li className="flex flex-wrap items-center gap-4 py-4 first:pt-0">
             <IconBox icon={Smartphone} />
             <div className="min-w-0 flex-1">
               <p className="font-semibold">Authenticator app</p>
-              <p className="text-sm text-muted">Codes from Google Authenticator, Microsoft Authenticator or similar.</p>
+              <p className="text-sm text-muted">
+                Codes from Google Authenticator, Microsoft Authenticator or similar.
+              </p>
             </div>
             <Badge tone={u.totpEnabled ? "success" : "neutral"}>{u.totpEnabled ? "On" : "Off"}</Badge>
             {u.totpEnabled ? (
@@ -277,7 +328,11 @@ export function SecurityPanel() {
                 <Button size="sm" variant="secondary" onClick={() => setEnrolling(true)}>
                   Replace
                 </Button>
-                <Button size="sm" variant="ghost" onClick={() => setChange({ method: "totp", enable: false })}>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setChange({ method: "totp", enable: false })}
+                >
                   Turn off
                 </Button>
               </div>
@@ -314,7 +369,10 @@ export function SecurityPanel() {
         <PasswordChange />
       </Panel>
 
-      <Panel title="Sign-in email" description="Needs your password, a code from the current inbox and a link opened from the new inbox.">
+      <Panel
+        title="Sign-in email"
+        description="Needs your password, a code from the current inbox and a link opened from the new inbox."
+      >
         <EmailChange currentEmail={u.email} />
       </Panel>
 
@@ -362,7 +420,12 @@ export function SecurityPanel() {
         }}
       />
 
-      <Dialog open={enrolling} onClose={() => setEnrolling(false)} title={u.totpEnabled ? "Replace authenticator app" : "Turn on authenticator app"} size="md">
+      <Dialog
+        open={enrolling}
+        onClose={() => setEnrolling(false)}
+        title={u.totpEnabled ? "Replace authenticator app" : "Turn on authenticator app"}
+        size="md"
+      >
         {enrolling ? (
           <AuthenticatorEnroll
             onCancel={() => setEnrolling(false)}

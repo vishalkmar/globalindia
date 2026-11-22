@@ -17,7 +17,8 @@ export function MediaLibrary({ canUpload, driver }) {
     <div className="flex flex-col gap-6">
       {driver === "local" ? (
         <Alert tone="info" title="Development storage">
-          Cloudinary is not connected yet, so files are kept on this computer (.dev-media). Add the Cloudinary keys to use the real media CDN.
+          Cloudinary is not connected yet, so files are kept on this computer (.dev-media). Add the Cloudinary
+          keys to use the real media CDN.
         </Alert>
       ) : null}
       {canUpload ? (
@@ -26,7 +27,9 @@ export function MediaLibrary({ canUpload, driver }) {
             onUploaded={(assets) => {
               setReloadKey((k) => k + 1);
               const missing = assets.filter((a) => a.needsAlt).length;
-              toast.success(`${assets.length} file${assets.length > 1 ? "s" : ""} uploaded.${missing ? " Add alt text before using the images." : ""}`);
+              toast.success(
+                `${assets.length} file${assets.length > 1 ? "s" : ""} uploaded.${missing ? " Add alt text before using the images." : ""}`,
+              );
               if (assets.length === 1) setOpenId(assets[0].id);
             }}
           />

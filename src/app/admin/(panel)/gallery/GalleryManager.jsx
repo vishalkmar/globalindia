@@ -17,7 +17,8 @@ import { Alert, Skeleton } from "@/components/ui/Static";
 import { adminJson } from "@/lib/client/adminFetch";
 import { GALLERY_CATEGORIES, GALLERY_MAX_ITEMS, gallerySchema } from "@/lib/validation/gallery";
 
-const payload = (items) => items.map(({ mediaId, caption, category, isVisible }) => ({ mediaId, caption, category, isVisible }));
+const payload = (items) =>
+  items.map(({ mediaId, caption, category, isVisible }) => ({ mediaId, caption, category, isVisible }));
 const MISSING_MEDIA = { type: "IMAGE", url: "", alt: "Deleted photo" };
 
 /** Gallery manager (Phase 11 todo 14): add from the media library, caption, categorise, reorder, hide, remove. */
@@ -48,8 +49,16 @@ export function GalleryManager({ canEdit }) {
     };
   }, []);
 
-  const dirty = useMemo(() => items !== null && JSON.stringify(payload(items)) !== baseline, [items, baseline]);
-  const categories = useMemo(() => [...new Set([...GALLERY_CATEGORIES, ...(items ?? []).map((i) => i.category.trim()).filter(Boolean)])], [items]);
+  const dirty = useMemo(
+    () => items !== null && JSON.stringify(payload(items)) !== baseline,
+    [items, baseline],
+  );
+  const categories = useMemo(
+    () => [
+      ...new Set([...GALLERY_CATEGORIES, ...(items ?? []).map((i) => i.category.trim()).filter(Boolean)]),
+    ],
+    [items],
+  );
 
   async function save() {
     const check = gallerySchema.safeParse({ items: payload(items) });
@@ -74,7 +83,17 @@ export function GalleryManager({ canEdit }) {
   function add(asset) {
     if (!asset) return;
     if (items.some((i) => i.mediaId === asset.id)) return toast.info("That photo is already in the gallery.");
-    setItems((list) => [...list, { mediaId: asset.id, caption: "", category: list.at(-1)?.category ?? GALLERY_CATEGORIES[0], isVisible: true, media: asset, missing: false }]);
+    setItems((list) => [
+      ...list,
+      {
+        mediaId: asset.id,
+        caption: "",
+        category: list.at(-1)?.category ?? GALLERY_CATEGORIES[0],
+        isVisible: true,
+        media: asset,
+        missing: false,
+      },
+    ]);
   }
 
   /** A revision stores only ids and text; look the images up again (deleted ones are flagged). */
@@ -82,9 +101,12 @@ export function GalleryManager({ canEdit }) {
     const known = new Map(items.map((i) => [i.mediaId, i]));
     const restored = await Promise.all(
       (data.items ?? []).map(async (it) => {
-        if (known.has(it.mediaId)) return { ...it, media: known.get(it.mediaId).media, missing: known.get(it.mediaId).missing };
+        if (known.has(it.mediaId))
+          return { ...it, media: known.get(it.mediaId).media, missing: known.get(it.mediaId).missing };
         const res = await adminJson(`/api/admin/media/${it.mediaId}`);
-        return res.ok ? { ...it, media: res.data.asset, missing: false } : { ...it, media: MISSING_MEDIA, missing: true };
+        return res.ok
+          ? { ...it, media: res.data.asset, missing: false }
+          : { ...it, media: MISSING_MEDIA, missing: true };
       }),
     );
     setItems(restored);
@@ -92,7 +114,8 @@ export function GalleryManager({ canEdit }) {
     toast.info("Older version loaded. Save to make it live.");
   }
 
-  const update = (mediaId, patch) => setItems((list) => list.map((i) => (i.mediaId === mediaId ? { ...i, ...patch } : i)));
+  const update = (mediaId, patch) =>
+    setItems((list) => list.map((i) => (i.mediaId === mediaId ? { ...i, ...patch } : i)));
 
   if (error && items === null) return <Alert tone="error">{error}</Alert>;
   if (items === null) return <Skeleton className="h-64" />;
@@ -120,13 +143,22 @@ export function GalleryManager({ canEdit }) {
                 const name = item.caption || item.media.alt || "photo";
                 const problem =
                   errors[`items.${idx}.mediaId`] ??
-                  (item.missing ? "This photo was deleted from the media library. Remove it before saving." : null) ??
+                  (item.missing
+                    ? "This photo was deleted from the media library. Remove it before saving."
+                    : null) ??
                   errors[`items.${idx}.caption`] ??
                   errors[`items.${idx}.category`];
                 return (
                   <div className="flex flex-col gap-2" data-testid="gallery-row">
                     <div className="grid items-start gap-3 sm:grid-cols-[96px_1fr_auto]">
-                      <AssetThumb asset={item.media} className={item.isVisible ? "aspect-[4/3] w-24 rounded" : "aspect-[4/3] w-24 rounded opacity-50"} />
+                      <AssetThumb
+                        asset={item.media}
+                        className={
+                          item.isVisible
+                            ? "aspect-[4/3] w-24 rounded"
+                            : "aspect-[4/3] w-24 rounded opacity-50"
+                        }
+                      />
                       <div className="grid gap-2 sm:grid-cols-[1.4fr_1fr]">
                         <Input
                           size="sm"
@@ -157,9 +189,18 @@ export function GalleryManager({ canEdit }) {
                           title={item.isVisible ? "Visible" : "Hidden"}
                           onClick={() => update(item.mediaId, { isVisible: !item.isVisible })}
                         >
-                          {item.isVisible ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" className="text-muted" />}
+                          {item.isVisible ? (
+                            <Eye aria-hidden="true" />
+                          ) : (
+                            <EyeOff aria-hidden="true" className="text-muted" />
+                          )}
                         </Button>
-                        <Button size="icon" variant="ghost" aria-label={`Remove ${name}`} onClick={() => setItems((l) => l.filter((i) => i.mediaId !== item.mediaId))}>
+                        <Button
+                          size="icon"
+                          variant="ghost"
+                          aria-label={`Remove ${name}`}
+                          onClick={() => setItems((l) => l.filter((i) => i.mediaId !== item.mediaId))}
+                        >
                           <Trash2 aria-hidden="true" />
                         </Button>
                       </div>
@@ -171,13 +212,24 @@ export function GalleryManager({ canEdit }) {
             />
           </fieldset>
         ) : (
-          <EmptyState icon={Images} title="No photos yet" text="Add photos of the warehouse, stock, packing and dispatch. They appear on the public Gallery page in this order." />
+          <EmptyState
+            icon={Images}
+            title="No photos yet"
+            text="Add photos of the warehouse, stock, packing and dispatch. They appear on the public Gallery page in this order."
+          />
         )}
 
         {canEdit && items.length < GALLERY_MAX_ITEMS ? (
           <div className="max-w-md">
             {/* key resets the picker after each pick so it is ready for the next photo */}
-            <MediaPicker key={items.length} label="Add a photo" folder="gallery" value={null} onChange={add} hint="Upload a new photo or pick one from the media library." />
+            <MediaPicker
+              key={items.length}
+              label="Add a photo"
+              folder="gallery"
+              value={null}
+              onChange={add}
+              hint="Upload a new photo or pick one from the media library."
+            />
           </div>
         ) : null}
       </section>
@@ -190,8 +242,23 @@ export function GalleryManager({ canEdit }) {
         . Removing a photo here does not delete the file.
       </p>
 
-      {canEdit ? <SaveBar dirty={dirty} saving={saving} savedAt={savedAt} onPublish={save} publishLabel="Save gallery" onHistory={() => setHistory(true)} /> : null}
-      <RevisionHistory open={history} onClose={() => setHistory(false)} entity="gallery" entityId="gallery" onRestore={restore} />
+      {canEdit ? (
+        <SaveBar
+          dirty={dirty}
+          saving={saving}
+          savedAt={savedAt}
+          onPublish={save}
+          publishLabel="Save gallery"
+          onHistory={() => setHistory(true)}
+        />
+      ) : null}
+      <RevisionHistory
+        open={history}
+        onClose={() => setHistory(false)}
+        entity="gallery"
+        entityId="gallery"
+        onRestore={restore}
+      />
     </div>
   );
 }

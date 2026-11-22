@@ -33,7 +33,10 @@ const editClientSchema = z.object({
   status: z.enum(["ACTIVE", "DISABLED", "INVITED"]),
 });
 
-const when = (d) => (d ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(d)) : "Never");
+const when = (d) =>
+  d
+    ? new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(d))
+    : "Never";
 
 function InviteDialog({ open, onClose, onDone }) {
   const form = useZodForm(inviteClientSchema, { name: "", email: "", role: "EDITOR" });
@@ -56,7 +59,12 @@ function InviteDialog({ open, onClose, onDone }) {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} title="Invite a user" description="They get an email link to set a password, then add an authenticator app.">
+    <Dialog
+      open={open}
+      onClose={onClose}
+      title="Invite a user"
+      description="They get an email link to set a password, then add an authenticator app."
+    >
       <form onSubmit={submit} noValidate className="flex flex-col gap-5">
         {error ? <Alert tone="error">{error}</Alert> : null}
         <FormBuilder
@@ -121,7 +129,16 @@ function EditDialog({ user, me, onClose, onDone }) {
         ];
 
   return (
-    <Dialog open onClose={onClose} title={`Edit ${user.email}`} description={self ? "You cannot change your own role or status." : "Role and status changes sign this user out everywhere."}>
+    <Dialog
+      open
+      onClose={onClose}
+      title={`Edit ${user.email}`}
+      description={
+        self
+          ? "You cannot change your own role or status."
+          : "Role and status changes sign this user out everywhere."
+      }
+    >
       <form onSubmit={submit} noValidate className="flex flex-col gap-5">
         {error ? <Alert tone="error">{error}</Alert> : null}
         <FormBuilder
@@ -130,7 +147,13 @@ function EditDialog({ user, me, onClose, onDone }) {
           fields={[
             { name: "name", label: "Full name", required: true },
             { name: "role", label: "Role", type: "select", options: ROLE_OPTIONS, disabled: self },
-            { name: "status", label: "Status", type: "select", options: statusOptions, disabled: self || user.status === "INVITED" },
+            {
+              name: "status",
+              label: "Status",
+              type: "select",
+              options: statusOptions,
+              disabled: self || user.status === "INVITED",
+            },
           ]}
         />
         <div className="flex flex-wrap justify-between gap-2">
@@ -188,9 +211,19 @@ export function UsersManager({ me }) {
     {
       key: "mfa",
       label: "Sign-in",
-      render: (u) => (u.mfaSetupAt ? [u.totpEnabled && "App", u.emailOtpEnabled && "Email"].filter(Boolean).join(" + ") : <span className="text-muted">Setup pending</span>),
+      render: (u) =>
+        u.mfaSetupAt ? (
+          [u.totpEnabled && "App", u.emailOtpEnabled && "Email"].filter(Boolean).join(" + ")
+        ) : (
+          <span className="text-muted">Setup pending</span>
+        ),
     },
-    { key: "lastLoginAt", label: "Last sign-in", sortable: true, render: (u) => <span className="text-muted">{when(u.lastLoginAt)}</span> },
+    {
+      key: "lastLoginAt",
+      label: "Last sign-in",
+      sortable: true,
+      render: (u) => <span className="text-muted">{when(u.lastLoginAt)}</span>,
+    },
     {
       key: "actions",
       label: "",
@@ -217,7 +250,11 @@ export function UsersManager({ me }) {
         reloadKey={reloadKey}
         searchPlaceholder="Search by name or email"
         filters={[
-          { key: "role", label: "Roles", options: Object.entries(ROLE_SHORT).map(([value, label]) => ({ value, label })) },
+          {
+            key: "role",
+            label: "Roles",
+            options: Object.entries(ROLE_SHORT).map(([value, label]) => ({ value, label })),
+          },
           {
             key: "status",
             label: "Statuses",

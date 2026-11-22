@@ -16,13 +16,23 @@ async function product(ctx) {
   return p;
 }
 
-const docShape = (d) => ({ id: d.id, type: d.type, label: d.label, isPublic: d.isPublic, media: { id: d.media.id, url: d.media.url, bytes: d.media.bytes, originalName: d.media.originalName } });
+const docShape = (d) => ({
+  id: d.id,
+  type: d.type,
+  label: d.label,
+  isPublic: d.isPublic,
+  media: { id: d.media.id, url: d.media.url, bytes: d.media.bytes, originalName: d.media.originalName },
+});
 
 /** GET /api/admin/products/:id/documents — COA / SDS / TDS attached to a product (Phase 7 todo 17). */
 export const GET = route(async (_req, ctx) => {
   await requirePermission("read", "products");
   const p = await product(ctx);
-  const docs = await db.productDocument.findMany({ where: { productId: p.id }, include: { media: true }, orderBy: { createdAt: "asc" } });
+  const docs = await db.productDocument.findMany({
+    where: { productId: p.id },
+    include: { media: true },
+    orderBy: { createdAt: "asc" },
+  });
   return json({ ok: true, documents: docs.map(docShape) });
 });
 
@@ -35,8 +45,17 @@ export const POST = route(async (req, ctx) => {
   await assertUsableMedia(mediaId, "pdf");
   const exists = await db.productDocument.findFirst({ where: { productId: p.id, mediaId, type } });
   if (exists) throw new HttpError(400, "This document is already attached.");
-  const doc = await db.productDocument.create({ data: { productId: p.id, mediaId, type, label: label || null }, include: { media: true } });
-  await audit({ actorId: user.id, action: "product.document_attach", entity: "Product", entityId: p.id, diff: { type, mediaId } });
+  const doc = await db.productDocument.create({
+    data: { productId: p.id, mediaId, type, label: label || null },
+    include: { media: true },
+  });
+  await audit({
+    actorId: user.id,
+    action: "product.document_attach",
+    entity: "Product",
+    entityId: p.id,
+    diff: { type, mediaId },
+  });
   return json({ ok: true, document: docShape(doc) }, { status: 201 });
 });
 
@@ -49,6 +68,12 @@ export const DELETE = route(async (req, ctx) => {
   const doc = await db.productDocument.findFirst({ where: { id: documentId, productId: p.id } });
   if (!doc) throw new HttpError(404);
   await db.productDocument.delete({ where: { id: doc.id } });
-  await audit({ actorId: user.id, action: "product.document_detach", entity: "Product", entityId: p.id, diff: { type: doc.type } });
+  await audit({
+    actorId: user.id,
+    action: "product.document_detach",
+    entity: "Product",
+    entityId: p.id,
+    diff: { type: doc.type },
+  });
   return json({ ok: true });
 });

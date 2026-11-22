@@ -44,7 +44,10 @@ function Editor({ settingKey, initial, media, updatedAt, canEdit }) {
     <div className="flex flex-col gap-6">
       {!canEdit ? <Alert tone="info">Your role can view these settings but not change them.</Alert> : null}
       {error ? <Alert tone="error">{error}</Alert> : null}
-      <fieldset disabled={!canEdit} className="rounded-card border border-line bg-card p-6 disabled:opacity-80">
+      <fieldset
+        disabled={!canEdit}
+        className="rounded-card border border-line bg-card p-6 disabled:opacity-80"
+      >
         <FormBuilder form={form} fields={cfg.fields} mediaCache={media} />
       </fieldset>
       {canEdit ? (
@@ -84,5 +87,13 @@ export function SettingsEditor({ settingKey, canEdit }) {
 
   if (!state) return <Skeleton className="h-96" />;
   if (!state.ok) return <Alert tone="error">{state.data?.error ?? "Could not load these settings."}</Alert>;
-  return <Editor settingKey={settingKey} initial={state.data.value} media={state.data.media} updatedAt={state.data.updatedAt} canEdit={canEdit} />;
+  return (
+    <Editor
+      settingKey={settingKey}
+      initial={state.data.value}
+      media={state.data.media}
+      updatedAt={state.data.updatedAt}
+      canEdit={canEdit}
+    />
+  );
 }

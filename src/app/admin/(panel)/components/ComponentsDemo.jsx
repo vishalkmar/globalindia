@@ -10,7 +10,10 @@ import { useToast } from "@/components/ui/Feedback";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Enter the product name."),
-  casNo: z.string().trim().regex(/^$|^\d{2,7}-\d{2}-\d$/, "CAS looks like 8012-95-1."),
+  casNo: z
+    .string()
+    .trim()
+    .regex(/^$|^\d{2,7}-\d{2}-\d$/, "CAS looks like 8012-95-1."),
   grade: z.string().optional(),
   moq: z.string().trim().min(1, "Enter the minimum order."),
   applications: z.array(z.string()).max(20),
@@ -50,7 +53,9 @@ export function ComponentsDemo() {
       setSaving(false);
       setSavedAt(new Date());
       form.markSaved();
-      toast.success(kind === "publish" ? "Published (demo, nothing stored)." : "Draft saved (demo, nothing stored).");
+      toast.success(
+        kind === "publish" ? "Published (demo, nothing stored)." : "Draft saved (demo, nothing stored).",
+      );
     }, 600);
   }
 
@@ -63,10 +68,24 @@ export function ComponentsDemo() {
           fields={[
             { name: "name", label: "Product name", required: true },
             { name: "casNo", label: "CAS number", hint: "Leave empty for blends" },
-            { name: "grade", label: "Grade", type: "select", options: [{ value: "ip", label: "IP" }, { value: "usp", label: "USP" }, { value: "tech", label: "Technical" }] },
+            {
+              name: "grade",
+              label: "Grade",
+              type: "select",
+              options: [
+                { value: "ip", label: "IP" },
+                { value: "usp", label: "USP" },
+                { value: "tech", label: "Technical" },
+              ],
+            },
             { name: "moq", label: "Minimum order", required: true },
             { name: "applications", label: "Applications", type: "tags", wide: true },
-            { name: "featured", label: "Show on home page", type: "checkbox", hint: "Appears in the featured products section." },
+            {
+              name: "featured",
+              label: "Show on home page",
+              type: "checkbox",
+              hint: "Appears in the featured products section.",
+            },
             { name: "description", label: "Description", type: "richtext" },
           ]}
         />
@@ -74,7 +93,9 @@ export function ComponentsDemo() {
 
       <section className="rounded-card border border-line bg-card p-6">
         <h2 className="mb-1 text-h4 text-primary">Drag to reorder</h2>
-        <p className="mb-5 text-sm text-muted">Mouse, touch, or keyboard: focus a handle, press space, use arrow keys, press space.</p>
+        <p className="mb-5 text-sm text-muted">
+          Mouse, touch, or keyboard: focus a handle, press space, use arrow keys, press space.
+        </p>
         <SortableList items={order} onReorder={setOrder} className="max-w-md" />
       </section>
 
@@ -85,7 +106,9 @@ export function ComponentsDemo() {
         savedAt={savedAt}
         onSaveDraft={() => fakeSave("draft")}
         onPublish={() => fakeSave("publish")}
-        onPreview={() => toast.info("Preview opens the public page with unpublished changes (pages arrive in Phase 10).")}
+        onPreview={() =>
+          toast.info("Preview opens the public page with unpublished changes (pages arrive in Phase 10).")
+        }
       />
     </div>
   );

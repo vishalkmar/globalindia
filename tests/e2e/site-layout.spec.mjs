@@ -15,7 +15,6 @@ const stamp = Date.now();
  * internal link that is neither working nor listed here — remove entries as the pages ship.
  */
 const PLANNED = {
-  "/products": 12,
   "/industries": 15,
   "/insights": 15,
   "/contact": 14,
@@ -23,7 +22,7 @@ const PLANNED = {
   "/legal/terms": 15,
   "/legal/cookies": 15,
 };
-const plannedFor = (path) => PLANNED[path] ?? (path.startsWith("/products/") ? 12 : null);
+const plannedFor = (path) => PLANNED[path] ?? (/^\/products\/[^/]+\/[^/]+$/.test(path) ? 13 : null);
 
 const ownerEmail = `e2e-layout-owner-${stamp}@test.local`;
 const ownerPassword = `Layout-Owner-${stamp}`;

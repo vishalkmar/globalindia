@@ -10,10 +10,27 @@ export async function loadGallery() {
       caption: true,
       category: true,
       isVisible: true,
-      media: { select: { id: true, url: true, alt: true, type: true, width: true, height: true, originalName: true, focalX: true, focalY: true, deletedAt: true } },
+      media: {
+        select: {
+          id: true,
+          url: true,
+          alt: true,
+          type: true,
+          width: true,
+          height: true,
+          originalName: true,
+          focalX: true,
+          focalY: true,
+          deletedAt: true,
+        },
+      },
     },
   });
-  return rows.map(({ media: { deletedAt, ...media }, ...item }) => ({ ...item, media, missing: Boolean(deletedAt) }));
+  return rows.map(({ media: { deletedAt, ...media }, ...item }) => ({
+    ...item,
+    media,
+    missing: Boolean(deletedAt),
+  }));
 }
 
 /**
@@ -22,14 +39,19 @@ export async function loadGallery() {
  */
 export async function assertGalleryMedia(items) {
   const ids = items.map((i) => i.mediaId);
-  const found = await db.mediaAsset.findMany({ where: { id: { in: ids }, deletedAt: null }, select: { id: true, type: true, alt: true } });
+  const found = await db.mediaAsset.findMany({
+    where: { id: { in: ids }, deletedAt: null },
+    select: { id: true, type: true, alt: true },
+  });
   const byId = new Map(found.map((m) => [m.id, m]));
   const fields = {};
   items.forEach((item, i) => {
     const m = byId.get(item.mediaId);
     if (!m) fields[`items.${i}.mediaId`] = "This photo was deleted from the media library.";
     else if (m.type !== "IMAGE") fields[`items.${i}.mediaId`] = "Only images can go in the gallery.";
-    else if (!m.alt.trim()) fields[`items.${i}.mediaId`] = "Add alt text to this image in the media library first.";
+    else if (!m.alt.trim())
+      fields[`items.${i}.mediaId`] = "Add alt text to this image in the media library first.";
   });
-  if (Object.keys(fields).length) throw new HttpError(400, "Some photos cannot be used.", { body: { fields } });
+  if (Object.keys(fields).length)
+    throw new HttpError(400, "Some photos cannot be used.", { body: { fields } });
 }

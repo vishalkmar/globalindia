@@ -30,8 +30,8 @@ export const NAV_GROUPS = [
     label: "Content",
     items: [
       { href: "/admin/pages", label: "Pages", icon: FileText, resource: "pages" },
-      { href: "/admin/products", label: "Products", icon: Package, resource: "products", phase: 12 },
-      { href: "/admin/categories", label: "Categories", icon: FolderTree, resource: "categories", phase: 12 },
+      { href: "/admin/products", label: "Products", icon: Package, resource: "products" },
+      { href: "/admin/categories", label: "Categories", icon: FolderTree, resource: "categories" },
       { href: "/admin/industries", label: "Industries", icon: Factory, resource: "industries", phase: 15 },
       { href: "/admin/insights", label: "Insights", icon: Newspaper, resource: "insights", phase: 15 },
       { href: "/admin/media", label: "Media", icon: Images, resource: "media" },

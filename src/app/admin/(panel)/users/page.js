@@ -16,7 +16,10 @@ async function Content() {
 export default function UsersPage() {
   return (
     <>
-      <PageHeader title="Users" description="Who can sign in to this admin panel, and what each person can do." />
+      <PageHeader
+        title="Users"
+        description="Who can sign in to this admin panel, and what each person can do."
+      />
       <Suspense fallback={<Skeleton className="h-72" />}>
         <Content />
       </Suspense>

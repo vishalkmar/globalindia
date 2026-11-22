@@ -27,14 +27,17 @@ export function ThemeList({ perms }) {
 
   useEffect(() => {
     let live = true;
-    adminJson("/api/admin/themes").then((r) => live && (r.ok ? setThemes(r.data.themes) : setError(r.data?.error ?? "Could not load themes.")));
+    adminJson("/api/admin/themes").then(
+      (r) => live && (r.ok ? setThemes(r.data.themes) : setError(r.data?.error ?? "Could not load themes.")),
+    );
     return () => {
       live = false;
     };
   }, [reload]);
 
   async function activate(t) {
-    if (!window.confirm(`Make "${t.name}" the live theme? Every page of the website changes immediately.`)) return;
+    if (!window.confirm(`Make "${t.name}" the live theme? Every page of the website changes immediately.`))
+      return;
     setBusy(true);
     const r = await adminJson(`/api/admin/themes/${t.id}/activate`, { method: "POST", json: {} });
     setBusy(false);
@@ -54,7 +57,10 @@ export function ThemeList({ perms }) {
   async function duplicate(e) {
     e.preventDefault();
     setBusy(true);
-    const r = await adminJson("/api/admin/themes", { method: "POST", json: { name, ...(dup?.id ? { fromId: dup.id } : {}) } });
+    const r = await adminJson("/api/admin/themes", {
+      method: "POST",
+      json: { name, ...(dup?.id ? { fromId: dup.id } : {}) },
+    });
     setBusy(false);
     if (!r.ok) return toast.error(r.data?.fields?.name ?? r.data?.error ?? "Could not create the theme.");
     setDup(null);
@@ -81,12 +87,17 @@ export function ThemeList({ perms }) {
       ) : null}
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3" aria-label="Themes">
         {themes.map((t) => (
-          <li key={t.id} className="flex flex-col gap-4 rounded-card border border-line bg-card p-5" data-active={t.isActive || undefined}>
+          <li
+            key={t.id}
+            className="flex flex-col gap-4 rounded-card border border-line bg-card p-5"
+            data-active={t.isActive || undefined}
+          >
             <div className="flex items-start justify-between gap-2">
               <div className="flex flex-col gap-1">
                 <span className="font-semibold text-ink">{t.name}</span>
                 <span className="text-[0.8125rem] text-muted">
-                  {fontLabel("display", t.tokens.fonts.display)} + {fontLabel("body", t.tokens.fonts.body)} · default {t.mode.toLowerCase()}
+                  {fontLabel("display", t.tokens.fonts.display)} + {fontLabel("body", t.tokens.fonts.body)} ·
+                  default {t.mode.toLowerCase()}
                 </span>
               </div>
               <div className="flex flex-wrap justify-end gap-1">
@@ -133,7 +144,13 @@ export function ThemeList({ perms }) {
         ))}
       </ul>
 
-      <Dialog open={Boolean(dup)} onClose={() => setDup(null)} title="New theme" description={dup ? `Starts as a copy of ${dup.name}.` : ""} size="sm">
+      <Dialog
+        open={Boolean(dup)}
+        onClose={() => setDup(null)}
+        title="New theme"
+        description={dup ? `Starts as a copy of ${dup.name}.` : ""}
+        size="sm"
+      >
         <form onSubmit={duplicate} className="flex flex-col gap-4">
           <Field label="Theme name">
             <Input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} />

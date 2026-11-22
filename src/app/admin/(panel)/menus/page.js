@@ -17,7 +17,10 @@ async function Content() {
 export default function MenusPage() {
   return (
     <div className="mx-auto max-w-4xl">
-      <PageHeader title="Menus" description="Links in the header, the products mega menu and the footer. Drag to reorder; hidden links stay saved but are not shown." />
+      <PageHeader
+        title="Menus"
+        description="Links in the header, the products mega menu and the footer. Drag to reorder; hidden links stay saved but are not shown."
+      />
       <Suspense fallback={<Skeleton className="h-64" />}>
         <Content />
       </Suspense>

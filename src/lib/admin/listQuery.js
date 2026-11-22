@@ -67,7 +67,9 @@ function clampInt(v, min, max, fallback) {
 export const enumFilter = (field, values) => (v) => (values.includes(v) ? { [field]: v } : null);
 
 /** Case-insensitive "contains" across fields. Prisma escapes the value; we only cap its length. */
-export const containsAny = (fields) => (q) => ({ OR: fields.map((f) => ({ [f]: { contains: q, mode: "insensitive" } })) });
+export const containsAny = (fields) => (q) => ({
+  OR: fields.map((f) => ({ [f]: { contains: q, mode: "insensitive" } })),
+});
 
 /** Standard list response. */
 export function listResponse({ rows, total, page, pageSize }) {

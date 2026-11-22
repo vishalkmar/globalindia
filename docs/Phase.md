@@ -286,26 +286,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Visual QA vs reference site structure
 
 ## Phase 12 — Product Catalogue & Admin CRUD
-- [ ] 01 Seed 22 categories with families and intros
-- [ ] 02 Seed ~120 products with cleaned names (fix typos)
-- [ ] 03 Admin categories list, create, edit, reorder
-- [ ] 04 Admin products list with filters (category, status, featured)
-- [ ] 05 Product form: basics (name, slug, category, CAS, grade, purity, form)
-- [ ] 06 Product form: pack sizes, MOQ, shelf life, dispatch time
-- [ ] 07 Product form: applications (tag list)
-- [ ] 08 Product form: specs table editor (property, value, method)
-- [ ] 09 Product form: FAQs editor
-- [ ] 10 Product form: documents (COA/SDS/TDS) picker
-- [ ] 11 Product form: brand note and "sourced" flag
-- [ ] 12 Product form: show indicative price toggle
-- [ ] 13 Product form: gallery images
-- [ ] 14 Bulk import/export CSV
-- [ ] 15 Duplicate product action
-- [ ] 16 Draft / published / archived status
-- [ ] 17 Products hub page with family tabs and search
-- [ ] 18 Category pages with product table and buying guide
-- [ ] 19 Slug redirects when slug changes (301 table)
-- [ ] 20 Test CRUD permissions per role
+- [x] 01 Seed 22 categories with families and intros
+- [x] 02 Seed ~120 products with cleaned names (fix typos) — 87 after merging the old site's duplicate listings
+- [x] 03 Admin categories list, create, edit, reorder
+- [x] 04 Admin products list with filters (category, status, featured)
+- [x] 05 Product form: basics (name, slug, category, CAS, grade, purity, form)
+- [x] 06 Product form: pack sizes, MOQ, shelf life, dispatch time
+- [x] 07 Product form: applications (tag list)
+- [x] 08 Product form: specs table editor (property, value, method)
+- [x] 09 Product form: FAQs editor
+- [x] 10 Product form: documents (COA/SDS/TDS) picker
+- [x] 11 Product form: brand note and "sourced" flag
+- [x] 12 Product form: show indicative price toggle
+- [x] 13 Product form: gallery images
+- [x] 14 Bulk import/export CSV
+- [x] 15 Duplicate product action
+- [x] 16 Draft / published / archived status
+- [x] 17 Products hub page with family tabs and search
+- [x] 18 Category pages with product table and buying guide (guides + FAQs seeded for 6 key categories)
+- [x] 19 Slug redirects when slug changes (301 table) — Redirect rows; served as permanent redirects (Next sends 308, treated as 301 by search engines)
+- [x] 20 Test CRUD permissions per role
 
 ## Phase 13 — Product Detail Template (Buyer's Guide)
 - [ ] 01 Eyebrow + H1 + SEO H2 "[Product] Supplier in Delhi, India"

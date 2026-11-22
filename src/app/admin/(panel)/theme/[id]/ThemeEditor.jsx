@@ -57,8 +57,12 @@ function ContrastReport({ colors }) {
   return (
     <div className="flex flex-col gap-2">
       {failing.length ? (
-        <Alert tone="error" title={`${failing.length} colour pair${failing.length > 1 ? "s are" : " is"} hard to read`}>
-          Text below the minimum contrast is hard to read for many visitors (and on phones in sunlight). Darken or lighten the colours listed.
+        <Alert
+          tone="error"
+          title={`${failing.length} colour pair${failing.length > 1 ? "s are" : " is"} hard to read`}
+        >
+          Text below the minimum contrast is hard to read for many visitors (and on phones in sunlight).
+          Darken or lighten the colours listed.
         </Alert>
       ) : (
         <p className="flex items-center gap-2 text-sm font-semibold text-success">
@@ -67,8 +71,18 @@ function ContrastReport({ colors }) {
       )}
       <ul className="divide-y divide-line rounded-btn border border-line text-[0.8125rem]">
         {results.map((r) => (
-          <li key={`${r.fg}-${r.bg}`} className={cn("flex items-center gap-2 px-3 py-1.5", !r.pass && "bg-[color-mix(in_oklab,var(--c-error)_6%,var(--c-card))]")}>
-            {r.pass ? <CircleCheck aria-hidden="true" className="size-3.5 text-success" /> : <CircleAlert aria-hidden="true" className="size-3.5 text-error" />}
+          <li
+            key={`${r.fg}-${r.bg}`}
+            className={cn(
+              "flex items-center gap-2 px-3 py-1.5",
+              !r.pass && "bg-[color-mix(in_oklab,var(--c-error)_6%,var(--c-card))]",
+            )}
+          >
+            {r.pass ? (
+              <CircleCheck aria-hidden="true" className="size-3.5 text-success" />
+            ) : (
+              <CircleAlert aria-hidden="true" className="size-3.5 text-error" />
+            )}
             <span className="flex-1">{r.use}</span>
             <span className="font-data">
               {r.ratio.toFixed(2)} / {r.min}
@@ -117,7 +131,11 @@ export function ThemeEditor({ themeId, perms }) {
   const canEdit = perms.update && !locked;
   const t = draft.tokens;
   const setTokens = (fn) => setDraft((d) => ({ ...d, tokens: fn(d.tokens) }));
-  const setColor = (key, hex) => setTokens((tk) => ({ ...tk, colors: { ...tk.colors, [palette]: { ...tk.colors[palette], [key]: hex } } }));
+  const setColor = (key, hex) =>
+    setTokens((tk) => ({
+      ...tk,
+      colors: { ...tk.colors, [palette]: { ...tk.colors[palette], [key]: hex } },
+    }));
 
   async function save(activate = false) {
     const nameOk = themeNameSchema.safeParse(draft.name);
@@ -128,7 +146,10 @@ export function ThemeEditor({ themeId, perms }) {
     }
     setSaving(true);
     setError("");
-    const r = await adminJson(`/api/admin/themes/${themeId}`, { method: "PATCH", json: { name: nameOk.data, mode: draft.mode, tokens: tokensOk.data } });
+    const r = await adminJson(`/api/admin/themes/${themeId}`, {
+      method: "PATCH",
+      json: { name: nameOk.data, mode: draft.mode, tokens: tokensOk.data },
+    });
     if (!r.ok) {
       setSaving(false);
       return setError(r.data?.error ?? "Could not save.");
@@ -142,15 +163,29 @@ export function ThemeEditor({ themeId, perms }) {
     }
     setSaving(false);
     const saved = r.data.theme;
-    setLoaded({ ...saved, isActive: activate || saved.isActive, snapshot: JSON.stringify({ name: saved.name, mode: saved.mode, tokens: saved.tokens }) });
+    setLoaded({
+      ...saved,
+      isActive: activate || saved.isActive,
+      snapshot: JSON.stringify({ name: saved.name, mode: saved.mode, tokens: saved.tokens }),
+    });
     setSavedAt(new Date());
-    toast.success(activate ? `"${saved.name}" saved and now live on the website.` : loaded.isActive ? "Saved. The website uses the new values now." : "Theme saved.");
+    toast.success(
+      activate
+        ? `"${saved.name}" saved and now live on the website.`
+        : loaded.isActive
+          ? "Saved. The website uses the new values now."
+          : "Theme saved.",
+    );
   }
 
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,460px)]">
       <div className="flex flex-col gap-6">
-        {locked ? <Alert tone="info" title="This theme is live">Only a super admin can change the live theme. Duplicate it from the theme list to try changes.</Alert> : null}
+        {locked ? (
+          <Alert tone="info" title="This theme is live">
+            Only a super admin can change the live theme. Duplicate it from the theme list to try changes.
+          </Alert>
+        ) : null}
         {error ? <Alert tone="error">{error}</Alert> : null}
 
         <fieldset disabled={!canEdit} className="flex flex-col gap-6">
@@ -160,7 +195,11 @@ export function ThemeEditor({ themeId, perms }) {
               {loaded.isActive ? <Badge tone="success">Live</Badge> : null}
             </div>
             <Field label="Theme name">
-              <Input value={draft.name} maxLength={40} onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))} />
+              <Input
+                value={draft.name}
+                maxLength={40}
+                onChange={(e) => setDraft((d) => ({ ...d, name: e.target.value }))}
+              />
             </Field>
             <RadioGroup
               legend="Default look for visitors"
@@ -173,7 +212,10 @@ export function ThemeEditor({ themeId, perms }) {
                 { value: "DARK", label: "Dark" },
               ]}
             />
-            <Field label="Start from a preset" hint="Copies all colours and fonts from a built-in theme into this one.">
+            <Field
+              label="Start from a preset"
+              hint="Copies all colours and fonts from a built-in theme into this one."
+            >
               <Select
                 value=""
                 onChange={(e) => {
@@ -194,7 +236,11 @@ export function ThemeEditor({ themeId, perms }) {
           <section className="flex flex-col gap-3 rounded-card border border-line bg-card p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-h4 text-primary">Colours</h2>
-              <div role="tablist" aria-label="Palette" className="inline-flex rounded-btn border border-line bg-surface p-1">
+              <div
+                role="tablist"
+                aria-label="Palette"
+                className="inline-flex rounded-btn border border-line bg-surface p-1"
+              >
                 {["light", "dark"].map((m) => (
                   <button
                     key={m}
@@ -205,17 +251,28 @@ export function ThemeEditor({ themeId, perms }) {
                       setPalette(m);
                       setPreviewMode(m);
                     }}
-                    className={cn("rounded-[4px] px-3 py-1 text-sm font-semibold capitalize", palette === m ? "bg-card text-primary" : "text-muted")}
+                    className={cn(
+                      "rounded-[4px] px-3 py-1 text-sm font-semibold capitalize",
+                      palette === m ? "bg-card text-primary" : "text-muted",
+                    )}
                   >
                     {m} mode
                   </button>
                 ))}
               </div>
             </div>
-            <p className="text-sm text-muted">Keep to the brand rule: one main colour, one small accent, calm neutrals.</p>
+            <p className="text-sm text-muted">
+              Keep to the brand rule: one main colour, one small accent, calm neutrals.
+            </p>
             <div className="divide-y divide-line">
               {COLOR_TOKENS.map((token) => (
-                <ColorRow key={`${palette}-${token.key}`} token={token} value={t.colors[palette][token.key]} disabled={!canEdit} onChange={(hex) => setColor(token.key, hex)} />
+                <ColorRow
+                  key={`${palette}-${token.key}`}
+                  token={token}
+                  value={t.colors[palette][token.key]}
+                  disabled={!canEdit}
+                  onChange={(hex) => setColor(token.key, hex)}
+                />
               ))}
             </div>
             <ContrastReport colors={t.colors[palette]} />
@@ -229,7 +286,12 @@ export function ThemeEditor({ themeId, perms }) {
               ["data", "Data (CAS, specs)"],
             ].map(([kind, label]) => (
               <Field key={kind} label={label}>
-                <Select value={t.fonts[kind]} onChange={(e) => setTokens((tk) => ({ ...tk, fonts: { ...tk.fonts, [kind]: e.target.value } }))}>
+                <Select
+                  value={t.fonts[kind]}
+                  onChange={(e) =>
+                    setTokens((tk) => ({ ...tk, fonts: { ...tk.fonts, [kind]: e.target.value } }))
+                  }
+                >
                   {FONT_WHITELIST[kind].map((f) => (
                     <option key={f.id} value={f.id}>
                       {f.label}
@@ -243,19 +305,43 @@ export function ThemeEditor({ themeId, perms }) {
           <section className="grid gap-5 rounded-card border border-line bg-card p-5 md:grid-cols-2">
             <h2 className="text-h4 text-primary md:col-span-2">Shape and spacing</h2>
             <Field label={`Button corners: ${t.radius.button} px`}>
-              <input type="range" min={0} max={24} value={t.radius.button} onChange={(e) => setTokens((tk) => ({ ...tk, radius: { ...tk.radius, button: Number(e.target.value) } }))} className="accent-[var(--c-primary)]" />
+              <input
+                type="range"
+                min={0}
+                max={24}
+                value={t.radius.button}
+                onChange={(e) =>
+                  setTokens((tk) => ({ ...tk, radius: { ...tk.radius, button: Number(e.target.value) } }))
+                }
+                className="accent-[var(--c-primary)]"
+              />
             </Field>
             <Field label={`Card corners: ${t.radius.card} px`}>
-              <input type="range" min={0} max={32} value={t.radius.card} onChange={(e) => setTokens((tk) => ({ ...tk, radius: { ...tk.radius, card: Number(e.target.value) } }))} className="accent-[var(--c-primary)]" />
+              <input
+                type="range"
+                min={0}
+                max={32}
+                value={t.radius.card}
+                onChange={(e) =>
+                  setTokens((tk) => ({ ...tk, radius: { ...tk.radius, card: Number(e.target.value) } }))
+                }
+                className="accent-[var(--c-primary)]"
+              />
             </Field>
             <Field label="Spacing between sections">
-              <Select value={t.density} onChange={(e) => setTokens((tk) => ({ ...tk, density: e.target.value }))}>
+              <Select
+                value={t.density}
+                onChange={(e) => setTokens((tk) => ({ ...tk, density: e.target.value }))}
+              >
                 <option value="comfortable">Comfortable (96 px)</option>
                 <option value="compact">Compact (64 px)</option>
               </Select>
             </Field>
             <Field label="Main button style">
-              <Select value={t.buttonStyle} onChange={(e) => setTokens((tk) => ({ ...tk, buttonStyle: e.target.value }))}>
+              <Select
+                value={t.buttonStyle}
+                onChange={(e) => setTokens((tk) => ({ ...tk, buttonStyle: e.target.value }))}
+              >
                 <option value="solid">Solid</option>
                 <option value="outline">Outline</option>
               </Select>
@@ -280,16 +366,32 @@ export function ThemeEditor({ themeId, perms }) {
       <aside className="xl:sticky xl:top-24 xl:self-start">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-h4 text-primary">Live preview</h2>
-          <div className="inline-flex rounded-btn border border-line bg-surface p-1" role="group" aria-label="Preview mode">
+          <div
+            className="inline-flex rounded-btn border border-line bg-surface p-1"
+            role="group"
+            aria-label="Preview mode"
+          >
             {["light", "dark"].map((m) => (
-              <button key={m} type="button" aria-pressed={previewMode === m} onClick={() => setPreviewMode(m)} className={cn("rounded-[4px] px-3 py-1 text-sm font-semibold capitalize", previewMode === m ? "bg-card text-primary" : "text-muted")}>
+              <button
+                key={m}
+                type="button"
+                aria-pressed={previewMode === m}
+                onClick={() => setPreviewMode(m)}
+                className={cn(
+                  "rounded-[4px] px-3 py-1 text-sm font-semibold capitalize",
+                  previewMode === m ? "bg-card text-primary" : "text-muted",
+                )}
+              >
                 {m}
               </button>
             ))}
           </div>
         </div>
         <ThemePreview tokens={t} mode={previewMode} />
-        <p className="mt-2 text-[0.8125rem] text-muted">Unsaved changes show here only. The website changes when this theme is saved while live, or made live.</p>
+        <p className="mt-2 text-[0.8125rem] text-muted">
+          Unsaved changes show here only. The website changes when this theme is saved while live, or made
+          live.
+        </p>
       </aside>
 
       <RevisionHistory

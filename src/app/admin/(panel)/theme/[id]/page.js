@@ -21,7 +21,10 @@ async function Content({ params }) {
 export default function ThemeEditPage({ params }) {
   return (
     <>
-      <PageHeader title="Edit theme" description="Changes show in the preview straight away. The website only changes when this theme is live." />
+      <PageHeader
+        title="Edit theme"
+        description="Changes show in the preview straight away. The website only changes when this theme is live."
+      />
       <Suspense fallback={<Skeleton className="h-96" />}>
         <Content params={params} />
       </Suspense>

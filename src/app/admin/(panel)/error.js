@@ -19,8 +19,14 @@ export default function AdminError({ error, reset }) {
     <div className="mx-auto flex max-w-lg flex-col items-start gap-4 rounded-card border border-line bg-card p-8">
       <IconBox icon={TriangleAlert} />
       <h1 className="text-h3">This screen could not be loaded</h1>
-      <p className="text-muted">Your data is safe. Try again, and if it keeps happening, share this reference with support.</p>
-      {error?.digest ? <code className="rounded border border-line bg-surface px-2 py-1 font-data text-sm">Ref {error.digest}</code> : null}
+      <p className="text-muted">
+        Your data is safe. Try again, and if it keeps happening, share this reference with support.
+      </p>
+      {error?.digest ? (
+        <code className="rounded border border-line bg-surface px-2 py-1 font-data text-sm">
+          Ref {error.digest}
+        </code>
+      ) : null}
       <div className="flex gap-2">
         <Button onClick={reset}>
           <RotateCcw aria-hidden="true" /> Try again

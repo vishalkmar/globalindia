@@ -21,7 +21,7 @@ import { SectionDrawer } from "./SectionDrawer";
 let seq = 0;
 const key = () => `s${Date.now().toString(36)}${(seq++).toString(36)}`;
 const withKeys = (content) => ({ ...content, sections: content.sections.map((s) => ({ ...s, key: key() })) });
-const strip = (content) => ({ ...content, sections: content.sections.map(({ key: _k, ...s }) => s) });  
+const strip = (content) => ({ ...content, sections: content.sections.map(({ key: _k, ...s }) => s) });
 const publicPath = (slug) => (slug === "home" ? "/" : `/${slug}`);
 
 function summary(s) {
@@ -76,7 +76,9 @@ export function PageEditor({ pageId, perms }) {
     setSaving(false);
     if (!r.ok) {
       const first = r.data?.fields ? Object.entries(r.data.fields)[0] : null;
-      setError(first ? `${r.data.error} (${first[0]}: ${first[1]})` : (r.data?.error ?? "Could not save the draft."));
+      setError(
+        first ? `${r.data.error} (${first[0]}: ${first[1]})` : (r.data?.error ?? "Could not save the draft."),
+      );
       return false;
     }
     load(r.data.page);
@@ -99,7 +101,10 @@ export function PageEditor({ pageId, perms }) {
 
   async function preview() {
     if (dirty && !(await saveDraft({ quiet: true }))) return;
-    const r = await adminJson("/api/admin/preview", { method: "POST", json: { path: publicPath(page.slug) } });
+    const r = await adminJson("/api/admin/preview", {
+      method: "POST",
+      json: { path: publicPath(page.slug) },
+    });
     if (!r.ok) return toast.error(r.data?.error ?? "Could not open the preview.");
     window.open(r.data.url, "_blank", "noopener");
   }
@@ -117,9 +122,16 @@ export function PageEditor({ pageId, perms }) {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-2">
-        <Badge tone={page.status === "PUBLISHED" ? "success" : "neutral"}>{page.status === "PUBLISHED" ? "Published" : "Not published"}</Badge>
+        <Badge tone={page.status === "PUBLISHED" ? "success" : "neutral"}>
+          {page.status === "PUBLISHED" ? "Published" : "Not published"}
+        </Badge>
         {pending ? <Badge tone="accent">Unpublished changes</Badge> : null}
-        <a href={publicPath(page.slug)} target="_blank" rel="noopener noreferrer" className="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+        <a
+          href={publicPath(page.slug)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+        >
           View live page <ExternalLink aria-hidden="true" className="size-4" />
         </a>
         {page.hasDraft && canEdit ? (
@@ -141,7 +153,10 @@ export function PageEditor({ pageId, perms }) {
             </Button>
           ) : null}
         </div>
-        <p className="text-sm text-muted">Drag to change the order. Hidden sections stay saved but are not shown on the website. Backgrounds alternate automatically.</p>
+        <p className="text-sm text-muted">
+          Drag to change the order. Hidden sections stay saved but are not shown on the website. Backgrounds
+          alternate automatically.
+        </p>
         <SortableList
           disabled={!canEdit}
           items={content.sections.map((s) => ({ ...s, id: s.key, label: SECTIONS[s.type].label }))}
@@ -158,7 +173,12 @@ export function PageEditor({ pageId, perms }) {
                   <p className="truncate text-[0.8125rem] text-muted">{summary(s)}</p>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Button size="icon" variant="ghost" aria-label={`Edit ${SECTIONS[s.type].label}`} onClick={() => setEditing(s)}>
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    aria-label={`Edit ${SECTIONS[s.type].label}`}
+                    onClick={() => setEditing(s)}
+                  >
                     <Pencil aria-hidden="true" />
                   </Button>
                   {canEdit ? (
@@ -166,9 +186,15 @@ export function PageEditor({ pageId, perms }) {
                       <Button
                         size="icon"
                         variant="ghost"
-                        aria-label={s.isVisible ? `Hide ${SECTIONS[s.type].label}` : `Show ${SECTIONS[s.type].label}`}
+                        aria-label={
+                          s.isVisible ? `Hide ${SECTIONS[s.type].label}` : `Show ${SECTIONS[s.type].label}`
+                        }
                         aria-pressed={!s.isVisible}
-                        onClick={() => setSections((list) => list.map((x) => (x.key === s.key ? { ...x, isVisible: !x.isVisible } : x)))}
+                        onClick={() =>
+                          setSections((list) =>
+                            list.map((x) => (x.key === s.key ? { ...x, isVisible: !x.isVisible } : x)),
+                          )
+                        }
                       >
                         {s.isVisible ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" />}
                       </Button>
@@ -179,7 +205,12 @@ export function PageEditor({ pageId, perms }) {
                         onClick={() =>
                           setSections((list) => {
                             const i = list.findIndex((x) => x.key === s.key);
-                            const copy = { type: s.type, isVisible: s.isVisible, data: structuredClone(s.data), key: key() };
+                            const copy = {
+                              type: s.type,
+                              isVisible: s.isVisible,
+                              data: structuredClone(s.data),
+                              key: key(),
+                            };
                             return [...list.slice(0, i + 1), copy, ...list.slice(i + 1)];
                           })
                         }
@@ -190,7 +221,10 @@ export function PageEditor({ pageId, perms }) {
                         size="icon"
                         variant="ghost"
                         aria-label={`Remove ${SECTIONS[s.type].label}`}
-                        onClick={() => window.confirm(`Remove the ${SECTIONS[s.type].label} section?`) && setSections((list) => list.filter((x) => x.key !== s.key))}
+                        onClick={() =>
+                          window.confirm(`Remove the ${SECTIONS[s.type].label} section?`) &&
+                          setSections((list) => list.filter((x) => x.key !== s.key))
+                        }
                       >
                         <Trash2 aria-hidden="true" />
                       </Button>
@@ -201,20 +235,42 @@ export function PageEditor({ pageId, perms }) {
             );
           }}
         />
-        {content.sections.length === 0 ? <p className="text-sm text-muted">No sections yet. Add the first one.</p> : null}
+        {content.sections.length === 0 ? (
+          <p className="text-sm text-muted">No sections yet. Add the first one.</p>
+        ) : null}
       </section>
 
       <section className="grid gap-4 rounded-card border border-line bg-card p-5 md:grid-cols-2">
         <h2 className="text-h4 text-primary md:col-span-2">Page details and search engines</h2>
         <fieldset disabled={!canEdit} className="contents">
           <Field label="Page name (admin)">
-            <Input value={content.title} maxLength={80} onChange={(e) => setContent((c) => ({ ...c, title: e.target.value }))} />
+            <Input
+              value={content.title}
+              maxLength={80}
+              onChange={(e) => setContent((c) => ({ ...c, title: e.target.value }))}
+            />
           </Field>
-          <Field label="Title in Google" hint={`${content.seo.title.length}/70 · Leave empty to use the site default.`}>
-            <Input value={content.seo.title} maxLength={70} onChange={(e) => setContent((c) => ({ ...c, seo: { ...c.seo, title: e.target.value } }))} />
+          <Field
+            label="Title in Google"
+            hint={`${content.seo.title.length}/70 · Leave empty to use the site default.`}
+          >
+            <Input
+              value={content.seo.title}
+              maxLength={70}
+              onChange={(e) => setContent((c) => ({ ...c, seo: { ...c.seo, title: e.target.value } }))}
+            />
           </Field>
-          <Field label="Description in Google" hint={`${content.seo.description.length}/170`} className="md:col-span-2">
-            <Textarea rows={2} value={content.seo.description} maxLength={170} onChange={(e) => setContent((c) => ({ ...c, seo: { ...c.seo, description: e.target.value } }))} />
+          <Field
+            label="Description in Google"
+            hint={`${content.seo.description.length}/170`}
+            className="md:col-span-2"
+          >
+            <Textarea
+              rows={2}
+              value={content.seo.description}
+              maxLength={170}
+              onChange={(e) => setContent((c) => ({ ...c, seo: { ...c.seo, description: e.target.value } }))}
+            />
           </Field>
           <Checkbox
             label="Hide this page from search engines"
@@ -249,14 +305,23 @@ export function PageEditor({ pageId, perms }) {
         }}
       />
 
-      <Dialog open={adding} onClose={() => setAdding(false)} title="Add a section" description="It is added at the end; drag it into place." size="lg">
+      <Dialog
+        open={adding}
+        onClose={() => setAdding(false)}
+        title="Add a section"
+        description="It is added at the end; drag it into place."
+        size="lg"
+      >
         <ul className="grid gap-3 sm:grid-cols-2">
           {Object.entries(SECTIONS).map(([type, def]) => (
             <li key={type}>
               <button
                 type="button"
                 onClick={() => {
-                  setSections((list) => [...list, { type, isVisible: true, data: normaliseSection(type, null), key: key() }]);
+                  setSections((list) => [
+                    ...list,
+                    { type, isVisible: true, data: normaliseSection(type, null), key: key() },
+                  ]);
                   setAdding(false);
                 }}
                 className="flex h-full w-full flex-col items-start gap-1 rounded-card border border-line bg-card p-4 text-left transition-colors hover:border-primary"

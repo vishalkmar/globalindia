@@ -45,12 +45,24 @@ export const USER_LIST_SELECT = {
 export async function sendInvite(user, invitedBy) {
   const token = randomToken(32);
   await db.$transaction([
-    db.passwordResetToken.updateMany({ where: { userId: user.id, usedAt: null }, data: { usedAt: new Date() } }),
+    db.passwordResetToken.updateMany({
+      where: { userId: user.id, usedAt: null },
+      data: { usedAt: new Date() },
+    }),
     db.passwordResetToken.create({
-      data: { userId: user.id, tokenHash: hmac(token, authEnv.refreshPepper), expiresAt: new Date(Date.now() + INVITE_TTL_MS) },
+      data: {
+        userId: user.id,
+        tokenHash: hmac(token, authEnv.refreshPepper),
+        expiresAt: new Date(Date.now() + INVITE_TTL_MS),
+      },
     }),
   ]);
-  await sendEmail({ to: user.email, toName: user.name, ...inviteEmail({ token, role: user.role, invitedBy }), tags: ["invite"] });
+  await sendEmail({
+    to: user.email,
+    toName: user.name,
+    ...inviteEmail({ token, role: user.role, invitedBy }),
+    tags: ["invite"],
+  });
 }
 
 /** Unusable random password hash for invited accounts until they set their own. */
@@ -59,5 +71,7 @@ export async function placeholderPasswordHash() {
 }
 
 export async function activeSuperAdminCount(excludeId) {
-  return db.adminUser.count({ where: { role: "SUPER_ADMIN", status: "ACTIVE", ...(excludeId ? { id: { not: excludeId } } : {}) } });
+  return db.adminUser.count({
+    where: { role: "SUPER_ADMIN", status: "ACTIVE", ...(excludeId ? { id: { not: excludeId } } : {}) },
+  });
 }

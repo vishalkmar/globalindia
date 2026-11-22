@@ -16,7 +16,10 @@ async function Content() {
 export default function AuditPage() {
   return (
     <>
-      <PageHeader title="Audit log" description="Every sign-in, security change and edit, with who did it and when. Secrets are never recorded." />
+      <PageHeader
+        title="Audit log"
+        description="Every sign-in, security change and edit, with who did it and when. Secrets are never recorded."
+      />
       <Suspense fallback={<Skeleton className="h-96" />}>
         <Content />
       </Suspense>

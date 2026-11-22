@@ -16,27 +16,74 @@ import { cn } from "@/lib/utils";
 
 let seq = 0;
 const uid = () => `m${Date.now().toString(36)}${(seq++).toString(36)}`;
-const withIds = (items) => items.map((i) => ({ ...i, id: uid(), children: (i.children ?? []).map((c) => ({ ...c, id: uid() })) }));
+const withIds = (items) =>
+  items.map((i) => ({ ...i, id: uid(), children: (i.children ?? []).map((c) => ({ ...c, id: uid() })) }));
 const strip = (items) =>
-  items.map(({ id, children, ...rest }) => ({ ...rest, children: (children ?? []).map(({ id: _cid, ...c }) => c) }));  
+  items.map(({ id, children, ...rest }) => ({
+    ...rest,
+    children: (children ?? []).map(({ id: _cid, ...c }) => c),
+  }));
 
 function LinkRow({ item, onChange, onRemove, errors, path, compact }) {
   return (
     <div className="flex flex-col gap-2">
-      <div className={cn("grid gap-2", compact ? "sm:grid-cols-[1fr_1fr_auto]" : "sm:grid-cols-[1fr_1.3fr_auto]")}>
-        <Input size="sm" aria-label="Label" placeholder="Label" value={item.label} onChange={(e) => onChange({ ...item, label: e.target.value })} aria-invalid={errors[`${path}.label`] ? true : undefined} />
-        <Input size="sm" aria-label="Link" placeholder="/page or https://" value={item.href} onChange={(e) => onChange({ ...item, href: e.target.value })} aria-invalid={errors[`${path}.href`] ? true : undefined} className="font-data text-[0.8125rem]" />
+      <div
+        className={cn(
+          "grid gap-2",
+          compact ? "sm:grid-cols-[1fr_1fr_auto]" : "sm:grid-cols-[1fr_1.3fr_auto]",
+        )}
+      >
+        <Input
+          size="sm"
+          aria-label="Label"
+          placeholder="Label"
+          value={item.label}
+          onChange={(e) => onChange({ ...item, label: e.target.value })}
+          aria-invalid={errors[`${path}.label`] ? true : undefined}
+        />
+        <Input
+          size="sm"
+          aria-label="Link"
+          placeholder="/page or https://"
+          value={item.href}
+          onChange={(e) => onChange({ ...item, href: e.target.value })}
+          aria-invalid={errors[`${path}.href`] ? true : undefined}
+          className="font-data text-[0.8125rem]"
+        />
         <div className="flex items-center gap-1">
-          <Button size="icon" variant="ghost" aria-label={item.isVisible ? `Hide ${item.label || "link"}` : `Show ${item.label || "link"}`} aria-pressed={!item.isVisible} onClick={() => onChange({ ...item, isVisible: !item.isVisible })} title={item.isVisible ? "Visible" : "Hidden"}>
-            {item.isVisible ? <Eye aria-hidden="true" /> : <EyeOff aria-hidden="true" className="text-muted" />}
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={item.isVisible ? `Hide ${item.label || "link"}` : `Show ${item.label || "link"}`}
+            aria-pressed={!item.isVisible}
+            onClick={() => onChange({ ...item, isVisible: !item.isVisible })}
+            title={item.isVisible ? "Visible" : "Hidden"}
+          >
+            {item.isVisible ? (
+              <Eye aria-hidden="true" />
+            ) : (
+              <EyeOff aria-hidden="true" className="text-muted" />
+            )}
           </Button>
-          <Button size="icon" variant="ghost" aria-label={`Remove ${item.label || "link"}`} onClick={onRemove}>
+          <Button
+            size="icon"
+            variant="ghost"
+            aria-label={`Remove ${item.label || "link"}`}
+            onClick={onRemove}
+          >
             <Trash2 aria-hidden="true" />
           </Button>
         </div>
       </div>
-      {errors[`${path}.label`] || errors[`${path}.href`] ? <p className="text-[0.8125rem] text-error">{errors[`${path}.label`] ?? errors[`${path}.href`]}</p> : null}
-      <Checkbox label="Open in a new tab" checked={item.newTab} onChange={(e) => onChange({ ...item, newTab: e.target.checked })} className="text-sm" />
+      {errors[`${path}.label`] || errors[`${path}.href`] ? (
+        <p className="text-[0.8125rem] text-error">{errors[`${path}.label`] ?? errors[`${path}.href`]}</p>
+      ) : null}
+      <Checkbox
+        label="Open in a new tab"
+        checked={item.newTab}
+        onChange={(e) => onChange({ ...item, newTab: e.target.checked })}
+        className="text-sm"
+      />
     </div>
   );
 }
@@ -109,14 +156,25 @@ function LocationEditor({ location, canEdit }) {
             const real = items[idx];
             return (
               <div className="flex flex-col gap-3">
-                <LinkRow item={real} errors={errors} path={`items.${idx}`} onChange={(n) => update(real.id, n)} onRemove={() => setItems((l) => l.filter((i) => i.id !== real.id))} />
+                <LinkRow
+                  item={real}
+                  errors={errors}
+                  path={`items.${idx}`}
+                  onChange={(n) => update(real.id, n)}
+                  onRemove={() => setItems((l) => l.filter((i) => i.id !== real.id))}
+                />
                 {cfg.nested ? (
                   <div className="ml-2 flex flex-col gap-2 border-l-2 border-line pl-4">
                     {real.children.length ? (
                       <SortableList
                         items={real.children.map((c) => ({ ...c, label: c.label || "Untitled link" }))}
                         disabled={!canEdit}
-                        onReorder={(next) => update(real.id, { ...real, children: next.map((n) => real.children.find((c) => c.id === n.id)) })}
+                        onReorder={(next) =>
+                          update(real.id, {
+                            ...real,
+                            children: next.map((n) => real.children.find((c) => c.id === n.id)),
+                          })
+                        }
                         renderItem={(child) => {
                           const cidx = real.children.findIndex((c) => c.id === child.id);
                           return (
@@ -125,8 +183,18 @@ function LocationEditor({ location, canEdit }) {
                               item={real.children[cidx]}
                               errors={errors}
                               path={`items.${idx}.children.${cidx}`}
-                              onChange={(n) => update(real.id, { ...real, children: real.children.map((c) => (c.id === child.id ? n : c)) })}
-                              onRemove={() => update(real.id, { ...real, children: real.children.filter((c) => c.id !== child.id) })}
+                              onChange={(n) =>
+                                update(real.id, {
+                                  ...real,
+                                  children: real.children.map((c) => (c.id === child.id ? n : c)),
+                                })
+                              }
+                              onRemove={() =>
+                                update(real.id, {
+                                  ...real,
+                                  children: real.children.filter((c) => c.id !== child.id),
+                                })
+                              }
                             />
                           );
                         }}
@@ -136,7 +204,15 @@ function LocationEditor({ location, canEdit }) {
                       <Button
                         size="sm"
                         variant="ghost"
-                        onClick={() => update(real.id, { ...real, children: [...real.children, { id: uid(), label: "", href: "/", newTab: false, isVisible: true }] })}
+                        onClick={() =>
+                          update(real.id, {
+                            ...real,
+                            children: [
+                              ...real.children,
+                              { id: uid(), label: "", href: "/", newTab: false, isVisible: true },
+                            ],
+                          })
+                        }
                       >
                         <Plus aria-hidden="true" /> Add sub-link
                       </Button>
@@ -149,13 +225,31 @@ function LocationEditor({ location, canEdit }) {
         />
         {items.length < cfg.maxItems ? (
           <div>
-            <Button variant="secondary" size="sm" onClick={() => setItems((l) => [...l, { id: uid(), label: "", href: "/", newTab: false, isVisible: true, children: [] }])}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() =>
+                setItems((l) => [
+                  ...l,
+                  { id: uid(), label: "", href: "/", newTab: false, isVisible: true, children: [] },
+                ])
+              }
+            >
               <Plus aria-hidden="true" /> Add link
             </Button>
           </div>
         ) : null}
       </fieldset>
-      {canEdit ? <SaveBar dirty={dirty} saving={saving} savedAt={savedAt} onPublish={save} publishLabel="Save menu" onHistory={() => setHistory(true)} /> : null}
+      {canEdit ? (
+        <SaveBar
+          dirty={dirty}
+          saving={saving}
+          savedAt={savedAt}
+          onPublish={save}
+          publishLabel="Save menu"
+          onHistory={() => setHistory(true)}
+        />
+      ) : null}
       <RevisionHistory
         open={history}
         onClose={() => setHistory(false)}

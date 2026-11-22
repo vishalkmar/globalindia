@@ -9,12 +9,24 @@ import { idSchema } from "@/lib/validation/auth";
 /** Page as the editor sees it: the draft if there is one, otherwise the live content. */
 export async function loadPageForEditor(id) {
   if (!idSchema.safeParse(id).success) throw new HttpError(404);
-  const page = await db.page.findFirst({ where: { id, deletedAt: null }, include: { sections: { orderBy: { order: "asc" } } } });
+  const page = await db.page.findFirst({
+    where: { id, deletedAt: null },
+    include: { sections: { orderBy: { order: "asc" } } },
+  });
   if (!page) throw new HttpError(404);
   const live = {
     title: page.title,
-    seo: { title: page.seo?.title ?? "", description: page.seo?.description ?? "", noindex: Boolean(page.seo?.noindex) },
-    sections: page.sections.map((s) => ({ id: s.id, type: s.type, isVisible: s.isVisible, data: normaliseSection(s.type, s.data) })),
+    seo: {
+      title: page.seo?.title ?? "",
+      description: page.seo?.description ?? "",
+      noindex: Boolean(page.seo?.noindex),
+    },
+    sections: page.sections.map((s) => ({
+      id: s.id,
+      type: s.type,
+      isVisible: s.isVisible,
+      data: normaliseSection(s.type, s.data),
+    })),
   };
   return { page, live, draft: page.draftData ?? null };
 }

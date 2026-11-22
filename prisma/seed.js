@@ -11,7 +11,9 @@ import { HOME_LAYOUT, SECTIONS } from "../src/lib/sections/registry.js";
 import { MENU_DEFAULTS } from "../src/lib/settings/menus.js";
 import { SETTING_DEFAULTS } from "../src/lib/settings/schemas.js";
 import { THEME_PRESETS } from "../src/lib/theme/presets.js";
+import { categorySchema, productSchema } from "../src/lib/validation/catalogue.js";
 import { seedAdmin } from "./seed-admin.js";
+import { seedCatalogue } from "./seed-catalogue.js";
 import { COMPANY_PAGES } from "./seed-pages.js";
 import { assertSeedAllowed, log, upsertSetting } from "./seed-utils.js";
 
@@ -97,6 +99,7 @@ async function main() {
   await seedMenus();
   await seedHomePage();
   await seedCompanyPages();
+  await seedCatalogue(db, { categorySchema, productSchema }, log);
   await seedAdmin(db);
   console.log("Seed complete.");
 }

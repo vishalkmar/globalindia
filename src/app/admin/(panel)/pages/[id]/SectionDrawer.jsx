@@ -42,8 +42,21 @@ function SectionForm({ section, onApply, onCancel, readOnly }) {
 /** Edit one section in a side drawer. "Apply" puts the changes into the page draft (saved with Save draft). */
 export function SectionDrawer({ section, onApply, onClose, readOnly }) {
   return (
-    <Drawer open={Boolean(section)} onClose={onClose} title={section ? `Edit: ${SECTIONS[section.type].label}` : ""} className="w-[min(640px,calc(100%-24px))]">
-      {section ? <SectionForm key={section.key} section={section} onApply={onApply} onCancel={onClose} readOnly={readOnly} /> : null}
+    <Drawer
+      open={Boolean(section)}
+      onClose={onClose}
+      title={section ? `Edit: ${SECTIONS[section.type].label}` : ""}
+      className="w-[min(640px,calc(100%-24px))]"
+    >
+      {section ? (
+        <SectionForm
+          key={section.key}
+          section={section}
+          onApply={onApply}
+          onCancel={onClose}
+          readOnly={readOnly}
+        />
+      ) : null}
     </Drawer>
   );
 }

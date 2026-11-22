@@ -22,7 +22,10 @@ export default function ComponentsPage() {
   if (process.env.NODE_ENV === "production" && process.env.ENABLE_STYLEGUIDE !== "true") notFound();
   return (
     <>
-      <PageHeader title="Admin components" description="Editing kit used by every admin form. Nothing on this page is saved." />
+      <PageHeader
+        title="Admin components"
+        description="Editing kit used by every admin form. Nothing on this page is saved."
+      />
       <Suspense fallback={<Skeleton className="h-96" />}>
         <Guarded />
       </Suspense>

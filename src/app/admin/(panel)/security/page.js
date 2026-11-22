@@ -17,7 +17,10 @@ async function Guarded() {
 export default function SecurityPage() {
   return (
     <div className="mx-auto max-w-3xl">
-      <PageHeader title="My security" description="Sign-in methods, password, email and devices for your account." />
+      <PageHeader
+        title="My security"
+        description="Sign-in methods, password, email and devices for your account."
+      />
       <Suspense fallback={<Skeleton className="h-64" />}>
         <Guarded />
       </Suspense>

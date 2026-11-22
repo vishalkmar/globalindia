@@ -15,12 +15,21 @@ async function Content({ params }) {
   const { id } = await params;
   if (!/^c[a-z0-9]{20,32}$/.test(id)) notFound();
   const user = await requirePermissionPage("read", "pages", `/admin/pages/${id}`);
-  const page = await db.page.findFirst({ where: { id, deletedAt: null }, select: { title: true, slug: true } });
+  const page = await db.page.findFirst({
+    where: { id, deletedAt: null },
+    select: { title: true, slug: true },
+  });
   if (!page) notFound();
   return (
     <>
-      <PageHeader title={page.title} description={`Address: ${page.slug === "home" ? "/" : `/${page.slug}`}`} />
-      <PageEditor pageId={id} perms={{ update: can(user, "update", "pages"), publish: can(user, "publish", "pages") }} />
+      <PageHeader
+        title={page.title}
+        description={`Address: ${page.slug === "home" ? "/" : `/${page.slug}`}`}
+      />
+      <PageEditor
+        pageId={id}
+        perms={{ update: can(user, "update", "pages"), publish: can(user, "publish", "pages") }}
+      />
     </>
   );
 }
