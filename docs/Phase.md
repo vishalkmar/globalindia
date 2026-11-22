@@ -550,26 +550,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Re-run full tests
 
 ## Phase 24 — Security 8: Secrets Server-side, .env, Source Maps, Logs
-- [ ] 01 Audit all NEXT_PUBLIC_ vars; no secrets
-- [ ] 02 server-only import on every secret-using module
-- [ ] 03 Check client bundles for secret strings (build scan)
-- [ ] 04 Cloudinary signing only on server
-- [ ] 05 Brevo key only on server
-- [ ] 06 Disable production browser source maps
-- [ ] 07 Block /.env, /.git, *.map paths at edge (404)
-- [ ] 08 Secret scanning in CI (gitleaks)
-- [ ] 09 Pre-commit hook for secrets
-- [ ] 10 Vercel env vars marked sensitive
-- [ ] 11 Structured logger with redaction (password, token, otp, cookie, authorization)
-- [ ] 12 Hash IPs in logs and DB
-- [ ] 13 No request bodies logged for auth routes
-- [ ] 14 Error responses generic; details only in server logs
-- [ ] 15 Remove console.log in production build
-- [ ] 16 Log retention policy (30 days)
-- [ ] 17 Rotate any secret that was ever committed
-- [ ] 18 Document secret inventory and owners
-- [ ] 19 Document in docs/security/24.md
-- [ ] 20 Re-run full tests
+- [x] 01 Audit all NEXT_PUBLIC_ vars; no secrets
+- [x] 02 server-only import on every secret-using module
+- [x] 03 Check client bundles for secret strings (build scan)
+- [x] 04 Cloudinary signing only on server
+- [x] 05 Brevo key only on server
+- [x] 06 Disable production browser source maps
+- [x] 07 Block /.env, /.git, *.map paths at edge (404)
+- [x] 08 Secret scanning in CI (gitleaks)
+- [x] 09 Pre-commit hook for secrets
+- [~] 10 Vercel env vars marked sensitive — list and steps in security/24.md; set at deploy
+- [x] 11 Structured logger with redaction (password, token, otp, cookie, authorization)
+- [x] 12 Hash IPs in logs and DB
+- [x] 13 No request bodies logged for auth routes
+- [x] 14 Error responses generic; details only in server logs
+- [x] 15 Remove console.log in production build
+- [x] 16 Log retention policy (30 days)
+- [x] 17 Rotate any secret that was ever committed
+- [x] 18 Document secret inventory and owners
+- [x] 19 Document in docs/security/24.md
+- [x] 20 Re-run full tests
 
 ## Phase 25 — Security 9: Password Hashing & MFA Hardening
 - [ ] 01 argon2id params (memory 64 MB, t=3, p=1) benchmarked

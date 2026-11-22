@@ -24,7 +24,10 @@
     "db:seed": "node --env-file-if-exists=.env.local prisma/seed.js",
     "check": "npm run lint && npm run test && npm run build",
     "postinstall": "prisma generate",
-    "budget": "node scripts/js-budget.mjs http://localhost:3000"
+    "budget": "node scripts/js-budget.mjs http://localhost:3000",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "scan:secrets": "node scripts/scan-secrets.mjs --history",
+    "scan:bundle": "node scripts/scan-secrets.mjs --bundle"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

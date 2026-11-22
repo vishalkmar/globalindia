@@ -1,3 +1,5 @@
+import "server-only";
+
 import { COOKIE, setMfaPendingCookie } from "@/lib/auth/cookies";
 import { hmac } from "@/lib/auth/crypto";
 import { availableMethods, checkPassword, GENERIC_LOGIN_ERROR } from "@/lib/auth/login";

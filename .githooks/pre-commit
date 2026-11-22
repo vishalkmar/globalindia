@@ -1,0 +1,7 @@
+#!/bin/sh
+# Refuse commits that contain secrets or env files (Phase 24 todo 09). Installed by `npm install`
+# (the "prepare" script sets core.hooksPath to .githooks).
+node scripts/scan-secrets.mjs --staged || {
+  echo "Commit stopped: possible secret in the staged files." >&2
+  exit 1
+}

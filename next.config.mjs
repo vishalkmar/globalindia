@@ -19,6 +19,10 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
 
+  // Stray console.log / console.debug never reach production (Phase 24 todo 15). The structured
+  // logger (src/lib/logger.js) writes through error / warn / info, which are kept.
+  compiler: isDev ? {} : { removeConsole: { exclude: ["error", "warn", "info"] } },
+
   // The site uses no Server Actions; if one is ever added, Next's origin check only accepts our host
   // (Phase 18 todo 06).
   experimental: {

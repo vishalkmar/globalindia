@@ -24,8 +24,13 @@ const PUBLIC_ADMIN = [
 ];
 const ACCESS_COOKIES = ["__Host-gi_at", "gi_at"];
 
+// Paths that must never be served, even by mistake (Phase 24 todo 07): env files, git metadata,
+// source maps. Answered with a bare 404 before anything else runs.
+const FORBIDDEN_PATH = /(^|\/)\.(env|git)(\/|$|[.\w-]*$)|\.map$/i;
+
 export async function proxy(request) {
   const { pathname, search } = request.nextUrl;
+  if (FORBIDDEN_PATH.test(pathname)) return new NextResponse(null, { status: 404 });
   const ip = clientIp(request.headers);
 
   // Blocked addresses (Settings -> Rate limits and blocked IPs, Phase 22 todo 13): a plain refusal.
@@ -89,5 +94,12 @@ export async function proxy(request) {
 
 export const config = {
   // Admin and API for the checks above; every other page path for redirects. Static files are skipped.
-  matcher: ["/admin/:path*", "/api/:path*", "/((?!_next/|favicon|.*\\.[a-zA-Z0-9]{2,5}$).*)"],
+  matcher: [
+    "/admin/:path*",
+    "/api/:path*",
+    "/((?!_next/|favicon|.*\\.[a-zA-Z0-9]{2,5}$).*)",
+    // Always checked although they look like files: env files, git metadata, source maps.
+    "/((?:.*/)?\\.(?:env|git).*)",
+    "/(.*\\.map)",
+  ],
 };
