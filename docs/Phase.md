@@ -506,26 +506,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Re-run full tests
 
 ## Phase 22 — Security 6: Rate Limiting & Abuse Control
-- [ ] 01 Upstash sliding-window limiter helper
-- [ ] 02 Login: 5 / 15 min per IP + per email
-- [ ] 03 OTP verify: 5 attempts per code, 10 / hour per user
-- [ ] 04 OTP resend: 60 s cooldown, 5 / hour
-- [ ] 05 Password reset request: 3 / hour per email and IP
-- [ ] 06 Public forms: 5 / hour per IP
-- [ ] 07 Search API: 60 / min per IP
-- [ ] 08 Upload: 30 / hour per admin
-- [ ] 09 Global API: 300 / min per IP
-- [ ] 10 Return 429 with Retry-After
-- [ ] 11 Exponential backoff on failed logins
-- [ ] 12 Cloudflare rate-limit rules as outer layer
-- [ ] 13 Block list of abusive IPs (admin view)
-- [ ] 14 Bot score check on forms (Turnstile)
-- [ ] 15 Email bombing protection (per-recipient limits)
-- [ ] 16 Limits configurable in admin within safe caps
-- [ ] 17 Log rate-limit hits (no PII)
-- [ ] 18 Load test limits
-- [ ] 19 Document in docs/security/22.md
-- [ ] 20 Re-run full tests
+- [x] 01 Upstash sliding-window limiter helper
+- [x] 02 Login: 5 / 15 min per IP + per email
+- [x] 03 OTP verify: 5 attempts per code, 10 / hour per user
+- [x] 04 OTP resend: 60 s cooldown, 5 / hour
+- [x] 05 Password reset request: 3 / hour per email and IP
+- [x] 06 Public forms: 5 / hour per IP
+- [x] 07 Search API: 60 / min per IP
+- [x] 08 Upload: 30 / hour per admin
+- [x] 09 Global API: 300 / min per IP
+- [x] 10 Return 429 with Retry-After
+- [x] 11 Exponential backoff on failed logins
+- [~] 12 Cloudflare rate-limit rules as outer layer — rules written in security/22.md; apply when the domain is on Cloudflare
+- [x] 13 Block list of abusive IPs (admin view)
+- [x] 14 Bot score check on forms (Turnstile)
+- [x] 15 Email bombing protection (per-recipient limits)
+- [x] 16 Limits configurable in admin within safe caps
+- [x] 17 Log rate-limit hits (no PII)
+- [x] 18 Load test limits
+- [x] 19 Document in docs/security/22.md
+- [x] 20 Re-run full tests
 
 ## Phase 23 — Security 7: JWT, Tokens, OTP & Session Hygiene (no localStorage)
 - [ ] 01 Secrets ≥ 64 random bytes, different per environment
