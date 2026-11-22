@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { invalidate, TAGS } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
@@ -46,6 +47,7 @@ export const PUT = route(async (req, ctx) => {
   assertSameOrigin(req);
   const key = await resolveKey(ctx);
   const user = await requirePermission("update", SETTINGS[key].resource);
+  if (SETTINGS[key].resource === "security") await requireStepUp(user); // maintenance, uploads, limits, analytics
   const value = await readJson(req, SETTINGS[key].schema, { maxBytes: 32 * 1024 });
   // Do not let an admin lock themselves (and the office) out of the site and the admin panel.
   if (key === "abuse" && ipInRanges(clientIp(req.headers), value.blockedIps))

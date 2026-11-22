@@ -28,3 +28,4 @@ process.env.TOTP_ENC_KEY ??= randomBytes(32).toString("base64");
 
 // Unit tests call route handlers directly; CSRF is tested on its own in csrf.test.js.
 globalThis.__giSkipCsrf = true;
+globalThis.__giSkipStepUp = true; // step-up is tested on its own in mfa-hardening.test.js

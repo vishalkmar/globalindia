@@ -1,6 +1,7 @@
 import { after } from "next/server";
 
 import { audit } from "@/lib/audit";
+import { BREACHED_MESSAGE, isBreachedPassword } from "@/lib/auth/breached";
 import { setSessionCookies } from "@/lib/auth/cookies";
 import { requireAdmin } from "@/lib/auth/guard";
 import { notifySecurityChange } from "@/lib/auth/notify";
@@ -34,6 +35,8 @@ export const POST = route(async (req) => {
   }
   const policy = passwordPolicyError(newPassword, { email: user.email });
   if (policy) return errorResponse(400, policy, { body: { fields: { newPassword: policy } } });
+  if (await isBreachedPassword(newPassword))
+    return errorResponse(400, BREACHED_MESSAGE, { body: { fields: { newPassword: BREACHED_MESSAGE } } });
   if (await verifyPassword(user.passwordHash, newPassword)) {
     const msg = "Choose a password you have not used here before.";
     return errorResponse(400, msg, { body: { fields: { newPassword: msg } } });

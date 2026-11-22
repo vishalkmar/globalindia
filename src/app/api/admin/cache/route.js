@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { invalidate, TAGS } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { assertSameOrigin, json, route } from "@/lib/http";
@@ -14,6 +15,7 @@ import { rateLimit } from "@/lib/security/rateLimit";
 export const POST = route(async (req) => {
   assertSameOrigin(req);
   const user = await requirePermission("update", "security");
+  await requireStepUp(user);
   const limited = await rateLimit("sensitiveUser", `cache:${user.id}`);
   if (!limited.success)
     return json({ ok: false, error: "Please wait a little before purging again." }, { status: 429 });

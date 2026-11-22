@@ -1,6 +1,7 @@
 import { denyAccess, requireAdmin } from "@/lib/auth/guard";
 import { requestMfaChange } from "@/lib/auth/mfa";
 import { OtpError, otpErrorMessage } from "@/lib/auth/otp";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { db } from "@/lib/db";
 import { assertSameOrigin, errorResponse, HttpError, json, readJson, route } from "@/lib/http";
 import { rateLimit } from "@/lib/security/rateLimit";
@@ -27,6 +28,7 @@ export const POST = route(async (req) => {
   const targetId = userId ?? actor.id;
   if (targetId !== actor.id && actor.role !== "SUPER_ADMIN")
     await denyAccess(actor, { action: "mfa", resource: "users", detail: { target: targetId } });
+  if (targetId !== actor.id) await requireStepUp(actor); // changing someone else's sign-in protection
 
   const target = await db.adminUser.findUnique({ where: { id: targetId } });
   if (!target) throw new HttpError(404);

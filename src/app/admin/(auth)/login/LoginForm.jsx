@@ -82,6 +82,9 @@ export function LoginForm() {
     >
       <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
         {error ? <Alert tone="error">{error}</Alert> : null}
+        {!error && params.get("reason") === "idle" ? (
+          <Alert tone="info">You were signed out after 30 minutes without activity. Sign in to continue.</Alert>
+        ) : null}
         <Field label="Email" error={fields.email}>
           <Input
             type="email"

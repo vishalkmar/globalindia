@@ -572,26 +572,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Re-run full tests
 
 ## Phase 25 — Security 9: Password Hashing & MFA Hardening
-- [ ] 01 argon2id params (memory 64 MB, t=3, p=1) benchmarked
-- [ ] 02 Password policy: 12+ chars, breached-password check (k-anonymity)
-- [ ] 03 Rehash on login if params changed
-- [ ] 04 Hash all stored secrets: refresh tokens, OTPs, reset tokens, recovery codes
-- [ ] 05 Encrypt TOTP secrets (AES-256-GCM, key from env)
-- [ ] 06 MFA mandatory for all admin roles
-- [ ] 07 TOTP replay prevention (store last used step)
-- [ ] 08 Recovery codes single use and regenerate flow
-- [ ] 09 MFA toggle needs OTP to default email
-- [ ] 10 Step-up auth for sensitive actions (users, theme publish, settings)
-- [ ] 11 Re-auth after 12 hours absolute session
-- [ ] 12 Idle timeout 30 min in admin
-- [ ] 13 Notify on MFA change, new device, password change
-- [ ] 14 Super admin cannot be deleted/demoted if last one
-- [ ] 15 Authorization re-checked after MFA (no partial session access)
-- [ ] 16 mfa_pending cookie cannot access any admin API
-- [ ] 17 Tests for MFA bypass attempts
-- [ ] 18 Tests for recovery code reuse
-- [ ] 19 Document in docs/security/25.md
-- [ ] 20 Re-run full tests
+- [x] 01 argon2id params (memory 64 MB, t=3, p=1) benchmarked
+- [x] 02 Password policy: 12+ chars, breached-password check (k-anonymity)
+- [x] 03 Rehash on login if params changed
+- [x] 04 Hash all stored secrets: refresh tokens, OTPs, reset tokens, recovery codes
+- [x] 05 Encrypt TOTP secrets (AES-256-GCM, key from env)
+- [x] 06 MFA mandatory for all admin roles
+- [x] 07 TOTP replay prevention (store last used step)
+- [x] 08 Recovery codes single use and regenerate flow
+- [x] 09 MFA toggle needs OTP to default email
+- [x] 10 Step-up auth for sensitive actions (users, theme publish, settings)
+- [x] 11 Re-auth after 12 hours absolute session
+- [x] 12 Idle timeout 30 min in admin
+- [x] 13 Notify on MFA change, new device, password change
+- [x] 14 Super admin cannot be deleted/demoted if last one
+- [x] 15 Authorization re-checked after MFA (no partial session access)
+- [x] 16 mfa_pending cookie cannot access any admin API
+- [x] 17 Tests for MFA bypass attempts
+- [x] 18 Tests for recovery code reuse
+- [x] 19 Document in docs/security/25.md
+- [x] 20 Re-run full tests
 
 ## Phase 26 — Security 10: Webhook Signatures & SSRF
 - [ ] 01 Inventory all webhooks (Brevo, Cloudinary)

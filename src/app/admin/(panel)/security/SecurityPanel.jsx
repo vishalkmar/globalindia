@@ -363,6 +363,19 @@ export function SecurityPanel() {
           <ShieldCheck aria-hidden="true" className="size-4" strokeWidth={1.5} />
           Recovery codes left: <span className="font-data text-ink">{u.recoveryCodesLeft}</span> of 10
         </p>
+        <Button
+          variant="secondary"
+          size="sm"
+          className="mt-3"
+          onClick={async () => {
+            const res = await adminJson("/api/auth/recovery/regenerate", { method: "POST" });
+            if (!res.ok) return toast.error(res.data?.error ?? "Could not create new codes.");
+            setCodes(res.data.recoveryCodes);
+            load();
+          }}
+        >
+          Create new recovery codes
+        </Button>
       </Panel>
 
       <Panel title="Password" description="Changing it signs out every other device.">

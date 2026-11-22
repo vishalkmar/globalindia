@@ -3,6 +3,7 @@ import { z } from "zod";
 import { destroyItem, listTrash, restoreItem, TRASH_TYPES } from "@/lib/admin/trash";
 import { denyAccess, requireAdmin, requirePermission } from "@/lib/auth/guard";
 import { can } from "@/lib/auth/permissions";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { assertSameOrigin, json, readJson, route } from "@/lib/http";
 import { idSchema } from "@/lib/validation/auth";
 
@@ -31,6 +32,7 @@ export const POST = route(async (req) => {
 export const DELETE = route(async (req) => {
   assertSameOrigin(req);
   const user = await requirePermission("delete", "users"); // users:delete = super admin only
+  await requireStepUp(user);
   if (user.role !== "SUPER_ADMIN") await denyAccess(user, { action: "delete", resource: "trash" });
   const { type, id } = await readJson(req, itemSchema, { maxBytes: 512 });
   await destroyItem({ user, type, id });

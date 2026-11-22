@@ -20,6 +20,8 @@ import { signAccessToken } from "./jwt";
  */
 
 export const SESSION_ABSOLUTE_HOURS = 12;
+/** Phase 25 todo 12: no refresh for this long = the admin walked away; sign in again. */
+export const SESSION_IDLE_MINUTES = 30;
 
 export function hashRefreshToken(token) {
   return hmac(token, authEnv.refreshPepper);
@@ -95,6 +97,12 @@ export async function rotateSession(presentedToken, { userAgent = "", ipHash = "
   const now = new Date();
   if (current.expiresAt <= now || current.absoluteExpiresAt <= now) {
     await db.session.update({ where: { id: current.id }, data: { revokedAt: now, revokeReason: "expired" } });
+    throw new RefreshError("expired", current.userId);
+  }
+  // Idle: an active admin refreshes every ~10 minutes (access token lifetime). Half an hour without
+  // any refresh means nobody is using this session.
+  if (now.getTime() - current.lastUsedAt.getTime() > SESSION_IDLE_MINUTES * 60_000) {
+    await revokeFamily(current.familyId, "idle");
     throw new RefreshError("expired", current.userId);
   }
   if (current.user.status !== "ACTIVE") {

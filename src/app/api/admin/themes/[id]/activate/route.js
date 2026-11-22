@@ -1,5 +1,6 @@
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { invalidate, TAGS } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, route } from "@/lib/http";
@@ -14,6 +15,7 @@ import { idSchema } from "@/lib/validation/auth";
 export const POST = route(async (req, ctx) => {
   assertSameOrigin(req);
   const user = await requirePermission("publish", "theme");
+  await requireStepUp(user);
   const { id } = await ctx.params;
   if (!idSchema.safeParse(id).success) throw new HttpError(404);
   const theme = await db.theme.findUnique({ where: { id } });

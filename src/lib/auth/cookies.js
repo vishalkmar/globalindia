@@ -23,6 +23,7 @@ export const COOKIE = {
   access: secure ? "__Host-gi_at" : "gi_at",
   refresh: secure ? "__Secure-gi_rt" : "gi_rt",
   mfaPending: secure ? "__Host-gi_mfa" : "gi_mfa",
+  stepUp: secure ? "__Host-gi_su" : "gi_su", // recent password confirmation (Phase 25 todo 10)
 };
 
 const REFRESH_PATH = "/api/auth";
@@ -45,6 +46,7 @@ export function clearSessionCookies(res) {
   res.cookies.set(COOKIE.access, "", base(0));
   res.cookies.set(COOKIE.refresh, "", base(0, REFRESH_PATH));
   res.cookies.set(COOKIE.mfaPending, "", base(0));
+  res.cookies.set(COOKIE.stepUp, "", base(0));
   return res;
 }
 

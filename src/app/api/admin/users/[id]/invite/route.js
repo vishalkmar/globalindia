@@ -1,6 +1,7 @@
 import { sendInvite } from "@/lib/admin/users";
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, route } from "@/lib/http";
 import { idSchema } from "@/lib/validation/auth";
@@ -9,6 +10,7 @@ import { idSchema } from "@/lib/validation/auth";
 export const POST = route(async (req, ctx) => {
   assertSameOrigin(req);
   const actor = await requirePermission("create", "users");
+  await requireStepUp(actor);
   const { id } = await ctx.params;
   if (!idSchema.safeParse(id).success) throw new HttpError(404);
   const user = await db.adminUser.findUnique({

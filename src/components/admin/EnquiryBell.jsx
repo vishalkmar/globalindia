@@ -32,7 +32,7 @@ export function EnquiryBell() {
     let live = true;
     const load = () => {
       if (document.visibilityState !== "visible") return;
-      adminJson("/api/admin/enquiries/unread").then(
+      adminJson("/api/admin/enquiries/unread", { background: true }).then(
         (r) => live && r.ok && setData({ count: r.data.count, latest: r.data.latest }),
       );
     };

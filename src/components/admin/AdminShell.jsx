@@ -13,7 +13,9 @@ import { cn } from "@/lib/utils";
 
 import { AdminSearch } from "./AdminSearch";
 import { EnquiryBell } from "./EnquiryBell";
+import { IdleGuard } from "./IdleGuard";
 import { NAV_GROUPS, SEGMENT_LABELS } from "./nav";
+import { StepUpDialog } from "./StepUpDialog";
 
 const ROLE_LABEL = { SUPER_ADMIN: "Super admin", EDITOR: "Editor", VIEWER: "Viewer" };
 
@@ -272,6 +274,8 @@ export function AdminShell({ user, children }) {
           <div className="min-w-0 flex-1">
             <Breadcrumb pathname={pathname} />
           </div>
+          <IdleGuard />
+          <StepUpDialog />
           <AdminSearch />
           {can(user, "read", "enquiries") ? <EnquiryBell /> : null}
           <UserMenu user={user} />

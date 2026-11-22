@@ -109,6 +109,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 22 Security: rate limits | Done (12 waits for Cloudflare) | 2026-11-22 | Limits per spec (login 5/15 min per IP+email, forms 5/h, search 60/min, uploads 30/h, every /api 300/min in the proxy, 8 emails/h per recipient), exponential lockout 15->30->60 min..24 h, Settings "Rate limits and blocked IPs" (caps, IPv4/IPv6 CIDR block list, refuses blocking yourself). Global API + mail caps fail open, auth limits fail closed. scripts/load-limits.mjs passed on a prod build. abuse.test.js. docs/security/22.md |
 | 23 Security: tokens and sessions | Done | 2026-11-22 | Audit of JWT (HS256 pinned, iss/aud/exp/nbf, kid ring), 10 min access / 7 day rotating refresh with reuse detection, tokenVersion bumps, reset/email-change/OTP rules. New: key secrets must be >= 64 bytes (86 chars) and no two may share a value (env.js). Rotation procedure in docs/security/23.md. secrets.test.js, token-hygiene.test.js (kid rotation, full email-change flow) |
 | 24 Security: secrets and logs | Done (10 at deploy) | 2026-11-22 | scripts/scan-secrets.mjs (--staged hook via .githooks, --history clean, --bundle clean) + gitleaks CI workflow; /.env, /.git, *.map 404 in the proxy; server-only on every secret module (test); removeConsole in prod (logger kept); retention cron: security records 30 days, audit log 365 days. Secret inventory with owners in docs/security/24.md |
+| 25 Security: passwords and MFA | Done | 2026-11-22 | argon2id benchmark 157 ms (scripts/bench-argon.mjs); HIBP k-anonymity breach check on password change/reset (fails open); step-up (password within 10 min, session-bound httpOnly cookie) on users, others' MFA, theme publish, security settings, cache purge, permanent delete, new recovery codes, with StepUpDialog + adminFetch retry; recovery codes regenerate button; idle timeout 30 min (server refresh + IdleGuard; bell polls are background); tests mfa-hardening.test.js |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -118,6 +119,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - E2E start (tests/e2e/global-setup.mjs) switches maintenance off and resets the home page to the seed, so a run stopped half-way cannot break the next one.
 - Newsletter confirmation: the email links to /newsletter/confirm#t=<token>; only the button (POST) confirms, so mail scanners cannot subscribe people (old GET links just redirect).
 - Git hooks: `npm install` sets core.hooksPath=.githooks; the pre-commit hook runs the secret scanner on staged files.
+- E2E after Phase 25: specs that publish a theme, toggle maintenance or invite users will meet the step-up password dialog; update them at the next full E2E run.
 - E2E never touches Neon: playwright.config.mjs forces DATABASE_URL/DIRECT_URL to the local PGlite (or E2E_DATABASE_URL, which must be localhost) and refuses anything else.
 - Super admin on Neon: admin@globalindia.local from the seed (change email/password + MFA on first login).
 - Dev email: without `BREVO_API_KEY` mails are written to `.dev-mail/` (git-ignored). Tests capture mail in memory.

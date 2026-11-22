@@ -3,6 +3,7 @@ import "server-only";
 import { after } from "next/server";
 
 import { audit } from "@/lib/audit";
+import { BREACHED_MESSAGE, isBreachedPassword } from "@/lib/auth/breached";
 import { clearSessionCookies } from "@/lib/auth/cookies";
 import { hmac } from "@/lib/auth/crypto";
 import { notifySecurityChange } from "@/lib/auth/notify";
@@ -39,6 +40,8 @@ export const POST = route(async (req) => {
 
   const policy = passwordPolicyError(newPassword, { email: row.user.email });
   if (policy) return errorResponse(400, policy, { body: { fields: { newPassword: policy } } });
+  if (await isBreachedPassword(newPassword))
+    return errorResponse(400, BREACHED_MESSAGE, { body: { fields: { newPassword: BREACHED_MESSAGE } } });
 
   const claimed = await db.passwordResetToken.updateMany({
     where: { id: row.id, usedAt: null },

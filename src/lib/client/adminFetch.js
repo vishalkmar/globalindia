@@ -43,13 +43,29 @@ export function csrfToken(fresh = false) {
 }
 const UNSAFE = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
-async function isCsrfFailure(res) {
-  if (res.status !== 403) return false;
+async function code403(res) {
+  if (res.status !== 403) return null;
   try {
-    return (await res.clone().json())?.code === "csrf";
+    return (await res.clone().json())?.code ?? null;
   } catch {
-    return false;
+    return null;
   }
+}
+const isCsrfFailure = async (res) => (await code403(res)) === "csrf";
+
+/* Step-up (Phase 25 todo 10): the admin shell registers a function that asks for the password and
+   resolves true once /api/auth/step-up accepted it. Only one prompt at a time. */
+let stepUpHandler = null;
+let stepUpPending = null;
+export function setStepUpHandler(fn) {
+  stepUpHandler = fn;
+}
+function askStepUp() {
+  if (!stepUpHandler) return Promise.resolve(false);
+  stepUpPending ??= Promise.resolve(stepUpHandler()).finally(() => {
+    stepUpPending = null;
+  });
+  return stepUpPending;
 }
 
 export function goToLogin() {
@@ -62,11 +78,13 @@ export function goToLogin() {
 
 /**
  * @param {string} url same-origin path, e.g. "/api/admin/products"
- * @param {RequestInit & { json?: any, noRedirect?: boolean }} [options]
+ * @param {RequestInit & { json?: any, noRedirect?: boolean, background?: boolean }} [options]
+ *   background: a poll the person did not ask for (e.g. the enquiry bell). It never refreshes the
+ *   session or redirects, so an unattended tab still reaches the idle timeout (Phase 25 todo 12).
  */
 export async function adminFetch(url, options = {}) {
   if (!url.startsWith("/")) throw new Error("adminFetch only calls same-origin paths");
-  const { json: body, noRedirect, headers, ...rest } = options;
+  const { json: body, noRedirect, background, headers, ...rest } = options;
   const init = {
     credentials: "same-origin",
     cache: "no-store",
@@ -87,10 +105,11 @@ export async function adminFetch(url, options = {}) {
     init.headers["x-csrf-token"] = await csrfToken(true);
     res = await fetch(url, init);
   }
-  if (res.status === 401 && !url.startsWith("/api/auth/")) {
+  if (res.status === 401 && !background && !url.startsWith("/api/auth/")) {
     if (await refreshSession()) res = await fetch(url, init);
     else if (!noRedirect) goToLogin();
   }
+  if (!background && (await code403(res)) === "step_up" && (await askStepUp())) res = await fetch(url, init);
   return res;
 }
 

@@ -5,6 +5,7 @@ import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
 import { notifySecurityChange } from "@/lib/auth/notify";
 import { revokeAllForUser } from "@/lib/auth/session";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
 import { clientIp, hashIp } from "@/lib/security/ip";
@@ -33,6 +34,7 @@ export const GET = route(async (_req, ctx) => {
 export const PATCH = route(async (req, ctx) => {
   assertSameOrigin(req);
   const actor = await requirePermission("update", "users");
+  await requireStepUp(actor);
   const user = await target(ctx);
   const changes = await readJson(req, userUpdateSchema);
 

@@ -2,6 +2,7 @@ import { containsAny, enumFilter, listResponse, parseListQuery } from "@/lib/adm
 import { inviteSchema, placeholderPasswordHash, sendInvite, USER_LIST_SELECT } from "@/lib/admin/users";
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
+import { requireStepUp } from "@/lib/auth/stepUp";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
 import { clientIp, hashIp } from "@/lib/security/ip";
@@ -35,6 +36,7 @@ export const GET = route(async (req) => {
 export const POST = route(async (req) => {
   assertSameOrigin(req);
   const actor = await requirePermission("create", "users");
+  await requireStepUp(actor);
   const data = await readJson(req, inviteSchema);
 
   const exists = await db.adminUser.findUnique({ where: { email: data.email }, select: { id: true } });
