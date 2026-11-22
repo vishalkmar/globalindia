@@ -19,6 +19,9 @@ const nextConfig = {
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
 
+  // One URL per page (Phase 31 todo 10): no trailing slash; /about/ answers 308 -> /about.
+  trailingSlash: false,
+
   // Stray console.log / console.debug never reach production (Phase 24 todo 15). The structured
   // logger (src/lib/logger.js) writes through error / warn / info, which are kept.
   compiler: isDev ? {} : { removeConsole: { exclude: ["error", "warn", "info"] } },

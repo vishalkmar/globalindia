@@ -4,7 +4,7 @@ import { getSetting } from "@/lib/site-data";
 /**
  * robots.txt. Search engines may read the public site; never the admin, the APIs or the document
  * download links (Phase 28). AI training crawlers are asked to stay away when the owner turns that on
- * in Settings -> SEO (todo 10). The full SEO version with the sitemap comes in Phase 31.
+ * in Settings -> SEO (todo 10). Points to the sitemap (Phase 31 todo 09).
  */
 export const AI_CRAWLERS = [
   "GPTBot",
@@ -26,5 +26,5 @@ export default async function robots() {
   const seo = await getSetting("seo");
   const rules = [{ userAgent: "*", allow: "/", disallow: ["/admin", "/api/", "/d/"] }];
   if (seo?.blockAiCrawlers) rules.push({ userAgent: AI_CRAWLERS, disallow: "/" });
-  return { rules, host: siteUrl() };
+  return { rules, sitemap: `${siteUrl()}/sitemap.xml`, host: siteUrl() };
 }

@@ -95,6 +95,8 @@ export const MENU_DEFAULTS = {
     { label: "Insights", href: "/insights" },
     { label: "FAQ", href: "/faq" },
     { label: "Downloads", href: "/downloads" },
+    { label: "Supplier in Delhi", href: "/chemical-supplier-delhi" },
+    { label: "Supplier for Delhi NCR", href: "/chemical-supplier-delhi-ncr" },
     { label: "Contact", href: "/contact" },
   ],
   FOOTER_PRODUCTS: [

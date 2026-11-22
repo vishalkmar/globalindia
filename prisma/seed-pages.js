@@ -409,4 +409,79 @@ export const COMPANY_PAGES = [
       }),
     ],
   },
+
+  // Phase 31 todo 15: location pages. Only facts from Business details; no invented delivery times.
+  {
+    slug: "chemical-supplier-delhi",
+    title: "Chemical supplier in Delhi",
+    status: "PUBLISHED",
+    seo: {
+      title: "Chemical Raw Material Supplier in Delhi | Global India, Burari Road",
+      description:
+        "Chemical raw materials from Burari Road, Delhi since 2002: food additives, cosmetic bases, surfactants, paraffins, glycols. 50 kg MOQ, samples, COA.",
+      noindex: false,
+    },
+    sections: [
+      s("pageHero", {
+        eyebrow: "Delhi",
+        title: "Chemical raw materials from Burari Road, Delhi.",
+        intro:
+          "Global India has supplied manufacturers in Delhi since 2002 from our premises at 419, Khasra No-300, Burari Road. One order desk for food additives, cosmetic bases, surfactants, paraffins, glycols and finished home care products.",
+      }),
+      s("richText", {
+        eyebrow: "Why buyers in Delhi use us",
+        title: "Close enough to visit, organised enough to dispatch.",
+        body: [
+          "<p>Many of our customers in Delhi are small and mid-sized makers of soap, detergent, cosmetics, agarbatti and food products. They buy two or three materials from us, then add more once the first orders arrive on time and match the grade on the quote.</p>",
+          "<p>You can collect from Burari Road (call ahead so the order is packed and the invoice is ready), or we arrange road transport to your unit. Most products start at 50 kg or 50 L, in 25 kg and 50 kg bags or 200 L drums, and we usually dispatch within 7 working days.</p>",
+          "<p>Every quote names the grade and pack size. COA and SDS are shared where the producer issues them, and samples are available for most products.</p>",
+        ].join(""),
+        aside: "Visiting? Call first and we will have the sample or order ready.",
+      }),
+      s("productFamilies", { eyebrow: "What we supply in Delhi", title: "Six families of raw materials, one order desk." }),
+      s("ctaBand", {
+        eyebrow: "Delhi enquiries",
+        title: "Tell us the product, grade and quantity. We reply with a written quote.",
+        text: "Pickup from Burari Road or delivery to your unit.",
+        cta: quoteCta,
+        showPhone: true,
+      }),
+    ],
+  },
+  {
+    slug: "chemical-supplier-delhi-ncr",
+    title: "Chemical supplier in Delhi NCR",
+    status: "PUBLISHED",
+    seo: {
+      title: "Chemical Supplier for Delhi NCR: Gurugram, Noida, Faridabad | Global India",
+      description:
+        "Global India supplies chemical raw materials across Delhi NCR from Burari Road, Delhi: bags, drums, COA, samples and a written quote for every order.",
+      noindex: false,
+    },
+    sections: [
+      s("pageHero", {
+        eyebrow: "Delhi NCR",
+        title: "Raw materials for factories across Delhi NCR.",
+        intro:
+          "Units in Gurugram, Noida, Greater Noida, Faridabad, Ghaziabad and Sonipat order from our Burari Road premises in North Delhi. Same grades, same paperwork, one point of contact.",
+      }),
+      s("richText", {
+        eyebrow: "How NCR orders work",
+        title: "Quote, confirm, dispatch.",
+        body: [
+          "<p>Send the product, grade and quantity through the quote form or by phone. We confirm the price, pack size and dispatch date in writing before anything moves.</p>",
+          "<p>Orders go out by road transport from Burari Road; your own transporter can also collect. Most products start at 50 kg or 50 L and we usually dispatch within 7 working days. For regular monthly needs, tell us the quantity and we will plan stock around it.</p>",
+          "<p>Industries we supply include food and beverage, cosmetics and personal care, pharmaceuticals, detergents and home care, soap making, textiles and automotive care.</p>",
+        ].join(""),
+      }),
+      s("productFamilies", { eyebrow: "Supplied across NCR", title: "Six families of raw materials, one order desk." }),
+      s("ctaBand", {
+        eyebrow: "NCR enquiries",
+        title: "Planning a first order or a monthly supply? Ask for a quote.",
+        text: "Samples on request for most products.",
+        cta: quoteCta,
+        showPhone: true,
+      }),
+    ],
+  },
 ];

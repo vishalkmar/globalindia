@@ -61,7 +61,8 @@ export default async function ContactPage() {
 
       <Section>
         <Container className="grid gap-10 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
-          <div id="quote" className="scroll-mt-28">
+          {/* Height reserved for the lazily loaded forms so nothing below jumps (CLS, Phase 31 todo 16). */}
+          <div id="quote" className="min-h-[44.5rem] scroll-mt-28 md:min-h-[30.5rem]">
             <h2 className="sr-only">Enquiry forms</h2>
             <Suspense fallback={<p className="text-muted">Loading the form…</p>}>
               <LazyEnquiryForms products={products} />
@@ -144,6 +145,16 @@ export default async function ContactPage() {
             </p>
           </div>
           <MapEmbed embedUrl={embedUrl} openUrl={openUrl} address={address} />
+          {business.googleBusinessUrl ? (
+            <a
+              href={business.googleBusinessUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="self-start font-semibold text-primary underline underline-offset-4"
+            >
+              Our Google Business Profile: directions, photos and hours
+            </a>
+          ) : null}
         </Container>
       </Section>
     </>

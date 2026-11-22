@@ -92,6 +92,13 @@ export const businessSchema = z.strictObject({
       /^https:\/\/(www\.)?google\.[a-z.]+\/maps\/embed|^https:\/\/maps\.google\.[a-z.]+\//i.test(v),
     "Use the Google Maps embed link (Share > Embed a map).",
   ),
+  // Phase 31 todo 19: the Google Business Profile, linked from the contact page and in structured data.
+  googleBusinessUrl: httpsUrl
+    .refine(
+      (v) => v === "" || /^https:\/\/(g\.page|maps\.app\.goo\.gl|(www\.)?google\.[a-z.]+\/maps|business\.google\.com)\//i.test(v),
+      "Use the share link of the Google Business Profile (maps.app.goo.gl/... or g.page/...).",
+    )
+    .default(""),
 });
 
 /* ---------- top bar ---------- */

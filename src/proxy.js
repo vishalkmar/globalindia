@@ -109,6 +109,8 @@ export const config = {
     "/admin/:path*",
     "/api/:path*",
     "/((?!_next/|favicon|.*\\.[a-zA-Z0-9]{2,5}$).*)",
+    // Old-site addresses (/product-name-123.html) so their 301 redirects run (Phase 31 todo 11).
+    "/(.*\\.html)",
     // Always checked although they look like files: env files, git metadata, source maps.
     "/((?:.*/)?\\.(?:env|git).*)",
     "/(.*\\.map)",

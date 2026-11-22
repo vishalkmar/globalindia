@@ -71,6 +71,13 @@ export const SETTINGS_FIELDS = {
         wide: true,
         hint: 'Google Maps > Share > Embed a map > copy only the link inside src="...".',
       },
+      {
+        name: "googleBusinessUrl",
+        label: "Google Business Profile link",
+        wide: true,
+        placeholder: "https://maps.app.goo.gl/...",
+        hint: "From the profile: Share > Copy link. Shown on the contact page and given to search engines. Keep the name, address and phone here exactly as on the profile.",
+      },
     ],
   },
   topbar: {

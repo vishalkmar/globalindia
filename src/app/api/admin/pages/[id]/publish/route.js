@@ -53,7 +53,7 @@ export const POST = route(async (req, ctx) => {
     );
   });
 
-  invalidate(TAGS.page(page.slug));
+  invalidate(TAGS.page(page.slug), TAGS.pages);
   await audit({
     actorId: user.id,
     action: "page.publish",

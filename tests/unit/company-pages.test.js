@@ -110,6 +110,8 @@ describe("company page seed copy", () => {
       quality: "PUBLISHED",
       gallery: "PUBLISHED",
       careers: "DRAFT",
+      "chemical-supplier-delhi": "PUBLISHED", // location pages, Phase 31
+      "chemical-supplier-delhi-ncr": "PUBLISHED",
     });
   });
 

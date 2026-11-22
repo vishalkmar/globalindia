@@ -17,6 +17,7 @@ import { seedCatalogue } from "./seed-catalogue.js";
 import { seedContent } from "./seed-content.js";
 import { LEGAL_PAGES } from "./seed-legal.js";
 import { COMPANY_PAGES } from "./seed-pages.js";
+import { seedRedirects } from "./seed-redirects.js";
 import { assertSeedAllowed, log, upsertSetting } from "./seed-utils.js";
 
 const db = new PrismaClient();
@@ -135,6 +136,7 @@ async function main() {
   await seedCatalogue(db, { categorySchema, productSchema }, log);
   await seedAdmin(db);
   await seedContent(db, log);
+  await seedRedirects(db, log);
   console.log("Seed complete.");
 }
 

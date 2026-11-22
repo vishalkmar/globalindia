@@ -704,26 +704,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Final security report docs/security/REPORT.md
 
 ## Phase 31 — SEO (every page)
-- [ ] 01 Metadata API on every route (title, description, canonical)
-- [ ] 02 Title template "%s | Global India, Delhi"
-- [ ] 03 Admin SEO fields per page/product/category/post
-- [ ] 04 Open Graph + Twitter cards with Cloudinary OG images
-- [ ] 05 JSON-LD helpers (next-seo style): Organization, LocalBusiness
-- [ ] 06 Product schema (no fake prices), BreadcrumbList, FAQPage, Article
-- [ ] 07 sitemap.js with all published URLs + lastmod
-- [ ] 08 Image sitemap for product images
-- [ ] 09 robots.js: allow site, disallow /admin, /api, sitemap link
-- [ ] 10 Canonical URLs and trailing-slash policy
-- [ ] 11 301 redirects from old globalindiachem.com URLs (map all ~120)
-- [ ] 12 Clean slugs (no IDs)
-- [ ] 13 Heading hierarchy check (one H1)
-- [ ] 14 Internal linking: products ↔ categories ↔ industries
-- [ ] 15 Geo pages: "Supplier in Delhi", "Delhi NCR"
-- [ ] 16 Core Web Vitals: LCP < 2.5 s, CLS < 0.1, INP < 200 ms
-- [ ] 17 Alt text audit
-- [ ] 18 Google Search Console + Bing verification fields in admin
-- [ ] 19 Google Business Profile link + NAP consistency
-- [ ] 20 Lighthouse SEO 100 on key pages
+- [x] 01 Metadata API on every route (title, description, canonical)
+- [x] 02 Title template "%s | Global India, Delhi"
+- [x] 03 Admin SEO fields per page/product/category/post
+- [x] 04 Open Graph + Twitter cards with Cloudinary OG images
+- [x] 05 JSON-LD helpers (next-seo style): Organization, LocalBusiness
+- [x] 06 Product schema (no fake prices), BreadcrumbList, FAQPage, Article
+- [x] 07 sitemap.js with all published URLs + lastmod
+- [x] 08 Image sitemap for product images
+- [x] 09 robots.js: allow site, disallow /admin, /api, sitemap link
+- [x] 10 Canonical URLs and trailing-slash policy
+- [x] 11 301 redirects from old globalindiachem.com URLs (map all ~120)
+- [x] 12 Clean slugs (no IDs)
+- [x] 13 Heading hierarchy check (one H1)
+- [x] 14 Internal linking: products ↔ categories ↔ industries
+- [x] 15 Geo pages: "Supplier in Delhi", "Delhi NCR"
+- [~] 16 Core Web Vitals: LCP < 2.5 s, CLS < 0.1, INP < 200 ms — desktop LCP 0.8 s / CLS 0; simulated mobile LCP ~4 s; confirm with field data after launch (operations/seo.md)
+- [x] 17 Alt text audit
+- [x] 18 Google Search Console + Bing verification fields in admin
+- [~] 19 Google Business Profile link + NAP consistency — field + structured data ready; owner pastes the profile link and matches NAP
+- [x] 20 Lighthouse SEO 100 on key pages
 
 ## Phase 32 — Launch & Handover
 - [ ] 01 Production env vars set and verified

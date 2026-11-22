@@ -29,6 +29,7 @@ export const TAGS = {
   testimonials: "testimonials",
   clientLogos: "client-logos",
   gallery: "gallery",
+  pages: "pages", // any page published or unpublished (sitemap)
 };
 
 /** Tag the current 'use cache' scope. Outside Next (unit tests) this is a no-op. */
