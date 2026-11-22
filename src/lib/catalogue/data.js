@@ -171,7 +171,7 @@ const detailSelect = {
       type: true,
       label: true,
       isPublic: true,
-      media: { select: { url: true, bytes: true } },
+      media: { select: { id: true, url: true, bytes: true } },
     },
   },
   category: { select: { id: true, slug: true, name: true, family: true, status: true, deletedAt: true } },

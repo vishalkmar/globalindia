@@ -638,26 +638,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Re-run full tests
 
 ## Phase 28 — Security 12: Anti-bot, Anti-scraping & Historic CVE Hardening
-- [ ] 01 Honest note: HTML sent to a browser can always be viewed; goal is to stop bulk bots and scrapers
-- [ ] 02 Cloudflare Bot Management / Super Bot Fight Mode on
-- [ ] 03 Managed Challenge (puzzle page) for suspicious traffic, like AWS WAF CAPTCHA on big travel sites
-- [ ] 04 Turnstile on forms, search and downloads
-- [ ] 05 Block known scraper ASNs and headless signatures
-- [ ] 06 Rate-based challenge on product pages
-- [ ] 07 API responses need same-origin + token; no open JSON catalogue
-- [ ] 08 Documents (COA/SDS) behind signed expiring URLs
-- [ ] 09 Watermark images via Cloudinary overlay
-- [ ] 10 robots.txt disallow AI crawlers (GPTBot, CCBot etc.) if owner wants
-- [ ] 11 CVE-2025-29927 (Next.js middleware bypass): patched version + strip x-middleware-subrequest at edge
-- [ ] 12 CVE-2025-55182 / CVE-2025-66478 (RSC RCE): patched React/Next
-- [ ] 13 CVE-2024-34351 (Server Actions SSRF): patched + no relative redirects with user Host
-- [ ] 14 CVE-2024-46982 (Next.js cache poisoning): patched + no-store on dynamic routes
-- [ ] 15 jsonwebtoken CVE-2022-23529/23539/23540/23541 lessons: use jose, pin alg
-- [ ] 16 Prototype pollution CVEs (lodash, minimist): avoid/upgrade
-- [ ] 17 Log4Shell-style lesson: never evaluate strings from input in logs/templates
-- [ ] 18 Supply-chain lessons (event-stream, xz): lockfile, provenance, minimal deps
-- [ ] 19 Track CVE feed for Next.js, React, Prisma, jose monthly
-- [ ] 20 Document in docs/security/28.md
+- [x] 01 Honest note: HTML sent to a browser can always be viewed; goal is to stop bulk bots and scrapers
+- [~] 02 Cloudflare Bot Management / Super Bot Fight Mode on — Cloudflare, owner action (security/27.md, 28.md)
+- [~] 03 Managed Challenge (puzzle page) for suspicious traffic, like AWS WAF CAPTCHA on big travel sites — Cloudflare Managed Challenge rule, owner action
+- [~] 04 Turnstile on forms, search and downloads — Turnstile on forms; search/downloads use rate limits + Cloudflare challenge (decision in security/28.md)
+- [~] 05 Block known scraper ASNs and headless signatures — Cloudflare rule, owner action
+- [~] 06 Rate-based challenge on product pages — Cloudflare rate rule, owner action
+- [x] 07 API responses need same-origin + token; no open JSON catalogue
+- [x] 08 Documents (COA/SDS) behind signed expiring URLs
+- [~] 09 Watermark images via Cloudinary overlay — needs the final logo; steps in security/28.md
+- [~] 10 robots.txt disallow AI crawlers (GPTBot, CCBot etc.) if owner wants — switch in Settings -> SEO, off until the owner decides
+- [x] 11 CVE-2025-29927 (Next.js middleware bypass): patched version + strip x-middleware-subrequest at edge
+- [x] 12 CVE-2025-55182 / CVE-2025-66478 (RSC RCE): patched React/Next
+- [x] 13 CVE-2024-34351 (Server Actions SSRF): patched + no relative redirects with user Host
+- [x] 14 CVE-2024-46982 (Next.js cache poisoning): patched + no-store on dynamic routes
+- [x] 15 jsonwebtoken CVE-2022-23529/23539/23540/23541 lessons: use jose, pin alg
+- [x] 16 Prototype pollution CVEs (lodash, minimist): avoid/upgrade
+- [x] 17 Log4Shell-style lesson: never evaluate strings from input in logs/templates
+- [x] 18 Supply-chain lessons (event-stream, xz): lockfile, provenance, minimal deps
+- [x] 19 Track CVE feed for Next.js, React, Prisma, jose monthly
+- [x] 20 Document in docs/security/28.md
 
 ## Phase 29 — Security 13: UI Attack-surface Audit
 - [ ] 01 Clickjacking test (frame-ancestors none)

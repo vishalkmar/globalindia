@@ -463,8 +463,8 @@ export async function Downloads({ data, tone }) {
             {files.map((f) => (
               <li key={f.mediaId}>
                 <a
-                  href={f.media.url}
-                  download
+                  href={`/d/${f.mediaId}`}
+                  rel="nofollow"
                   className="flex items-start gap-4 rounded-card border border-line bg-card px-5 py-4 transition-colors hover:border-primary"
                 >
                   <FileDown aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" />

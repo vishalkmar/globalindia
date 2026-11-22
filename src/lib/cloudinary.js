@@ -155,3 +155,27 @@ export async function destroy(publicId, kind) {
   if (!res.ok) logger.error("cloudinary.destroy_failed", { status: res.status });
   return res.ok;
 }
+
+/**
+ * Short-lived signed download link (Phase 28 todo 08): Cloudinary's download API, signed with the API
+ * secret, expiring after `ttlSeconds`. Works even when public delivery of PDFs is restricted in the
+ * Cloudinary security settings, so the plain public URL can be switched off.
+ */
+export function signedDownloadUrl(publicId, kind, { ttlSeconds = 600, now = Date.now() } = {}) {
+  const cfg = cloudinaryConfig();
+  if (!cfg) return null;
+  const ts = Math.floor(now / 1000);
+  const params = {
+    public_id: `${ROOT()}/${publicId}`,
+    type: "upload",
+    attachment: "true",
+    expires_at: ts + ttlSeconds,
+    timestamp: ts,
+  };
+  const query = new URLSearchParams({
+    ...Object.fromEntries(Object.entries(params).map(([k, v]) => [k, String(v)])),
+    api_key: cfg.apiKey,
+    signature: signParams(params, cfg.apiSecret),
+  });
+  return `https://api.cloudinary.com/v1_1/${cfg.cloudName}/${resourceType(kind)}/download?${query}`;
+}

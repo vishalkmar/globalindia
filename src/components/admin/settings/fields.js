@@ -211,6 +211,13 @@ export const SETTINGS_FIELDS = {
         label: "Bing Webmaster code",
         hint: 'Only the content="..." value of the meta tag.',
       },
+      {
+        name: "blockAiCrawlers",
+        label: "Ask AI crawlers not to read the site",
+        type: "checkbox",
+        wide: true,
+        hint: "Adds GPTBot, CCBot, ClaudeBot, Google-Extended and similar to robots.txt. Search engines are not affected. Well-behaved crawlers follow it; others are slowed by the rate limits.",
+      },
     ],
   },
   analytics: {

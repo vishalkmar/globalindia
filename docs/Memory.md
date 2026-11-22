@@ -112,6 +112,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 25 Security: passwords and MFA | Done | 2026-11-22 | argon2id benchmark 157 ms (scripts/bench-argon.mjs); HIBP k-anonymity breach check on password change/reset (fails open); step-up (password within 10 min, session-bound httpOnly cookie) on users, others' MFA, theme publish, security settings, cache purge, permanent delete, new recovery codes, with StepUpDialog + adminFetch retry; recovery codes regenerate button; idle timeout 30 min (server refresh + IdleGuard; bell polls are background); tests mfa-hardening.test.js |
 | 26 Security: webhooks and SSRF | Done | 2026-11-23 | /api/webhooks/brevo (bearer secret, Brevo IP ranges in prod, 5 min window; unsubscribe/bounce/spam -> subscriber UNSUBSCRIBED) and /api/webhooks/cloudinary (X-Cld-Signature sha1/sha256 over raw body + timestamp; console delete -> media to trash); WebhookEvent ids for idempotency (purged after 30 days); webhook rate limit; safeFetch timeout 5 s. Owner must add both webhook URLs in Brevo/Cloudinary. webhooks.test.js |
 | 27 Security: dependencies, CDN, DoS | Done (Cloudflare/uptime steps wait for the owner) | 2026-11-23 | npm audit: runtime clean; Prisma CLI chain accepted (fix = Prisma 7, separate task), effect override; audit-gate + CI (npm ci, audit signatures, lint, tests, build, bundle scan) + Dependabot; dotenv removed; origin lock (ORIGIN_LOCK_SECRET header from Cloudflare, cron/health exempt); image widths snapped to a fixed list; load test 635 rps p95 128 ms on the laptop; Cloudflare, Under Attack and incident runbooks in docs/security/27.md |
+| 28 Security: anti-scraping and CVEs | Done (Cloudflare/watermark/AI-crawler choice wait for owner) | 2026-11-23 | Public PDFs now link to /d/<id>: only public product documents or Downloads-section PDFs, no hotlinking, 30/10 min per IP, 302 to a Cloudinary download link expiring in 10 min. robots.js (disallow /admin, /api/, /d/; AI crawler block switch in Settings -> SEO, default off). CVE table + version test. anti-scraping.test.js |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -180,6 +181,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Brochure PDF for /downloads; real testimonials and client logos (with permission); BREVO_LIST_ID for the newsletter list.
 - Careers: is the company hiring? (page is a draft until switched on in Admin > Pages)
 - Client logos allowed to be shown? Export countries served?
+- Owner to decide: block AI crawlers (Settings -> SEO)? watermark product photos (needs final logo)?
 - Planned upgrade: Prisma 6 -> 7 (clears the CLI-only audit findings listed in scripts/audit-gate.mjs).
 - Neon: reset the neondb_owner password (shared in chat) and do the restore drill (Phase 16 todo 11).
 - Accounts/keys: Brevo API key, Cloudinary keys, Upstash Redis, Cloudflare Turnstile keys, Vercel project.

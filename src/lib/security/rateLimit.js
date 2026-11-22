@@ -36,6 +36,7 @@ export const LIMITS = {
   apiIp: { limit: 300, windowSec: 60, setting: "apiPerMinute", failOpen: true }, // every /api request, per IP (proxy)
   mailRecipient: { limit: 8, windowSec: 60 * 60, failOpen: true }, // emails to one address (email bombing)
   webhook: { limit: 120, windowSec: 60 }, // incoming webhooks per IP (Phase 26)
+  document: { limit: 30, windowSec: 10 * 60 }, // public PDF downloads per IP (Phase 28)
 };
 
 /**

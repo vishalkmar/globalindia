@@ -157,6 +157,8 @@ export const seoSchema = z.strictObject({
     .string()
     .trim()
     .regex(/^[A-Za-z0-9_-]{0,100}$/, "Paste only the content value of the meta tag."),
+  // Phase 28 todo 10: ask AI training crawlers (GPTBot, CCBot, ...) to stay away. Owner's choice.
+  blockAiCrawlers: z.boolean().default(false),
 });
 
 /* ---------- analytics (IDs only — no scripts can be pasted) ---------- */

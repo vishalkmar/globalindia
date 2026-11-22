@@ -417,8 +417,8 @@ export default async function ProductPage({ params }) {
               d.isPublic ? (
                 <li key={d.id}>
                   <a
-                    href={d.media.url}
-                    download
+                    href={`/d/${d.media.id}`}
+                    rel="nofollow"
                     className="flex items-center gap-4 rounded-card border border-line bg-card px-5 py-4 transition-colors hover:border-primary"
                   >
                     <Download aria-hidden="true" className="size-5 shrink-0 text-primary" />
