@@ -72,6 +72,10 @@ test("activate a theme, edit the header, toggle maintenance — the public site 
   await page.goto("/admin/theme");
   const navyCard = page.getByRole("listitem").filter({ hasText: "Navy & Copper" });
   await navyCard.getByRole("button", { name: "Make live" }).click();
+  // Publishing a theme needs the password again (Phase 25 step-up); the action then continues by itself.
+  const stepUpDialog = page.getByRole("dialog", { name: "Confirm it is you" });
+  await stepUpDialog.getByLabel("Your password").fill(PASSWORD);
+  await stepUpDialog.getByRole("button", { name: "Confirm" }).click();
   await expect(page.getByText('"Navy & Copper" is now live.')).toBeVisible();
 
   const visitor = await browser.newContext();

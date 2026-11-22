@@ -594,26 +594,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Re-run full tests
 
 ## Phase 26 — Security 10: Webhook Signatures & SSRF
-- [ ] 01 Inventory all webhooks (Brevo, Cloudinary)
-- [ ] 02 Cloudinary: verify X-Cld-Signature + timestamp
-- [ ] 03 Brevo: verify secret/token and IP allow-list
-- [ ] 04 Reject events older than 5 min (replay window)
-- [ ] 05 Store event IDs, reject duplicates (idempotency)
-- [ ] 06 Raw body used for signature check
-- [ ] 07 Constant-time signature compare
-- [ ] 08 Webhook routes rate limited
-- [ ] 09 SSRF list: URL upload, link previews, image proxy, webhooks out
-- [ ] 10 safeFetch: https only, resolve DNS, block private/loopback/link-local/169.254.169.254
-- [ ] 11 Re-check IP after redirects; limit redirects to 0-2
-- [ ] 12 Timeout 5 s, max size 10 MB
-- [ ] 13 Allow-list of content types
-- [ ] 14 next/image remotePatterns only Cloudinary
-- [ ] 15 Server Actions: protect against Host header SSRF (CVE-2024-34351 lesson)
-- [ ] 16 Block file:, gopher:, ftp: schemes
-- [ ] 17 Tests with internal IPs and DNS rebinding
-- [ ] 18 Tests for forged webhooks
-- [ ] 19 Document in docs/security/26.md
-- [ ] 20 Re-run full tests
+- [x] 01 Inventory all webhooks (Brevo, Cloudinary)
+- [x] 02 Cloudinary: verify X-Cld-Signature + timestamp
+- [x] 03 Brevo: verify secret/token and IP allow-list
+- [x] 04 Reject events older than 5 min (replay window)
+- [x] 05 Store event IDs, reject duplicates (idempotency)
+- [x] 06 Raw body used for signature check
+- [x] 07 Constant-time signature compare
+- [x] 08 Webhook routes rate limited
+- [x] 09 SSRF list: URL upload, link previews, image proxy, webhooks out
+- [x] 10 safeFetch: https only, resolve DNS, block private/loopback/link-local/169.254.169.254
+- [x] 11 Re-check IP after redirects; limit redirects to 0-2
+- [x] 12 Timeout 5 s, max size 10 MB
+- [x] 13 Allow-list of content types
+- [x] 14 next/image remotePatterns only Cloudinary
+- [x] 15 Server Actions: protect against Host header SSRF (CVE-2024-34351 lesson)
+- [x] 16 Block file:, gopher:, ftp: schemes
+- [x] 17 Tests with internal IPs and DNS rebinding
+- [x] 18 Tests for forged webhooks
+- [x] 19 Document in docs/security/26.md
+- [x] 20 Re-run full tests
 
 ## Phase 27 — Security 11: Dependencies, CDN, WAF, DDoS/DoS
 - [ ] 01 npm audit and fix all high/critical

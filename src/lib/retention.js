@@ -18,12 +18,14 @@ const daysAgo = (d, now) => new Date(now.getTime() - d * 86_400_000);
 
 export async function purgeOldRecords(now = new Date()) {
   const cutoff = daysAgo(SECURITY_RECORD_DAYS, now);
-  const [otp, resets, emailChanges, sessions, auditRows] = await Promise.all([
+  const [otp, resets, emailChanges, sessions, auditRows, webhooks] = await Promise.all([
     db.otpCode.deleteMany({ where: { expiresAt: { lt: cutoff } } }),
     db.passwordResetToken.deleteMany({ where: { expiresAt: { lt: cutoff } } }),
     db.emailChangeRequest.deleteMany({ where: { expiresAt: { lt: cutoff } } }),
     db.session.deleteMany({ where: { expiresAt: { lt: cutoff }, absoluteExpiresAt: { lt: cutoff } } }),
     db.auditLog.deleteMany({ where: { at: { lt: daysAgo(AUDIT_DAYS, now) } } }),
+    // Webhook event ids only need to outlive the 5-minute replay window; 30 days is plenty.
+    db.webhookEvent.deleteMany({ where: { receivedAt: { lt: cutoff } } }),
   ]);
   const result = {
     otpCodes: otp.count,
@@ -31,6 +33,7 @@ export async function purgeOldRecords(now = new Date()) {
     emailChanges: emailChanges.count,
     sessions: sessions.count,
     auditRows: auditRows.count,
+    webhookEvents: webhooks.count,
   };
   await audit({ actorId: null, action: "retention.purge", entity: "Retention", entityId: "cron", diff: result });
   return result;

@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { PrismaClient } from "@prisma/client";
 
 import { ARGON2_OPTIONS } from "../../src/lib/auth/argon-params.js";
-import { codeFrom, waitForMail } from "./helpers.mjs";
+import { codeFrom, stepUp, waitForMail } from "./helpers.mjs";
 
 /** Phase 6: admin shell, role-based navigation, users, audit log, 403/404, mobile layout. */
 
@@ -64,7 +64,8 @@ test("super admin: shell, users, invite, audit log", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Users", level: 1 })).toBeVisible();
   await expect(page.getByText(accounts.VIEWER)).toBeVisible();
 
-  // Invite
+  // Invite (a sensitive action: password confirmed first, Phase 25)
+  await stepUp(page, PASSWORD);
   const since = Date.now() - 1000;
   await page.getByRole("button", { name: "Invite user" }).click();
   const dialog = page.getByRole("dialog", { name: "Invite a user" });

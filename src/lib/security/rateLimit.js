@@ -35,6 +35,7 @@ export const LIMITS = {
   // would take the whole API or all sign-in emails down). Every other limit fails closed.
   apiIp: { limit: 300, windowSec: 60, setting: "apiPerMinute", failOpen: true }, // every /api request, per IP (proxy)
   mailRecipient: { limit: 8, windowSec: 60 * 60, failOpen: true }, // emails to one address (email bombing)
+  webhook: { limit: 120, windowSec: 60 }, // incoming webhooks per IP (Phase 26)
 };
 
 /**

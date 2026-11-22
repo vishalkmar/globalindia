@@ -10,7 +10,7 @@ import { isIP } from "node:net";
  * - Every DNS answer is checked; private, loopback, link-local, CGNAT, multicast, reserved and cloud
  *   metadata addresses are refused. The check happens INSIDE the socket's DNS lookup, so the address
  *   that is checked is the address that is connected to (no DNS-rebinding gap).
- * - At most 2 redirects, each re-validated. 8 s timeout. Body capped at maxBytes while streaming.
+ * - At most 2 redirects, each re-validated. 5 s timeout. Body capped at maxBytes while streaming.
  * - Optional content-type allow-list.
  */
 
@@ -159,7 +159,7 @@ function once(url, { timeoutMs, maxBytes, accept }) {
  * @param {{ maxBytes?: number, timeoutMs?: number, accept?: string[] }} [opts]
  * @returns {Promise<{ body: Buffer, contentType: string, finalUrl: string }>}
  */
-export async function safeFetch(rawUrl, { maxBytes = 10 * 1024 * 1024, timeoutMs = 8000, accept = [] } = {}) {
+export async function safeFetch(rawUrl, { maxBytes = 10 * 1024 * 1024, timeoutMs = 5000, accept = [] } = {}) {
   let url = assertSafeUrl(rawUrl);
   for (let i = 0; i <= MAX_REDIRECTS; i++) {
     const res = await once(url, { timeoutMs, maxBytes, accept });

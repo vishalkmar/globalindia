@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { PrismaClient } from "@prisma/client";
 
 import { ARGON2_OPTIONS } from "../../src/lib/auth/argon-params.js";
-import { putSetting, signInWithOtp } from "./helpers.mjs";
+import { putSetting, signInWithOtp, stepUp } from "./helpers.mjs";
 
 /** Phase 9: public top bar, header, mega menu, search, footer, consent, 404 — in a real browser. */
 
@@ -148,6 +148,7 @@ test("cookie banner: necessary only by default, analytics only after consent", a
   const admin = await adminCtx.newPage();
   await signInWithOtp(admin, ownerEmail, ownerPassword);
   const original = (await (await admin.request.get("/api/admin/settings/analytics")).json()).value;
+  await stepUp(admin, ownerPassword); // analytics is a security setting (Phase 25 step-up)
   await putSetting(admin, "analytics", { ga4Id: "G-E2ETEST01", clarityId: "" });
 
   const ctx = await browser.newContext();

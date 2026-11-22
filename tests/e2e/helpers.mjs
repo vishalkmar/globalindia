@@ -60,6 +60,12 @@ export async function csrfHeaders(page) {
 }
 
 /** Change a setting through the admin API (so the public cache is expired like a real save). */
+/** Confirm the password for sensitive actions (Phase 25 step-up); valid 10 minutes in this browser context. */
+export async function stepUp(page, password) {
+  const res = await page.request.post("/api/auth/step-up", { data: { password }, headers: await csrfHeaders(page) });
+  if (!res.ok()) throw new Error(`step-up failed: ${res.status()} ${await res.text()}`);
+}
+
 export async function putSetting(page, key, value) {
   const res = await page.request.put(`/api/admin/settings/${key}`, {
     data: value,
