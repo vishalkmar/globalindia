@@ -2,7 +2,10 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { prefersReducedMotion } from "./useReveal";
+/** True when the user asked the OS to reduce motion. */
+export function prefersReducedMotion() {
+  return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+}
 
 /**
  * Count-up as an enhancement only.
@@ -19,7 +22,13 @@ export function useCountUp(target, { duration = 1400 } = {}) {
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !Number.isFinite(target) || prefersReducedMotion() || typeof IntersectionObserver === "undefined") return undefined;
+    if (
+      !el ||
+      !Number.isFinite(target) ||
+      prefersReducedMotion() ||
+      typeof IntersectionObserver === "undefined"
+    )
+      return undefined;
     if (el.getBoundingClientRect().top < window.innerHeight) return undefined; // visible already: keep real value
 
     let frame = 0;

@@ -12,18 +12,32 @@ function announce(analytics) {
   window.dispatchEvent(new CustomEvent("gi:consent", { detail: { analytics } }));
 }
 
+/** One lookup per page load, shared by every mount (the banner survives client navigations anyway). */
+let storedChoice = null;
+function readStoredChoice() {
+  storedChoice ??= fetch("/api/public/consent", { credentials: "same-origin", cache: "no-store" })
+    .then((r) => (r.ok ? r.json() : { choice: null }))
+    .then((d) => (d.choice === "granted" || d.choice === "denied" ? d.choice : null))
+    .catch(() => null);
+  return storedChoice;
+}
+
 /**
  * Cookie consent (Phase 9 todo 15). Only necessary cookies until the visitor says yes.
- * The choice is stored by the server (/api/public/consent) and passed back on the next page load,
- * so no script reads or writes cookies directly.
- * @param {{ initial: 'granted'|'denied'|null }} props
+ * The choice lives in an httpOnly cookie set by /api/public/consent; the banner asks the same endpoint
+ * for it after load, so no script touches cookies and every public page stays fully static.
  */
-export function CookieConsent({ initial }) {
-  const [open, setOpen] = useState(initial === null);
+export function CookieConsent() {
+  const [open, setOpen] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (initial) announce(initial === "granted");
+    let alive = true;
+    readStoredChoice().then((choice) => {
+      if (!alive) return;
+      if (choice) announce(choice === "granted");
+      else setOpen(true);
+    });
     // A click on "Cookie settings" that happened before this component finished loading is not lost.
     if (window.__giCookieSettingsRequested) {
       window.__giCookieSettingsRequested = false;
@@ -34,8 +48,11 @@ export function CookieConsent({ initial }) {
       setOpen(true);
     };
     window.addEventListener("gi:cookie-settings", reopen);
-    return () => window.removeEventListener("gi:cookie-settings", reopen);
-  }, [initial]);
+    return () => {
+      alive = false;
+      window.removeEventListener("gi:cookie-settings", reopen);
+    };
+  }, []);
 
   async function choose(analytics) {
     setBusy(true);
@@ -45,6 +62,7 @@ export function CookieConsent({ initial }) {
       body: JSON.stringify({ analytics }),
       credentials: "same-origin",
     }).catch(() => null);
+    storedChoice = Promise.resolve(analytics ? "granted" : "denied");
     setBusy(false);
     setOpen(false);
     announce(analytics);

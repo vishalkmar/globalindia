@@ -2,6 +2,7 @@ import {
   Factory,
   FileText,
   FolderTree,
+  GalleryHorizontalEnd,
   Images,
   Inbox,
   LayoutDashboard,
@@ -34,6 +35,7 @@ export const NAV_GROUPS = [
       { href: "/admin/industries", label: "Industries", icon: Factory, resource: "industries", phase: 15 },
       { href: "/admin/insights", label: "Insights", icon: Newspaper, resource: "insights", phase: 15 },
       { href: "/admin/media", label: "Media", icon: Images, resource: "media" },
+      { href: "/admin/gallery", label: "Gallery", icon: GalleryHorizontalEnd, resource: "media" },
     ],
   },
   {

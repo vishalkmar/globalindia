@@ -1,6 +1,7 @@
 import { z } from "zod";
 
-import { parseSection, SECTION_TYPES } from "@/lib/sections/registry";
+import { parseSection, SECTION_TYPES, SECTIONS } from "@/lib/sections/registry";
+import { sanitizeRichText } from "@/lib/security/sanitize";
 
 /** Page draft payload (Phase 10 todo 16-17). Each section is validated by its own registry schema. */
 
@@ -37,5 +38,10 @@ export const pageDraftSchema = z
   })
   .transform((value) => ({
     ...value,
-    sections: value.sections.map((s) => ({ ...s, data: parseSection(s.type, s.data).data })),
+    sections: value.sections.map((s) => {
+      const data = parseSection(s.type, s.data).data;
+      // Rich text is cleaned on the server with an allow-list before it is stored (Phase 6 todo 10).
+      for (const field of SECTIONS[s.type].richText ?? []) data[field] = sanitizeRichText(data[field] ?? "");
+      return { ...s, data };
+    }),
   }));

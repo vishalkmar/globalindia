@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
+import { crc32, deflateSync } from "node:zlib";
 
 const OUTBOX = join(process.cwd(), ".dev-mail");
 
@@ -53,4 +54,29 @@ export async function signInWithOtp(page, email, password) {
 export async function putSetting(page, key, value) {
   const res = await page.request.put(`/api/admin/settings/${key}`, { data: value, headers: { origin: new URL(page.url()).origin } });
   if (!res.ok()) throw new Error(`PUT ${key} failed: ${res.status()} ${await res.text()}`);
+}
+
+/** A real, decodable PNG (filled with one colour) so the browser can display it. */
+export function png(width, height, rgb = [15, 59, 58]) {
+  const chunk = (type, data) => {
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length);
+    const td = Buffer.concat([Buffer.from(type, "latin1"), data]);
+    const crc = Buffer.alloc(4);
+    crc.writeUInt32BE(crc32(td) >>> 0);
+    return Buffer.concat([len, td, crc]);
+  };
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(width, 0);
+  ihdr.writeUInt32BE(height, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 2;
+  const row = Buffer.concat([Buffer.from([0]), Buffer.from(Array.from({ length: width }, () => rgb).flat())]);
+  const raw = Buffer.concat(Array.from({ length: height }, () => row));
+  return Buffer.concat([
+    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
+    chunk("IHDR", ihdr),
+    chunk("IDAT", deflateSync(raw)),
+    chunk("IEND", Buffer.alloc(0)),
+  ]);
 }

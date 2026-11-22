@@ -51,3 +51,21 @@ export async function getPreviewPage(slug) {
     isDraft: Boolean(draft),
   };
 }
+
+/** URL-safe page slug: lowercase words joined by single hyphens (also guards the [page] route). */
+export const PAGE_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+){0,6}$/;
+
+/**
+ * Slugs of the published company pages served by the [page] route (home has its own route).
+ * Build-time only; at least one slug is always returned because Cache Components requires it.
+ */
+export async function publishedPageSlugs() {
+  try {
+    const pages = await db.page.findMany({ where: { status: "PUBLISHED", deletedAt: null, slug: { not: "home" } }, select: { slug: true } });
+    const slugs = pages.map((p) => p.slug).filter((s) => PAGE_SLUG.test(s));
+    return slugs.length ? slugs : ["about"];
+  } catch (err) {
+    logger.warn("pages.slugs", { message: err.message });
+    return ["about"];
+  }
+}

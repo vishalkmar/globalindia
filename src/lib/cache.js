@@ -22,6 +22,7 @@ export const TAGS = {
   posts: "posts",
   testimonials: "testimonials",
   clientLogos: "client-logos",
+  gallery: "gallery",
 };
 
 /** Tag the current 'use cache' scope. Outside Next (unit tests) this is a no-op. */

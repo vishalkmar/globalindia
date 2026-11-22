@@ -11,7 +11,7 @@ export const GET = route(async (req) => {
   await requirePermission("read", "users");
   const q = parseListQuery(new URL(req.url).searchParams, {
     sortable: ["email", "name", "role", "status", "lastLoginAt", "createdAt"],
-    defaultSort: ["createdAt", "asc"],
+    defaultSort: ["createdAt", "desc"],
     search: containsAny(["email", "name"]),
     filters: {
       role: enumFilter("role", ["SUPER_ADMIN", "EDITOR", "VIEWER"]),

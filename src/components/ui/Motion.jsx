@@ -1,14 +1,12 @@
 "use client";
 
 import { useCountUp } from "@/hooks/useCountUp";
-import { useReveal } from "@/hooks/useReveal";
 import { cn, formatNumber } from "@/lib/utils";
 
-/** Wrap any block to fade it up once on scroll. */
-export function Reveal({ as: Tag = "div", delay = 0, className, children, ...props }) {
-  const ref = useReveal({ delay });
+/** Wrap any block to fade it up as it scrolls into view (CSS view timeline, see globals.css "Motion"). */
+export function Reveal({ as: Tag = "div", className, children, ...props }) {
   return (
-    <Tag ref={ref} className={className} {...props}>
+    <Tag data-reveal className={className} {...props}>
       {children}
     </Tag>
   );

@@ -264,26 +264,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Performance: LCP image priority, CLS 0 — LCP 1.1-1.2 s, CLS 0; Lighthouse mobile 77-80 / 100 / 96 / 100. TBT ~0.9 s on 4x CPU throttle is hydration of the long page; reduce in Phase 31
 
 ## Phase 11 — About, Why Us, Quality, Infrastructure
-- [ ] 01 About hero with correct breadcrumb
-- [ ] 02 Our story (2002 to today) copy
-- [ ] 03 Timeline component (editable milestones)
-- [ ] 04 Key facts table (nature, team 35, banker, GST)
-- [ ] 05 Vision and mission blocks
-- [ ] 06 Values list with bold lead-ins
-- [ ] 07 Proprietor message with photo
-- [ ] 08 Warehouse and logistics section
-- [ ] 09 Why Us page: 4 numbered pillars
-- [ ] 10 Why Us: benefits at a glance (4 cards)
-- [ ] 11 Quality & Documentation page (COA, SDS, TDS, batch traceability)
-- [ ] 12 Sourcing partners section (brand names as "we supply")
-- [ ] 13 Packaging options section (25 kg, 50 kg, 200 L, carboys)
-- [ ] 14 Gallery page (filterable)
-- [ ] 15 Careers page (optional, admin toggle)
-- [ ] 16 Contact CTA form block on About
-- [ ] 17 All pages editable through Page + Section system
-- [ ] 18 Per-page SEO fields
-- [ ] 19 Human-tone copy review pass
-- [ ] 20 Visual QA vs reference site structure
+- [x] 01 About hero with correct breadcrumb
+- [x] 02 Our story (2002 to today) copy
+- [x] 03 Timeline component (editable milestones)
+- [x] 04 Key facts table (nature, team 35, banker, GST)
+- [x] 05 Vision and mission blocks
+- [x] 06 Values list with bold lead-ins
+- [x] 07 Proprietor message with photo
+- [x] 08 Warehouse and logistics section
+- [x] 09 Why Us page: 4 numbered pillars
+- [x] 10 Why Us: benefits at a glance (4 cards)
+- [x] 11 Quality & Documentation page (COA, SDS, TDS, batch traceability)
+- [x] 12 Sourcing partners section (brand names as "we supply")
+- [x] 13 Packaging options section (25 kg, 50 kg, 200 L, carboys)
+- [x] 14 Gallery page (filterable) + Admin > Gallery manager
+- [x] 15 Careers page (optional, admin toggle: publish/unpublish in Admin > Pages; seeded as a draft)
+- [~] 16 Contact CTA form block on About (contactBlock section with address, phone and quote button; the full enquiry form arrives in Phase 14)
+- [x] 17 All pages editable through Page + Section system
+- [x] 18 Per-page SEO fields
+- [x] 19 Human-tone copy review pass
+- [x] 20 Visual QA vs reference site structure
 
 ## Phase 12 — Product Catalogue & Admin CRUD
 - [ ] 01 Seed 22 categories with families and intros

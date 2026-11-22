@@ -22,10 +22,10 @@ export async function Hero({ data, ctx }) {
               {data.eyebrow}
             </p>
           ) : null}
-          <h1 id="hero-title" className="text-display measure">
+          <h1 id="hero-title" className="measure text-display">
             {data.title}
           </h1>
-          {data.subtitle ? <p className="text-lead measure">{data.subtitle}</p> : null}
+          {data.subtitle ? <p className="measure text-lead">{data.subtitle}</p> : null}
           {buttons.length ? (
             <div className="flex flex-wrap gap-3 pt-1">
               {buttons.map((b, i) => (
@@ -37,9 +37,15 @@ export async function Hero({ data, ctx }) {
             </div>
           ) : null}
           {data.trustFacts.length ? (
-            <dl className="mt-4 grid w-full grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3" data-testid="trust-facts">
+            <dl
+              className="mt-4 grid w-full grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3"
+              data-testid="trust-facts"
+            >
               {data.trustFacts.map((f) => (
-                <div key={f.label} className="flex flex-col gap-0.5 sm:border-l sm:border-line sm:pl-4 sm:first:border-l-0 sm:first:pl-0">
+                <div
+                  key={f.label}
+                  className="flex flex-col gap-0.5 sm:border-l sm:border-line sm:pl-4 sm:first:border-l-0 sm:first:pl-0"
+                >
                   <dt className="order-2 text-small text-muted">{f.label}</dt>
                   <dd className="order-1 font-display text-[1.75rem] leading-none text-primary">{f.value}</dd>
                 </div>
@@ -50,7 +56,13 @@ export async function Hero({ data, ctx }) {
 
         {image ? (
           <div className="relative overflow-hidden rounded-card border border-line">
-            <MediaImage asset={image} aspect="4:5" priority sizes="(min-width: 1024px) 480px, 100vw" className="h-full w-full" />
+            <MediaImage
+              asset={image}
+              aspect="4:5"
+              priority
+              sizes="(min-width: 1024px) 480px, 100vw"
+              className="h-full w-full"
+            />
           </div>
         ) : data.highlights.length ? (
           <aside aria-label="In stock now" className="rounded-card border border-line bg-card">
@@ -69,7 +81,10 @@ export async function Hero({ data, ctx }) {
               ))}
             </ul>
             <div className="border-t border-line bg-surface px-5 py-3.5">
-              <Link href="/contact#quote" className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline">
+              <Link
+                href="/contact#quote"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
+              >
                 Ask for today&rsquo;s price <ArrowRight aria-hidden="true" className="size-4" />
               </Link>
             </div>

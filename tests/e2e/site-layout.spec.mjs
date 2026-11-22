@@ -1,5 +1,5 @@
-import { expect, test } from "@playwright/test";
 import { hash } from "@node-rs/argon2";
+import { expect, test } from "@playwright/test";
 import { PrismaClient } from "@prisma/client";
 
 import { ARGON2_OPTIONS } from "../../src/lib/auth/argon-params.js";
@@ -15,10 +15,6 @@ const stamp = Date.now();
  * internal link that is neither working nor listed here — remove entries as the pages ship.
  */
 const PLANNED = {
-  "/about": 11,
-  "/why-us": 11,
-  "/quality": 11,
-  "/gallery": 11,
   "/products": 12,
   "/industries": 15,
   "/insights": 15,

@@ -95,7 +95,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 | 8 Settings + themes | Done | 2026-11-21 | 9 settings sections (strict Zod, revisions, cache tags), menu builder (5 locations, 2 levels), theme manager (3 presets, duplicate, editor with contrast report, fonts, radius, density, button style, light/dark, live preview), root layout reads active theme + SEO from DB, analytics after consent, maintenance gate. 205 unit + 6 E2E passing |
 | 9 Public layout | Done (18/20, 2 wait for catalogue/pages) | 2026-11-22 | Top bar, sticky shrinking header, dropdowns + products mega menu (keyboard/mouse/Esc), mobile drawer, Ctrl+K search (lazy-loaded) + search API, breadcrumb with JSON-LD, 4-column footer, floating Call/WhatsApp, consent banner (analytics only after consent), skip link, 404/error/global-error. Lighthouse mobile 95-98/100/96/100. 211 unit + 15 E2E passing |
 | 10 Home page | Done | 2026-11-22 | Section registry (14 types, strict schemas, real Content.md copy), home rendered from Page/Section rows, draft / preview (draft mode + admin session) / publish / discard / history, page editor (reorder, hide, duplicate, add, per-section forms, SEO), data sections hide when empty, FAQ JSON-LD, single RevealObserver. 237 unit + 19 E2E passing |
-| 11 Company pages | Not started | | |
+| 11 Company pages | Done | 2026-11-22 | 14 company section types (registry-company.js, rich text sanitised on save), generic `[page]` route for admin pages (about, why-us, quality, gallery live; careers seeded as draft), real copy in prisma/seed-pages.js, Admin > Gallery manager (add/caption/category/reorder/hide, revisions, audit), real 404 for unknown/draft slugs, cookie consent read client-side so public pages are fully static, scroll reveal moved to a CSS view timeline (RevealObserver removed: no hydration mismatch, less JS), (site)/not-found.js so a 404 inside the site layout does not repeat the header. 254 unit + 23 E2E passing |
 
 ## 7. Technical notes (decisions made while building)
 
@@ -118,6 +118,12 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Managed pages: src/components/site/ManagedPage.jsx renders a slug's sections (live cached; preview = draft mode + admin). Add new section types in src/lib/sections/registry.js AND src/components/sections/SectionRenderer.jsx.
 - E2E tests must change settings/pages through the admin API (helpers.mjs putSetting / page API), never directly in the DB — direct DB edits skip cache invalidation and leak into later tests.
 - Performance follow-up for Phase 31: RSC payload ~112 KB on home; TBT ~0.9 s under Lighthouse mobile throttling.
+- `[page]` route uses `ensureStatic = "navigation"` + `instant = false`: an unlisted slug waits for its full render so `notFound()` sends a real 404 (without it, Partial Prefetching streams the fallback shell with status 200 = soft 404). Consequence: nothing in the public layout may read cookies/headers at render time. Fixed routes (/products, /contact...) win over `[page]`.
+- Cookie consent: the httpOnly cookie is read by GET /api/public/consent from the banner after load (no server cookie read in the layout, so home and company pages are fully static ○).
+- Full-page screenshots need `.cv-auto{content-visibility:visible}` injected, otherwise below-the-fold sections come out blank (scripts/shots-phase11.mjs).
+- Scroll reveal = CSS only (`[data-reveal]` + `animation-timeline: view()` in globals.css). Never add classes to server-rendered elements from client JS before hydration (causes hydration mismatch).
+- Two 404 files: app/not-found.js (no route matched: wraps SiteShell) and app/(site)/not-found.js (notFound() inside the site layout: body only). Shared body = components/site/NotFoundContent.jsx.
+- Gallery: GalleryItem rows saved as a whole list by PUT /api/admin/gallery (permission resource `media`); revisions under entity "gallery".
 - Public pages must show drafts only when `isPreview()` (draft cookie AND admin session) — use it from Phase 9/10.
 
 ## 8. Open questions / needs from owner
@@ -126,5 +132,7 @@ A new, fully admin-controlled B2B website for **Global INDIA**, a Delhi-based su
 - Real logo files (SVG preferred) and factory/warehouse/drum photos.
 - Which products are actually manufactured or blended in-house? Certifications (ISO, FSSAI, GMP)?
 - Domain name and where DNS is managed (needed for Cloudflare WAF and Brevo DKIM).
+- Confirm the middle timeline years on /about (2008, 2014, 2019 are placeholders from the product history) and the brand list on /quality.
+- Careers: is the company hiring? (page is a draft until switched on in Admin > Pages)
 - Client logos allowed to be shown? Export countries served?
 - Accounts/keys: Neon `DATABASE_URL`/`DIRECT_URL`, Brevo API key, Cloudinary keys, Upstash Redis, Cloudflare Turnstile keys, Vercel project.

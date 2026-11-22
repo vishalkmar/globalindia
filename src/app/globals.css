@@ -256,21 +256,33 @@
 }
 
 /* ---------- Motion ---------- */
-@layer components {
-  .reveal-pending {
+/*
+ * Scroll reveal without JavaScript: elements marked data-reveal fade up as they enter the viewport,
+ * driven by a CSS view timeline. Nothing is hidden before the page is interactive, React's markup is
+ * never touched (no hydration mismatch), and browsers without view timelines or with reduced motion
+ * simply show the content.
+ */
+@keyframes reveal-up {
+  from {
     opacity: 0;
     transform: translateY(12px);
   }
-
-  .reveal-in {
+  to {
     opacity: 1;
     transform: none;
-    transition:
-      opacity 600ms var(--ease-standard),
-      transform 600ms var(--ease-standard);
-    transition-delay: var(--reveal-delay, 0ms);
   }
+}
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    [data-reveal] {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 45%;
+    }
+  }
+}
 
+@layer components {
   /* Rich text: admin editor and public "prose" output share the same simple rules */
   .prose-admin,
   .prose-site {
@@ -342,7 +354,12 @@
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--c-card) 60%, transparent), transparent);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in oklab, var(--c-card) 60%, transparent),
+      transparent
+    );
     animation: skeleton-sweep 1.4s infinite;
   }
 }
@@ -390,10 +407,5 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  .reveal-pending {
-    opacity: 1;
-    transform: none;
   }
 }

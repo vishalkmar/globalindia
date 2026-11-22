@@ -3,6 +3,7 @@ import { z } from "zod";
 import { FAMILIES, FAMILY_KEYS } from "../catalogue/families.js";
 import { safeHref } from "../settings/schemas.js";
 import { ICON_KEYS, ICON_OPTIONS } from "./icons.js";
+import { COMPANY_SECTIONS } from "./registry-company.js";
 
 /**
  * Section registry (Phase 10 todo 01): type -> label, strict Zod schema, real default copy (docs/Content.md)
@@ -421,6 +422,9 @@ export const SECTIONS = {
     ],
   },
 };
+
+// Company page sections (Phase 11)
+Object.assign(SECTIONS, COMPANY_SECTIONS);
 
 export const SECTION_TYPES = Object.keys(SECTIONS);
 

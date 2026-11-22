@@ -125,3 +125,18 @@ export async function getLatestPosts(limit = 3) {
     [],
   );
 }
+
+export async function getGalleryItems() {
+  "use cache";
+  tag(TAGS.gallery, TAGS.media);
+  return safe(
+    "gallery",
+    () =>
+      db.galleryItem.findMany({
+        where: { isVisible: true, media: { deletedAt: null } },
+        orderBy: [{ order: "asc" }, { createdAt: "asc" }],
+        select: { id: true, caption: true, category: true, media: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } } },
+      }),
+    [],
+  );
+}

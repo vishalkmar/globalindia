@@ -1,7 +1,33 @@
 import { getClientLogos, getFeaturedProducts, getLatestPosts, getTestimonials } from "@/lib/sections/data";
 import { getSiteChrome } from "@/lib/site-chrome";
 
-import { AboutTeaser, CtaBand, Faq, FeatureTriad, Industries, NumberedValues, Process, ProductFamilies, Stats } from "./ContentSections";
+import {
+  BrandList,
+  ContactBlock,
+  FactsTable,
+  Gallery,
+  IconCards,
+  Openings,
+  Packaging,
+  PageHero,
+  ProprietorMessage,
+  RichText,
+  SplitFeature,
+  Timeline,
+  ValuesList,
+  VisionMission,
+} from "./CompanySections";
+import {
+  AboutTeaser,
+  CtaBand,
+  Faq,
+  FeatureTriad,
+  Industries,
+  NumberedValues,
+  Process,
+  ProductFamilies,
+  Stats,
+} from "./ContentSections";
 import { ClientLogos, FeaturedProducts, Insights, Testimonials } from "./DataSections";
 import { Hero } from "./Hero";
 
@@ -21,10 +47,24 @@ const COMPONENTS = {
   insights: Insights,
   faq: Faq,
   ctaBand: CtaBand,
+  pageHero: PageHero,
+  richText: RichText,
+  timeline: Timeline,
+  factsTable: FactsTable,
+  visionMission: VisionMission,
+  valuesList: ValuesList,
+  proprietorMessage: ProprietorMessage,
+  splitFeature: SplitFeature,
+  brandList: BrandList,
+  packaging: Packaging,
+  iconCards: IconCards,
+  contactBlock: ContactBlock,
+  gallery: Gallery,
+  openings: Openings,
 };
 
 /** Sections that draw their own background; the rest alternate white / surface down the page. */
-const SELF_TONED = new Set(["hero", "stats", "ctaBand"]);
+const SELF_TONED = new Set(["hero", "pageHero", "stats", "ctaBand"]);
 
 /**
  * Renders a page's sections in order. Backgrounds alternate automatically so editors can reorder
@@ -38,10 +78,17 @@ const HAS_DATA = {
   insights: async (d) => (await getLatestPosts(d.limit)).length > 0,
 };
 
-export async function SectionRenderer({ sections, year }) {
+export async function SectionRenderer({ sections, year, page }) {
   const chrome = await getSiteChrome();
-  const ctx = { business: chrome.business, contact: chrome.contact, year };
-  const present = await Promise.all(sections.map((s) => (HAS_DATA[s.type] ? HAS_DATA[s.type](s.data) : true)));
+  const ctx = {
+    business: chrome.business,
+    contact: chrome.contact,
+    year,
+    page: page ?? { title: "", slug: "" },
+  };
+  const present = await Promise.all(
+    sections.map((s) => (HAS_DATA[s.type] ? HAS_DATA[s.type](s.data) : true)),
+  );
   const visible = sections.filter((_, i) => present[i]);
   let alt = 0;
   return visible.map((s, i) => {
@@ -49,6 +96,7 @@ export async function SectionRenderer({ sections, year }) {
     if (!Component) return null;
     const tone = SELF_TONED.has(s.type) ? undefined : alt++ % 2 === 0 ? "white" : "surface";
     // Sections after the first two skip layout and paint until they come near the viewport.
+    // The first two sections are above the fold; later ones skip layout until scrolled near.
     return (
       <div key={s.id} className={i > 1 ? "cv-auto" : undefined}>
         <Component data={s.data} ctx={ctx} tone={tone} />

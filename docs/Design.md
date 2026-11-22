@@ -72,7 +72,7 @@ Base UI (Phase 2): Button (primary, secondary, ghost, link; sm/md/lg; loading), 
 
 ## 8. Motion
 
-Subtle only: fade-up 12 px on scroll (IntersectionObserver, once), count-up stats, sticky header shrink, mega-menu 150 ms fade, accordion height animation. Respect `prefers-reduced-motion`. No parallax, no autoplay sliders (admin may enable a 3-slide manual slider).
+Subtle only: fade-up 12 px on scroll (CSS view timeline on `[data-reveal]`, no JavaScript; browsers without support just show the content), count-up stats, sticky header shrink, mega-menu 150 ms fade, accordion height animation. Respect `prefers-reduced-motion`. No parallax, no autoplay sliders (admin may enable a 3-slide manual slider).
 
 ## 9. Admin panel design
 

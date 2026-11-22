@@ -29,7 +29,7 @@ export async function FeaturedProducts({ data, tone }) {
         <HeadingRow d={data} cta={data.cta} />
         <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((p, i) => (
-            <li data-reveal key={p.id} style={{ "--reveal-delay": `${(i % 3) * 70}ms` }}>
+            <li data-reveal key={p.id}>
               <ProductCard product={p} />
             </li>
           ))}
@@ -62,7 +62,10 @@ export async function ClientLogos({ data, tone }) {
               <span className="font-semibold text-muted">{l.name}</span>
             );
             return (
-              <li key={l.id} className="flex h-20 items-center justify-center rounded-card border border-line bg-card px-4">
+              <li
+                key={l.id}
+                className="flex h-20 items-center justify-center rounded-card border border-line bg-card px-4"
+              >
                 {l.url ? (
                   <a href={l.url} target="_blank" rel="noopener noreferrer nofollow" aria-label={l.name}>
                     {img}
@@ -89,13 +92,15 @@ export async function Testimonials({ data, tone }) {
         <SectionHeading eyebrow={data.eyebrow} title={data.title} />
         <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((t, i) => (
-            <li data-reveal key={t.id} style={{ "--reveal-delay": `${(i % 3) * 70}ms` }}>
+            <li data-reveal key={t.id}>
               <figure className="flex h-full flex-col gap-5 rounded-card border border-line bg-card p-6">
                 <Quote aria-hidden="true" className="size-5 text-accent" strokeWidth={1.5} />
                 <blockquote className="flex-1 text-ink">{t.quote}</blockquote>
                 <figcaption className="border-t border-line pt-4 text-sm">
                   <span className="font-semibold text-ink">{t.name}</span>
-                  <span className="block text-muted">{[t.role, t.company, t.city].filter(Boolean).join(", ")}</span>
+                  <span className="block text-muted">
+                    {[t.role, t.company, t.city].filter(Boolean).join(", ")}
+                  </span>
                 </figcaption>
               </figure>
             </li>
@@ -120,10 +125,18 @@ export async function Insights({ data, tone }) {
           {posts.map((p) => (
             <li key={p.id}>
               <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-card transition-colors hover:border-primary">
-                {p.cover ? <MediaImage asset={p.cover} aspect="16:9" sizes="(min-width: 768px) 33vw, 100vw" className="w-full border-b border-line" /> : null}
+                {p.cover ? (
+                  <MediaImage
+                    asset={p.cover}
+                    aspect="16:9"
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    className="w-full border-b border-line"
+                  />
+                ) : null}
                 <div className="flex flex-1 flex-col gap-3 p-5">
                   <p className="text-[0.8125rem] text-muted">
-                    {p.category} · <time dateTime={p.publishedAt.toISOString()}>{dateFmt.format(p.publishedAt)}</time>
+                    {p.category} ·{" "}
+                    <time dateTime={p.publishedAt.toISOString()}>{dateFmt.format(p.publishedAt)}</time>
                   </p>
                   <h3 className="text-h3 leading-snug">
                     <Link href={`/insights/${p.slug}`} className="after:absolute after:inset-0">

@@ -12,6 +12,7 @@ import { MENU_DEFAULTS } from "../src/lib/settings/menus.js";
 import { SETTING_DEFAULTS } from "../src/lib/settings/schemas.js";
 import { THEME_PRESETS } from "../src/lib/theme/presets.js";
 import { seedAdmin } from "./seed-admin.js";
+import { COMPANY_PAGES } from "./seed-pages.js";
 import { assertSeedAllowed, log, upsertSetting } from "./seed-utils.js";
 
 const db = new PrismaClient();
@@ -67,6 +68,27 @@ async function seedHomePage() {
   log("pages", `home with ${HOME_LAYOUT.length} sections`);
 }
 
+async function seedCompanyPages() {
+  for (const page of COMPANY_PAGES) {
+    if (await db.page.findUnique({ where: { slug: page.slug } })) continue;
+    for (const sec of page.sections) {
+      const r = SECTIONS[sec.type].schema.safeParse(sec.data);
+      if (!r.success) throw new Error(`Seed copy for ${page.slug}/${sec.type} is invalid: ${r.error.issues[0].path.join(".")} ${r.error.issues[0].message}`);
+    }
+    await db.page.create({
+      data: {
+        slug: page.slug,
+        title: page.title,
+        status: page.status,
+        publishedAt: page.status === "PUBLISHED" ? new Date() : null,
+        seo: page.seo,
+        sections: { create: page.sections.map((sec, order) => ({ type: sec.type, order, data: sec.data, isVisible: true })) },
+      },
+    });
+  }
+  log("pages", COMPANY_PAGES.map((p) => `${p.slug}${p.status === "DRAFT" ? " (draft)" : ""}`).join(", "));
+}
+
 async function main() {
   assertSeedAllowed();
   console.log("Seeding Global India database...");
@@ -74,6 +96,7 @@ async function main() {
   await seedSettings();
   await seedMenus();
   await seedHomePage();
+  await seedCompanyPages();
   await seedAdmin(db);
   console.log("Seed complete.");
 }

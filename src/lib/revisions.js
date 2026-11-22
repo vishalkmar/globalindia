@@ -21,6 +21,7 @@ export const REVISION_ENTITIES = {
   theme: "theme",
   settings: "siteSettings",
   menu: "menus",
+  gallery: "media",
 };
 
 /**

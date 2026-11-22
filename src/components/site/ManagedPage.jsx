@@ -16,9 +16,9 @@ async function Live({ slug, fallbackLayout }) {
     if (!fallbackLayout) notFound();
     // The page row is missing (fresh database): render the built-in default copy instead of a blank page.
     const sections = fallbackLayout.map((type, i) => ({ id: `default-${i}`, type, data: normaliseSection(type, null) }));
-    return <SectionRenderer sections={sections} year={year} />;
+    return <SectionRenderer sections={sections} year={year} page={{ title: "Home", slug }} />;
   }
-  return <SectionRenderer sections={page.sections} year={year} />;
+  return <SectionRenderer sections={page.sections} year={year} page={{ title: page.title, slug: page.slug }} />;
 }
 
 async function Preview({ slug, fallbackLayout }) {
@@ -28,7 +28,7 @@ async function Preview({ slug, fallbackLayout }) {
   return (
     <>
       <PreviewBanner isDraft={page.isDraft} />
-      <SectionRenderer sections={page.sections} year={year} />
+      <SectionRenderer sections={page.sections} year={year} page={{ title: page.title, slug: page.slug }} />
     </>
   );
 }
