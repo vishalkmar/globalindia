@@ -85,8 +85,8 @@ export function CookieConsent() {
               Cookies on this site
             </h2>
             <p className="text-muted">
-              We use necessary cookies to run the site. With your permission we also count visits to see which products people look for. Nothing is
-              sold or shared for advertising.{" "}
+              We use necessary cookies to run the site. With your permission we also count visits to see which
+              products people look for. Nothing is sold or shared for advertising.{" "}
               <Link href="/legal/cookies" className="font-semibold text-primary underline underline-offset-2">
                 Cookie policy
               </Link>

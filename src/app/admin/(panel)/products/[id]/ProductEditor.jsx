@@ -15,7 +15,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { useToast } from "@/components/ui/Feedback";
 import { Alert, Skeleton } from "@/components/ui/Static";
 import { adminJson } from "@/lib/client/adminFetch";
-import { productSchema, slugify } from "@/lib/validation/catalogue";
+import { EMPTY_CONTENT, productSchema, slugify } from "@/lib/validation/catalogue";
 
 const EMPTY = {
   name: "",
@@ -32,6 +32,7 @@ const EMPTY = {
   applications: [],
   summary: "",
   specs: [],
+  content: EMPTY_CONTENT,
   faqs: [],
   brandNote: "",
   isSourced: true,
@@ -123,6 +124,63 @@ function groups({ categories, isNew, canPublish, showPrice }) {
           type: "tags",
           wide: true,
           placeholder: "e.g. Shampoo, Dishwash liquid",
+        },
+      ],
+    },
+    {
+      id: "guide",
+      title: "Buyer's guide (product page)",
+      fields: [
+        {
+          name: "content",
+          label: "Long content",
+          type: "group",
+          columns: 1,
+          hint: "Anything you leave empty is written for you from the product data. Plain text; leave a blank line between paragraphs.",
+          fields: [
+            { name: "whatIsIt", label: "What is it?", type: "textarea", rows: 4, maxLength: 2000 },
+            {
+              name: "howMade",
+              label: "How it is made or sourced",
+              type: "textarea",
+              rows: 4,
+              maxLength: 2000,
+            },
+            {
+              name: "industries",
+              label: "Applications by industry",
+              type: "repeater",
+              itemLabel: "industry",
+              max: 12,
+              fields: [
+                { name: "industry", label: "Industry", maxLength: 60 },
+                { name: "use", label: "How it is used", maxLength: 240 },
+              ],
+            },
+            {
+              name: "askSupplier",
+              label: "Questions to ask the supplier",
+              type: "repeater",
+              itemLabel: "question",
+              max: 12,
+              fields: [
+                { name: "question", label: "Question", maxLength: 160 },
+                { name: "why", label: "Why it matters", maxLength: 300 },
+              ],
+            },
+            { name: "storage", label: "Storage and handling", type: "textarea", rows: 3, maxLength: 1500 },
+            {
+              name: "pricingFactors",
+              label: "Supply and pricing factors",
+              type: "repeater",
+              itemLabel: "factor",
+              max: 10,
+              fields: [
+                { name: "factor", label: "Factor", maxLength: 80 },
+                { name: "effect", label: "Effect on price or supply", maxLength: 300 },
+              ],
+            },
+          ],
         },
       ],
     },

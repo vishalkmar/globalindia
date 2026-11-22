@@ -1,19 +1,36 @@
 "use client";
 
-import { closestCenter, DndContext, KeyboardSensor, PointerSensor, useSensor, useSensors } from "@dnd-kit/core";
-import { arrayMove, SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 function Row({ id, label, children, disabled }) {
-  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id, disabled });
+  const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
+    useSortable({ id, disabled });
   return (
     <li
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
-      className={cn("flex items-center gap-2 rounded-btn border border-line bg-card", isDragging && "relative z-10 border-primary shadow-[0_8px_24px_-12px_rgb(0_0_0/0.35)]")}
+      className={cn(
+        "flex items-center gap-2 rounded-btn border border-line bg-card",
+        isDragging && "relative z-10 border-primary shadow-[0_8px_24px_-12px_rgb(0_0_0/0.35)]",
+      )}
     >
       <button
         type="button"
@@ -56,8 +73,10 @@ export function SortableList({ items, onReorder, renderItem, disabled = false, c
       accessibility={{
         announcements: {
           onDragStart: ({ active }) => `Picked up ${items.find((i) => i.id === active.id)?.label}.`,
-          onDragOver: ({ over }) => (over ? `Over position ${items.findIndex((i) => i.id === over.id) + 1} of ${items.length}.` : ""),
-          onDragEnd: ({ over }) => (over ? `Dropped at position ${items.findIndex((i) => i.id === over.id) + 1}.` : "Dropped."),
+          onDragOver: ({ over }) =>
+            over ? `Over position ${items.findIndex((i) => i.id === over.id) + 1} of ${items.length}.` : "",
+          onDragEnd: ({ over }) =>
+            over ? `Dropped at position ${items.findIndex((i) => i.id === over.id) + 1}.` : "Dropped.",
           onDragCancel: () => "Move cancelled.",
         },
       }}

@@ -22,7 +22,7 @@ const PLANNED = {
   "/legal/terms": 15,
   "/legal/cookies": 15,
 };
-const plannedFor = (path) => PLANNED[path] ?? (/^\/products\/[^/]+\/[^/]+$/.test(path) ? 13 : null);
+const plannedFor = (path) => PLANNED[path] ?? null;
 
 const ownerEmail = `e2e-layout-owner-${stamp}@test.local`;
 const ownerPassword = `Layout-Owner-${stamp}`;

@@ -101,7 +101,9 @@ export function Dialog({ open, onClose, title, description, children, footer, si
         <CloseButton onClose={onClose} />
       </div>
       <div className="max-h-[70vh] overflow-y-auto px-6 py-5">{children}</div>
-      {footer ? <div className="flex justify-end gap-3 border-t border-line bg-surface px-6 py-4">{footer}</div> : null}
+      {footer ? (
+        <div className="flex justify-end gap-3 border-t border-line bg-surface px-6 py-4">{footer}</div>
+      ) : null}
     </dialog>
   );
 }

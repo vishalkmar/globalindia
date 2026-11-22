@@ -41,7 +41,7 @@ export function Tabs({ tabs, defaultTab, onChange, label, className }) {
         role="tablist"
         aria-label={label}
         onKeyDown={onKeyDown}
-        className="flex gap-1 overflow-x-auto border-b border-line [scrollbar-width:none]"
+        className="flex [scrollbar-width:none] gap-1 overflow-x-auto border-b border-line"
       >
         {tabs.map((tab) => {
           const selected = tab.id === active;
@@ -121,7 +121,10 @@ export function Accordion({ items, multiple = false, defaultOpen = [], headingLe
                 <ChevronDown
                   aria-hidden="true"
                   strokeWidth={1.75}
-                  className={cn("size-5 shrink-0 text-muted transition-transform duration-200", isOpen && "rotate-180 text-primary")}
+                  className={cn(
+                    "size-5 shrink-0 text-muted transition-transform duration-200",
+                    isOpen && "rotate-180 text-primary",
+                  )}
                 />
               </button>
             </H>

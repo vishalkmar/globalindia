@@ -14,7 +14,8 @@ import { adminJson } from "@/lib/client/adminFetch";
 import { IMAGE_MIME, MEDIA_FOLDERS, PDF_MIME } from "@/lib/media/constants";
 import { formatBytes } from "@/lib/utils";
 
-const when = (d) => new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(d));
+const when = (d) =>
+  new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(d));
 
 /** Click on the image to set the focal point used for crops (Phase 7 todo 13). */
 function FocalPicker({ asset, value, onChange }) {
@@ -31,7 +32,10 @@ function FocalPicker({ asset, value, onChange }) {
     const map = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
     if (!map[e.key]) return;
     e.preventDefault();
-    onChange({ x: Math.min(1, Math.max(0, cur.x + map[e.key][0])), y: Math.min(1, Math.max(0, cur.y + map[e.key][1])) });
+    onChange({
+      x: Math.min(1, Math.max(0, cur.x + map[e.key][0])),
+      y: Math.min(1, Math.max(0, cur.y + map[e.key][1])),
+    });
   }
   return (
     <div className="flex flex-col gap-1.5">
@@ -43,7 +47,9 @@ function FocalPicker({ asset, value, onChange }) {
         aria-valuemin={0}
         aria-valuemax={100}
         aria-valuenow={Math.round((value?.x ?? 0.5) * 100)}
-        aria-valuetext={value ? `${Math.round(value.x * 100)}% across, ${Math.round(value.y * 100)}% down` : "Centre"}
+        aria-valuetext={
+          value ? `${Math.round(value.x * 100)}% across, ${Math.round(value.y * 100)}% down` : "Centre"
+        }
         onClick={pick}
         onKeyDown={key}
         className="relative min-h-32 cursor-crosshair overflow-hidden rounded-btn border border-line bg-surface"
@@ -59,7 +65,8 @@ function FocalPicker({ asset, value, onChange }) {
         ) : null}
       </div>
       <p className="flex items-center gap-1.5 text-[0.8125rem] text-muted">
-        <Crosshair aria-hidden="true" className="size-3.5" /> Click the part that must stay visible when the image is cropped.
+        <Crosshair aria-hidden="true" className="size-3.5" /> Click the part that must stay visible when the
+        image is cropped.
       </p>
     </div>
   );
@@ -99,7 +106,12 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
   }, [open, assetId]);
 
   const asset = data?.asset;
-  const dirty = asset && (alt !== asset.alt || folder !== asset.folder || (focal?.x ?? null) !== asset.focalX || (focal?.y ?? null) !== asset.focalY);
+  const dirty =
+    asset &&
+    (alt !== asset.alt ||
+      folder !== asset.folder ||
+      (focal?.x ?? null) !== asset.focalX ||
+      (focal?.y ?? null) !== asset.focalY);
 
   async function save() {
     setBusy(true);
@@ -118,7 +130,11 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
     setError("");
     setReplaceProgress(0);
     try {
-      const updated = await uploadFile(file, { replaceId: asset.id, folder: asset.folder, onProgress: setReplaceProgress });
+      const updated = await uploadFile(file, {
+        replaceId: asset.id,
+        folder: asset.folder,
+        onProgress: setReplaceProgress,
+      });
       setData((d) => ({ ...d, asset: updated }));
       setFocal(null);
       onChanged?.(updated);
@@ -157,7 +173,12 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
           {asset.type === "IMAGE" ? (
             <FocalPicker asset={asset} value={focal} onChange={setFocal} />
           ) : (
-            <a href={asset.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 font-semibold text-primary underline">
+            <a
+              href={asset.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-semibold text-primary underline"
+            >
               Open PDF <ExternalLink aria-hidden="true" className="size-4" />
             </a>
           )}
@@ -165,12 +186,16 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
           {error ? <Alert tone="error">{error}</Alert> : null}
           {asset.type === "IMAGE" && !alt.trim() ? (
             <Alert tone="info" title="Alt text needed">
-              Describe what the photo shows, e.g. &ldquo;200 L drums of propylene glycol in the Burari Road warehouse&rdquo;. The image cannot be used on the site without it.
+              Describe what the photo shows, e.g. &ldquo;200 L drums of propylene glycol in the Burari Road
+              warehouse&rdquo;. The image cannot be used on the site without it.
             </Alert>
           ) : null}
 
           {asset.type === "IMAGE" ? (
-            <Field label="Alt text" hint="What a person who cannot see the image needs to know. Keep it under 200 characters.">
+            <Field
+              label="Alt text"
+              hint="What a person who cannot see the image needs to know. Keep it under 200 characters."
+            >
               <Input value={alt} maxLength={200} onChange={(e) => setAlt(e.target.value)} />
             </Field>
           ) : (
@@ -192,8 +217,13 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
             <Button onClick={save} loading={busy} disabled={!dirty}>
               Save details
             </Button>
-            <Button variant="secondary" onClick={() => fileRef.current?.click()} loading={replaceProgress !== null}>
-              <RefreshCw aria-hidden="true" /> {replaceProgress !== null ? `Replacing ${replaceProgress}%` : "Replace file"}
+            <Button
+              variant="secondary"
+              onClick={() => fileRef.current?.click()}
+              loading={replaceProgress !== null}
+            >
+              <RefreshCw aria-hidden="true" />{" "}
+              {replaceProgress !== null ? `Replacing ${replaceProgress}%` : "Replace file"}
             </Button>
             <Button
               variant="ghost"
@@ -247,7 +277,15 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
             {data.usage.length ? (
               <ul className="flex flex-col gap-1 text-sm">
                 {data.usage.map((u) => (
-                  <li key={u.label}>{u.href ? <Link href={u.href} className="text-primary underline underline-offset-4">{u.label}</Link> : u.label}</li>
+                  <li key={u.label}>
+                    {u.href ? (
+                      <Link href={u.href} className="text-primary underline underline-offset-4">
+                        {u.label}
+                      </Link>
+                    ) : (
+                      u.label
+                    )}
+                  </li>
                 ))}
               </ul>
             ) : (
@@ -256,7 +294,13 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
           </div>
 
           <div className="border-t border-line pt-4">
-            <Button variant="ghost" onClick={remove} disabled={busy || data.usage.length > 0} title={data.usage.length ? "Remove it from the places above first" : undefined} className="text-error">
+            <Button
+              variant="ghost"
+              onClick={remove}
+              disabled={busy || data.usage.length > 0}
+              title={data.usage.length ? "Remove it from the places above first" : undefined}
+              className="text-error"
+            >
               <Trash2 aria-hidden="true" /> Delete file
             </Button>
           </div>

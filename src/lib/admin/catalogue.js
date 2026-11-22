@@ -3,6 +3,7 @@ import "server-only";
 import { invalidate, TAGS } from "@/lib/cache";
 import { db } from "@/lib/db";
 import { HttpError } from "@/lib/http";
+import { EMPTY_CONTENT, productContentSchema } from "@/lib/validation/catalogue";
 
 /**
  * Shared server logic for the catalogue admin (Phase 12): media checks, slug conflicts, 301 redirects
@@ -96,6 +97,12 @@ export function categoryEditorShape(c) {
 
 /* ------------------------------------------------------------------ products */
 
+/** Stored content JSON -> editor shape (missing or broken fields become empty). */
+export function normaliseContent(raw) {
+  const r = productContentSchema.safeParse(raw ?? {});
+  return r.success ? r.data : { ...EMPTY_CONTENT };
+}
+
 export const productEditorInclude = {
   category: { select: { id: true, slug: true, name: true } },
   gallery: { orderBy: { order: "asc" }, select: { mediaId: true } },
@@ -124,6 +131,7 @@ export function productEditorShape(p) {
       ? p.specs.map((s) => ({ property: s.property ?? "", value: s.value ?? "", method: s.method ?? "" }))
       : [],
     faqs: Array.isArray(p.faqs) ? p.faqs : [],
+    content: normaliseContent(p.content),
     brandNote: p.brandNote ?? "",
     isSourced: p.isSourced,
     showPrice: p.showPrice,

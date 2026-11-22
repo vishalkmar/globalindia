@@ -20,7 +20,10 @@ export function ToastProvider({ children }) {
 
   const push = useCallback((tone, message, opts = {}) => {
     const id = ++idRef.current;
-    setItems((list) => [...list.slice(-3), { id, tone, message, title: opts.title, duration: opts.duration ?? 5000 }]);
+    setItems((list) => [
+      ...list.slice(-3),
+      { id, tone, message, title: opts.title, duration: opts.duration ?? 5000 },
+    ]);
     return id;
   }, []);
 
@@ -37,7 +40,11 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={api}>
       {children}
-      <div aria-live="polite" aria-atomic="false" className="pointer-events-none fixed right-4 bottom-4 z-[100] flex w-[min(380px,calc(100%-32px))] flex-col gap-2">
+      <div
+        aria-live="polite"
+        aria-atomic="false"
+        className="pointer-events-none fixed right-4 bottom-4 z-[100] flex w-[min(380px,calc(100%-32px))] flex-col gap-2"
+      >
         {items.map((t) => (
           <ToastItem key={t.id} toast={t} onDismiss={() => dismiss(t.id)} />
         ))}
@@ -68,7 +75,12 @@ function ToastItem({ toast, onDismiss }) {
         {toast.title ? <p className="font-semibold">{toast.title}</p> : null}
         <p className="leading-snug">{toast.message}</p>
       </div>
-      <button type="button" onClick={onDismiss} aria-label="Dismiss notification" className="-m-1 rounded p-1 text-muted hover:text-ink">
+      <button
+        type="button"
+        onClick={onDismiss}
+        aria-label="Dismiss notification"
+        className="-m-1 rounded p-1 text-muted hover:text-ink"
+      >
         <X aria-hidden="true" className="size-4" />
       </button>
     </div>

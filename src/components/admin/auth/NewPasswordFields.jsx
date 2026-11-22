@@ -18,7 +18,11 @@ export function NewPasswordFields({ value, confirm, onChange, onConfirmChange, e
         <PasswordInput autoComplete="new-password" value={value} onChange={(e) => onChange(e.target.value)} />
       </Field>
       <Field label="Type it again">
-        <PasswordInput autoComplete="new-password" value={confirm} onChange={(e) => onConfirmChange(e.target.value)} />
+        <PasswordInput
+          autoComplete="new-password"
+          value={confirm}
+          onChange={(e) => onConfirmChange(e.target.value)}
+        />
       </Field>
       <ul className="flex flex-col gap-1.5 text-sm" aria-label="Password rules">
         {rules.map((r) => (

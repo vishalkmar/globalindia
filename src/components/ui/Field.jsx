@@ -52,7 +52,11 @@ export function Field({ label, hint, error, required, className, children, id: i
         </p>
       ) : null}
       {error ? (
-        <p id={errorId} role="alert" className="flex items-start gap-1.5 text-[0.8125rem] leading-snug text-error">
+        <p
+          id={errorId}
+          role="alert"
+          className="flex items-start gap-1.5 text-[0.8125rem] leading-snug text-error"
+        >
           <CircleAlert aria-hidden="true" className="mt-px size-3.5 shrink-0" strokeWidth={2} />
           {error}
         </p>
@@ -78,7 +82,12 @@ export function PasswordInput({ className, ...props }) {
   const [show, setShow] = useState(false);
   return (
     <div className="relative">
-      <Input type={show ? "text" : "password"} className={cn("pr-11", className)} maxLength={128} {...props} />
+      <Input
+        type={show ? "text" : "password"}
+        className={cn("pr-11", className)}
+        maxLength={128}
+        {...props}
+      />
       <button
         type="button"
         onClick={() => setShow((v) => !v)}
@@ -86,7 +95,11 @@ export function PasswordInput({ className, ...props }) {
         aria-pressed={show}
         className="absolute top-1/2 right-2 inline-flex size-8 -translate-y-1/2 items-center justify-center rounded text-muted hover:text-ink"
       >
-        {show ? <EyeOff aria-hidden="true" className="size-4" /> : <Eye aria-hidden="true" className="size-4" />}
+        {show ? (
+          <EyeOff aria-hidden="true" className="size-4" />
+        ) : (
+          <Eye aria-hidden="true" className="size-4" />
+        )}
       </button>
     </div>
   );
@@ -94,14 +107,21 @@ export function PasswordInput({ className, ...props }) {
 
 export function Textarea({ className, rows = 4, ...props }) {
   return (
-    <textarea rows={rows} className={cn(control, "min-h-24 px-3.5 py-2.5 text-[0.9375rem] leading-relaxed", className)} {...props} />
+    <textarea
+      rows={rows}
+      className={cn(control, "min-h-24 px-3.5 py-2.5 text-[0.9375rem] leading-relaxed", className)}
+      {...props}
+    />
   );
 }
 
 export function Select({ className, children, placeholder, ...props }) {
   return (
     <div className="relative">
-      <select className={cn(control, "h-11 appearance-none pr-10 pl-3.5 text-[0.9375rem]", className)} {...props}>
+      <select
+        className={cn(control, "h-11 appearance-none pr-10 pl-3.5 text-[0.9375rem]", className)}
+        {...props}
+      >
         {placeholder ? (
           <option value="" disabled>
             {placeholder}
@@ -152,7 +172,16 @@ export function Checkbox({ label, description, className, id: idProp, ...props }
 }
 
 /** Radio group rendered as a fieldset. options: [{value,label,description}] */
-export function RadioGroup({ legend, name, options, value, defaultValue, onChange, className, inline = false }) {
+export function RadioGroup({
+  legend,
+  name,
+  options,
+  value,
+  defaultValue,
+  onChange,
+  className,
+  inline = false,
+}) {
   const autoId = useId();
   return (
     <fieldset className={cn("flex flex-col gap-2", className)}>
@@ -177,7 +206,9 @@ export function RadioGroup({ legend, name, options, value, defaultValue, onChang
               />
               <label htmlFor={id} className="cursor-pointer text-[0.9375rem] leading-snug">
                 <span className="font-medium text-ink">{opt.label}</span>
-                {opt.description ? <span className="mt-0.5 block text-sm text-muted">{opt.description}</span> : null}
+                {opt.description ? (
+                  <span className="mt-0.5 block text-sm text-muted">{opt.description}</span>
+                ) : null}
               </label>
             </div>
           );

@@ -60,11 +60,21 @@ export function SaveBar({
     <div className="sticky bottom-0 z-20 -mx-4 mt-8 border-t border-line bg-card/95 px-4 py-3 backdrop-blur-sm sm:-mx-6 sm:px-6">
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex min-w-0 flex-1 items-center gap-3 text-sm" aria-live="polite">
-          {status ? <Badge tone={statusTone}>{status.charAt(0) + status.slice(1).toLowerCase()}</Badge> : null}
+          {status ? (
+            <Badge tone={statusTone}>{status.charAt(0) + status.slice(1).toLowerCase()}</Badge>
+          ) : null}
           <span className={cn("truncate", dirty ? "font-semibold text-accent-text" : "text-muted")}>
-            {saving ? "Saving..." : dirty ? "Unsaved changes" : time ? `All changes saved at ${time}` : "No changes"}
+            {saving
+              ? "Saving..."
+              : dirty
+                ? "Unsaved changes"
+                : time
+                  ? `All changes saved at ${time}`
+                  : "No changes"}
           </span>
-          <kbd className="hidden rounded border border-line px-1.5 py-0.5 font-data text-[0.6875rem] text-muted md:inline">Ctrl + S</kbd>
+          <kbd className="hidden rounded border border-line px-1.5 py-0.5 font-data text-[0.6875rem] text-muted md:inline">
+            Ctrl + S
+          </kbd>
         </div>
         <div className="flex flex-wrap gap-2">
           {onHistory ? (
@@ -78,12 +88,24 @@ export function SaveBar({
             </Button>
           ) : null}
           {onSaveDraft ? (
-            <Button variant="secondary" size="sm" onClick={onSaveDraft} disabled={!dirty || saving} loading={saving && !onPublish}>
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={onSaveDraft}
+              disabled={!dirty || saving}
+              loading={saving && !onPublish}
+            >
               <Save aria-hidden="true" /> {saveLabel}
             </Button>
           ) : null}
           {onPublish ? (
-            <Button size="sm" onClick={onPublish} disabled={saving || !canPublish} loading={saving} title={!canPublish ? "Your role cannot publish" : undefined}>
+            <Button
+              size="sm"
+              onClick={onPublish}
+              disabled={saving || !canPublish}
+              loading={saving}
+              title={!canPublish ? "Your role cannot publish" : undefined}
+            >
               <Send aria-hidden="true" /> {publishLabel}
             </Button>
           ) : null}

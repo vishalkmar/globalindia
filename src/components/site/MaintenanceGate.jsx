@@ -16,7 +16,10 @@ function Notice({ maintenance, business }) {
         <h1 className="text-h2">{maintenance.title}</h1>
         {maintenance.message ? <p className="text-muted">{maintenance.message}</p> : null}
         {phone ? (
-          <a href={`tel:${phone.replace(/\s/g, "")}`} className="inline-flex items-center gap-2 font-semibold text-primary underline underline-offset-4">
+          <a
+            href={`tel:${phone.replace(/\s/g, "")}`}
+            className="inline-flex items-center gap-2 font-semibold text-primary underline underline-offset-4"
+          >
             <Phone aria-hidden="true" className="size-4" /> {phone}
           </a>
         ) : null}
@@ -27,7 +30,10 @@ function Notice({ maintenance, business }) {
 
 function AdminBanner() {
   return (
-    <div role="status" className="sticky top-0 z-[70] bg-accent px-4 py-1.5 text-center text-[0.8125rem] font-semibold text-white">
+    <div
+      role="status"
+      className="sticky top-0 z-[70] bg-accent px-4 py-1.5 text-center text-[0.8125rem] font-semibold text-white"
+    >
       Maintenance mode is on. Visitors see the maintenance notice; you see the site because you are signed in.
     </div>
   );

@@ -6,7 +6,15 @@ import { cn } from "@/lib/utils";
  * Card — white, 1 px border, no shadow. `interactive` adds the hover state from Design.md:
  * border turns primary + 2 px lift. Pass `href` to make the whole card a link.
  */
-export function Card({ as: Tag = "div", href, interactive = false, padding = "md", className, children, ...props }) {
+export function Card({
+  as: Tag = "div",
+  href,
+  interactive = false,
+  padding = "md",
+  className,
+  children,
+  ...props
+}) {
   const pad = { none: "", sm: "p-5", md: "p-6 md:p-8", lg: "p-8 md:p-10" }[padding];
   const classes = cn(
     "relative rounded-card border border-line bg-card text-ink",
@@ -31,10 +39,14 @@ export function Card({ as: Tag = "div", href, interactive = false, padding = "md
 
 const badgeTones = {
   neutral: "bg-surface text-ink border-line",
-  primary: "bg-[color-mix(in_oklab,var(--c-primary)_10%,var(--c-card))] text-primary border-[color-mix(in_oklab,var(--c-primary)_25%,transparent)]",
-  accent: "bg-[color-mix(in_oklab,var(--c-accent)_12%,var(--c-card))] text-accent-text border-[color-mix(in_oklab,var(--c-accent)_35%,transparent)]",
-  success: "bg-[color-mix(in_oklab,var(--c-success)_10%,var(--c-card))] text-success border-[color-mix(in_oklab,var(--c-success)_30%,transparent)]",
-  error: "bg-[color-mix(in_oklab,var(--c-error)_10%,var(--c-card))] text-error border-[color-mix(in_oklab,var(--c-error)_30%,transparent)]",
+  primary:
+    "bg-[color-mix(in_oklab,var(--c-primary)_10%,var(--c-card))] text-primary border-[color-mix(in_oklab,var(--c-primary)_25%,transparent)]",
+  accent:
+    "bg-[color-mix(in_oklab,var(--c-accent)_12%,var(--c-card))] text-accent-text border-[color-mix(in_oklab,var(--c-accent)_35%,transparent)]",
+  success:
+    "bg-[color-mix(in_oklab,var(--c-success)_10%,var(--c-card))] text-success border-[color-mix(in_oklab,var(--c-success)_30%,transparent)]",
+  error:
+    "bg-[color-mix(in_oklab,var(--c-error)_10%,var(--c-card))] text-error border-[color-mix(in_oklab,var(--c-error)_30%,transparent)]",
 };
 
 /** Badge — small status label (Draft, Published, New enquiry). */

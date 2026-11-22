@@ -26,7 +26,9 @@ function NavList({ user, pathname, onNavigate }) {
         if (!items.length) return null;
         return (
           <div key={group.label} className="flex flex-col gap-1">
-            <p className="px-3 pb-1 text-[0.6875rem] font-bold tracking-[0.12em] text-muted uppercase">{group.label}</p>
+            <p className="px-3 pb-1 text-[0.6875rem] font-bold tracking-[0.12em] text-muted uppercase">
+              {group.label}
+            </p>
             <ul className="flex flex-col gap-0.5">
               {items.map((item) => {
                 const Icon = item.icon;
@@ -54,10 +56,17 @@ function NavList({ user, pathname, onNavigate }) {
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "relative flex items-center gap-3 rounded-btn px-3 py-2 text-[0.875rem] font-medium transition-colors",
-                        active ? "bg-[color-mix(in_oklab,var(--c-primary)_8%,var(--c-card))] text-primary" : "text-ink hover:bg-surface",
+                        active
+                          ? "bg-[color-mix(in_oklab,var(--c-primary)_8%,var(--c-card))] text-primary"
+                          : "text-ink hover:bg-surface",
                       )}
                     >
-                      {active ? <span aria-hidden="true" className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-accent" /> : null}
+                      {active ? (
+                        <span
+                          aria-hidden="true"
+                          className="absolute inset-y-1.5 left-0 w-0.5 rounded-full bg-accent"
+                        />
+                      ) : null}
                       <Icon aria-hidden="true" className="size-[18px]" strokeWidth={1.5} />
                       {item.label}
                     </Link>
@@ -78,7 +87,10 @@ function Breadcrumb({ pathname }) {
   const crumbs = parts.map((seg, i) => {
     const href = `/${parts.slice(0, i + 1).join("/")}`;
     const nav = all.find((n) => n.href === href);
-    const label = nav?.label ?? SEGMENT_LABELS[seg] ?? (/^c[a-z0-9]{20,}$/.test(seg) ? "Details" : seg.replace(/-/g, " "));
+    const label =
+      nav?.label ??
+      SEGMENT_LABELS[seg] ??
+      (/^c[a-z0-9]{20,}$/.test(seg) ? "Details" : seg.replace(/-/g, " "));
     return { href, label };
   });
   return (
@@ -127,9 +139,12 @@ function UserMenu({ user }) {
   }, [open]);
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" }, body: "{}" }).catch(
-      () => null,
-    );
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "content-type": "application/json" },
+      body: "{}",
+    }).catch(() => null);
     window.location.replace("/admin/login");
   }
 
@@ -150,7 +165,10 @@ function UserMenu({ user }) {
         onClick={() => setOpen((o) => !o)}
         className="flex items-center gap-2.5 rounded-btn border border-transparent px-2 py-1.5 hover:border-line hover:bg-surface"
       >
-        <span aria-hidden="true" className="inline-flex size-8 items-center justify-center rounded-full bg-primary text-[0.75rem] font-bold text-primary-ink">
+        <span
+          aria-hidden="true"
+          className="inline-flex size-8 items-center justify-center rounded-full bg-primary text-[0.75rem] font-bold text-primary-ink"
+        >
           {initials}
         </span>
         <span className="hidden flex-col items-start leading-tight sm:flex">
@@ -160,17 +178,31 @@ function UserMenu({ user }) {
         <ChevronsUpDown aria-hidden="true" className="size-4 text-muted" />
       </button>
       {open ? (
-        <div id={menuId} role="menu" className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-card border border-line bg-card py-1.5 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.3)]">
+        <div
+          id={menuId}
+          role="menu"
+          className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-card border border-line bg-card py-1.5 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.3)]"
+        >
           <div className="border-b border-line px-4 pt-2 pb-3">
             <p className="truncate text-sm font-semibold">{user.email}</p>
             <Badge tone="primary" className="mt-1.5">
               {ROLE_LABEL[user.role]}
             </Badge>
           </div>
-          <Link role="menuitem" href="/admin/security" onClick={() => setOpen(false)} className="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-surface">
+          <Link
+            role="menuitem"
+            href="/admin/security"
+            onClick={() => setOpen(false)}
+            className="flex items-center gap-2.5 px-4 py-2.5 text-sm hover:bg-surface"
+          >
             <ShieldCheck aria-hidden="true" className="size-4 text-muted" strokeWidth={1.5} /> My security
           </Link>
-          <button role="menuitem" type="button" onClick={logout} className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm hover:bg-surface">
+          <button
+            role="menuitem"
+            type="button"
+            onClick={logout}
+            className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm hover:bg-surface"
+          >
             <LogOut aria-hidden="true" className="size-4 text-muted" strokeWidth={1.5} /> Sign out
           </button>
         </div>
@@ -182,7 +214,10 @@ function UserMenu({ user }) {
 function Brand() {
   return (
     <Link href="/admin" className="flex items-center gap-2.5 px-3">
-      <span aria-hidden="true" className="inline-flex size-8 items-center justify-center rounded-btn border border-line bg-card font-display text-primary">
+      <span
+        aria-hidden="true"
+        className="inline-flex size-8 items-center justify-center rounded-btn border border-line bg-card font-display text-primary"
+      >
         G
       </span>
       <span className="flex flex-col leading-tight">
@@ -203,7 +238,10 @@ export function AdminShell({ user, children }) {
 
   return (
     <div className="min-h-dvh bg-surface text-[0.9375rem]">
-      <a href="#admin-main" className="sr-only z-[60] rounded-btn bg-primary px-4 py-2 text-primary-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3">
+      <a
+        href="#admin-main"
+        className="sr-only z-[60] rounded-btn bg-primary px-4 py-2 text-primary-ink focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+      >
         Skip to content
       </a>
 
@@ -214,7 +252,9 @@ export function AdminShell({ user, children }) {
         <div className="flex-1 overflow-y-auto px-3 py-5">
           <NavList user={user} pathname={pathname} />
         </div>
-        <div className="border-t border-line px-5 py-3 text-[0.75rem] text-muted">Signed-in actions are logged.</div>
+        <div className="border-t border-line px-5 py-3 text-[0.75rem] text-muted">
+          Signed-in actions are logged.
+        </div>
       </aside>
 
       <Drawer open={drawer} onClose={() => setDrawer(false)} title="Menu" side="left">
@@ -236,7 +276,11 @@ export function AdminShell({ user, children }) {
           </div>
           <UserMenu user={user} />
         </header>
-        <main id="admin-main" tabIndex={-1} className="mx-auto w-full max-w-[1280px] px-4 py-6 outline-none sm:px-6 lg:py-8">
+        <main
+          id="admin-main"
+          tabIndex={-1}
+          className="mx-auto w-full max-w-[1280px] px-4 py-6 outline-none sm:px-6 lg:py-8"
+        >
           {children}
         </main>
       </div>

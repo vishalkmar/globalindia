@@ -13,6 +13,7 @@
  */
 
 import { CATEGORY_GUIDES } from "./seed-guides.js";
+import { HERO_CONTENT } from "./seed-hero-content.js";
 
 const DISPATCH = "Usually within 7 working days";
 
@@ -1399,6 +1400,21 @@ export const HERO_FAQS = {
 
 export { DISPATCH };
 
+/** Validate a hero content block with the product schema (keeps seed and admin rules identical). */
+function productContentOf(content, productSchema) {
+  const r = productSchema.safeParse({
+    name: "x",
+    slug: "x-check",
+    categoryId: "cm0000000000000000000abcd",
+    content,
+  });
+  if (!r.success)
+    throw new Error(
+      `Hero content is invalid: ${r.error.issues[0].path.join(".")} ${r.error.issues[0].message}`,
+    );
+  return r.data.content;
+}
+
 /** Map a compact seed row to Product data (validated with the same schema the admin uses). */
 export function productData(p, categoryId, order, productSchema) {
   const specs = (p.specs ?? []).map(([property, value, method]) => ({ property, value, method }));
@@ -1417,6 +1433,7 @@ export function productData(p, categoryId, order, productSchema) {
     applications: p.apps ?? [],
     summary: p.sum ?? "",
     specs,
+    content: HERO_CONTENT[p.s],
     faqs: HERO_FAQS[p.s] ?? [],
     brandNote: p.brand ?? "",
     isSourced: p.src !== false,
@@ -1440,12 +1457,18 @@ export async function seedCatalogue(db, { categorySchema, productSchema }, log) 
   let newCats = 0;
   for (const [i, [slug, name, family, intro]] of CATEGORIES.entries()) {
     const extra = CATEGORY_GUIDES[slug] ?? {};
-    const existing = await db.productCategory.findUnique({ where: { slug }, select: { id: true, guide: true } });
+    const existing = await db.productCategory.findUnique({
+      where: { slug },
+      select: { id: true, guide: true },
+    });
     if (existing) {
       ids[slug] = existing.id;
       // Fill an empty buying guide once; anything the admin wrote is never replaced.
       if (!existing.guide && extra.guide) {
-        await db.productCategory.update({ where: { id: existing.id }, data: { guide: extra.guide, faqs: extra.faqs ?? [] } });
+        await db.productCategory.update({
+          where: { id: existing.id },
+          data: { guide: extra.guide, faqs: extra.faqs ?? [] },
+        });
       }
       continue;
     }
@@ -1457,7 +1480,23 @@ export async function seedCatalogue(db, { categorySchema, productSchema }, log) 
   const orderIn = {};
   for (const p of PRODUCTS) {
     orderIn[p.c] = (orderIn[p.c] ?? -1) + 1;
-    if (await db.product.findUnique({ where: { slug: p.s }, select: { id: true } })) continue;
+    const existing = await db.product.findUnique({
+      where: { slug: p.s },
+      select: { id: true, content: true },
+    });
+    if (existing) {
+      // Hero buyer's-guide content goes in once, only where nothing has been written yet.
+      const empty =
+        !existing.content ||
+        !Object.values(existing.content).some((v) => (Array.isArray(v) ? v.length : String(v ?? "").trim()));
+      if (empty && HERO_CONTENT[p.s]) {
+        await db.product.update({
+          where: { id: existing.id },
+          data: { content: productContentOf(HERO_CONTENT[p.s], productSchema) },
+        });
+      }
+      continue;
+    }
     await db.product.create({ data: productData(p, ids[p.c], orderIn[p.c], productSchema) });
     newProducts += 1;
   }

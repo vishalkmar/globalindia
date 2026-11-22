@@ -59,7 +59,9 @@ export function MediaPicker({ label, value, onChange, accept = "image", folder =
             <AssetThumb asset={value} className="size-16 shrink-0 rounded" />
             <div className="min-w-0 flex-1 text-sm">
               <p className="truncate font-medium">{value.originalName || value.alt || "Selected file"}</p>
-              <p className="truncate text-muted">{value.type === "IMAGE" ? `Alt: ${value.alt}` : formatBytes(value.bytes)}</p>
+              <p className="truncate text-muted">
+                {value.type === "IMAGE" ? `Alt: ${value.alt}` : formatBytes(value.bytes)}
+              </p>
             </div>
             <Button size="sm" variant="secondary" onClick={() => setOpen(true)}>
               Change
@@ -106,7 +108,11 @@ export function MediaPicker({ label, value, onChange, accept = "image", folder =
               <p className="text-sm font-semibold">Selected: {selected.originalName || "file"}</p>
               {selected.type === "IMAGE" ? (
                 <Field label="Alt text (required)" hint="Describe what the image shows.">
-                  <Input value={alt} maxLength={200} onChange={(e) => (setAlt(e.target.value), setProblem(""))} />
+                  <Input
+                    value={alt}
+                    maxLength={200}
+                    onChange={(e) => (setAlt(e.target.value), setProblem(""))}
+                  />
                 </Field>
               ) : null}
               {problem ? <Alert tone="error">{problem}</Alert> : null}

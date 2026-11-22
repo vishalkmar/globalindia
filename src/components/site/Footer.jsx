@@ -18,7 +18,12 @@ function FooterLinks({ title, items }) {
           return (
             <li key={i.id}>
               {ext ? (
-                <a href={i.href} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-band-ink/90 hover:text-band-ink hover:underline">
+                <a
+                  href={i.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-band-ink/90 hover:text-band-ink hover:underline"
+                >
                   {i.label} <ArrowUpRight aria-hidden="true" className="size-3.5" />
                 </a>
               ) : (
@@ -43,19 +48,28 @@ export async function Footer({ chrome }) {
   const year = await currentYear();
   const a = business.address;
   const socials = SOCIAL.filter((s) => social[s.key]);
-  const iconLink = "inline-flex size-10 items-center justify-center rounded-btn border border-[color-mix(in_oklab,var(--c-band-ink)_25%,transparent)] text-band-ink/90 hover:border-band-ink hover:text-band-ink";
+  const iconLink =
+    "inline-flex size-10 items-center justify-center rounded-btn border border-[color-mix(in_oklab,var(--c-band-ink)_25%,transparent)] text-band-ink/90 hover:border-band-ink hover:text-band-ink";
 
   return (
     <footer className="bg-band text-band-ink" data-testid="site-footer">
       <div className="container-site grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr] lg:gap-12">
         <div className="flex flex-col gap-5">
           <Logo chrome={chrome} onDark />
-          {footer.aboutText ? <p className="max-w-sm text-[0.9375rem] leading-relaxed text-band-ink/80">{footer.aboutText}</p> : null}
+          {footer.aboutText ? (
+            <p className="max-w-sm text-[0.9375rem] leading-relaxed text-band-ink/80">{footer.aboutText}</p>
+          ) : null}
           {socials.length ? (
             <ul className="flex flex-wrap gap-2" aria-label="Social profiles">
               {socials.map(({ key, label, Icon }) => (
                 <li key={key}>
-                  <a href={social[key]} target="_blank" rel="noopener noreferrer me" aria-label={`${business.name} on ${label}`} className={iconLink}>
+                  <a
+                    href={social[key]}
+                    target="_blank"
+                    rel="noopener noreferrer me"
+                    aria-label={`${business.name} on ${label}`}
+                    className={iconLink}
+                  >
                     <Icon className="size-[18px]" />
                   </a>
                 </li>

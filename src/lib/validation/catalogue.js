@@ -96,6 +96,54 @@ export const specRowSchema = z.strictObject({
   method: optional(80),
 });
 
+/**
+ * Buyer's guide content for the product page (Phase 13). Plain text (paragraphs separated by blank
+ * lines); empty fields fall back to text generated from the product data (lib/catalogue/guide.js).
+ */
+export const productContentSchema = z
+  .strictObject({
+    whatIsIt: optional(2000),
+    howMade: optional(2000),
+    industries: z
+      .array(
+        z.strictObject({
+          industry: required(60, "Enter the industry."),
+          use: required(240, "Say what it is used for."),
+        }),
+      )
+      .max(12, "Up to 12 industries.")
+      .default([]),
+    askSupplier: z
+      .array(
+        z.strictObject({
+          question: required(160, "Enter the question."),
+          why: required(300, "Say why it matters."),
+        }),
+      )
+      .max(12, "Up to 12 questions.")
+      .default([]),
+    storage: optional(1500),
+    pricingFactors: z
+      .array(
+        z.strictObject({
+          factor: required(80, "Enter the factor."),
+          effect: required(300, "Say how it affects price or supply."),
+        }),
+      )
+      .max(10, "Up to 10 factors.")
+      .default([]),
+  })
+  .default({ whatIsIt: "", howMade: "", industries: [], askSupplier: [], storage: "", pricingFactors: [] });
+
+export const EMPTY_CONTENT = {
+  whatIsIt: "",
+  howMade: "",
+  industries: [],
+  askSupplier: [],
+  storage: "",
+  pricingFactors: [],
+};
+
 export const productDocumentSchema = z.strictObject({
   mediaId: idSchema,
   type: z.enum(DOCUMENT_TYPES),
@@ -119,6 +167,7 @@ export const productSchema = z
     applications: tagList(20, 60, "application"),
     summary: optional(600),
     specs: z.array(specRowSchema).max(40, "Up to 40 specification rows.").default([]),
+    content: productContentSchema,
     faqs: faqSchema.default([]),
     brandNote: optional(200),
     isSourced: z.boolean().default(true),

@@ -30,10 +30,19 @@ export function Logo({ chrome, onDark = false, className, priority = false }) {
             data-mark={text.charAt(0)}
             className={cn(
               "inline-flex size-9 items-center justify-center rounded-btn border font-display text-lg before:content-[attr(data-mark)]",
-              onDark ? "border-[color-mix(in_oklab,var(--c-band-ink)_35%,transparent)] text-band-ink" : "border-line text-primary",
+              onDark
+                ? "border-[color-mix(in_oklab,var(--c-band-ink)_35%,transparent)] text-band-ink"
+                : "border-line text-primary",
             )}
           />
-          <span className={cn("font-display text-[1.375rem] leading-none tracking-[-0.01em]", onDark ? "text-band-ink" : "text-primary")}>{text}</span>
+          <span
+            className={cn(
+              "font-display text-[1.375rem] leading-none tracking-[-0.01em]",
+              onDark ? "text-band-ink" : "text-primary",
+            )}
+          >
+            {text}
+          </span>
         </>
       )}
     </Link>

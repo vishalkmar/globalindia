@@ -23,7 +23,7 @@ export function AnalyticsLoader({ ga4Id, clarityId }) {
         document.head.appendChild(s);
         window.dataLayer = window.dataLayer || [];
         window.gtag = function gtag() {
-          window.dataLayer.push(arguments);  
+          window.dataLayer.push(arguments);
         };
         window.gtag("js", new Date());
         window.gtag("config", ga4Id, { anonymize_ip: true });

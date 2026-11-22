@@ -27,7 +27,17 @@ import { EmptyState } from "./EmptyState";
  *   caption: string,
  * }} props
  */
-export function DataTable({ endpoint, columns, filters = [], searchPlaceholder = "Search", rowHref, defaultSort, empty, reloadKey = 0, caption }) {
+export function DataTable({
+  endpoint,
+  columns,
+  filters = [],
+  searchPlaceholder = "Search",
+  rowHref,
+  defaultSort,
+  empty,
+  reloadKey = 0,
+  caption,
+}) {
   const [q, setQ] = useState("");
   const [debounced, setDebounced] = useState("");
   const [page, setPage] = useState(1);
@@ -58,7 +68,11 @@ export function DataTable({ endpoint, columns, filters = [], searchPlaceholder =
     let live = true;
     adminJson(`${endpoint}?${query}`).then((res) => {
       if (!live) return;
-      setState(res.ok ? { loading: false, error: "", data: res.data } : { loading: false, error: res.data?.error ?? "Could not load the list.", data: null });
+      setState(
+        res.ok
+          ? { loading: false, error: "", data: res.data }
+          : { loading: false, error: res.data?.error ?? "Could not load the list.", data: null },
+      );
     });
     return () => {
       live = false;
@@ -67,7 +81,9 @@ export function DataTable({ endpoint, columns, filters = [], searchPlaceholder =
 
   function toggleSort(key) {
     setPage(1);
-    setSort((s) => (s?.sort === key ? { sort: key, dir: s.dir === "asc" ? "desc" : "asc" } : { sort: key, dir: "asc" }));
+    setSort((s) =>
+      s?.sort === key ? { sort: key, dir: s.dir === "asc" ? "desc" : "asc" } : { sort: key, dir: "asc" },
+    );
   }
 
   const data = state.data;
@@ -77,8 +93,19 @@ export function DataTable({ endpoint, columns, filters = [], searchPlaceholder =
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="relative flex-1">
-          <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
-          <Input size="sm" type="search" aria-label={searchPlaceholder} placeholder={searchPlaceholder} value={q} onChange={(e) => setQ(e.target.value)} className="h-10 pl-9" />
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted"
+          />
+          <Input
+            size="sm"
+            type="search"
+            aria-label={searchPlaceholder}
+            placeholder={searchPlaceholder}
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            className="h-10 pl-9"
+          />
         </div>
         {filters.map((f) =>
           f.type === "date" ? (
@@ -97,24 +124,24 @@ export function DataTable({ endpoint, columns, filters = [], searchPlaceholder =
               />
             </div>
           ) : (
-          <div key={f.key} className="sm:w-48">
-            <Select
-              aria-label={f.label}
-              value={filterValues[f.key] ?? ""}
-              onChange={(e) => {
-                setPage(1);
-                setFilterValues((v) => ({ ...v, [f.key]: e.target.value }));
-              }}
-              className="h-10 text-sm"
-            >
-              <option value="">All {f.label.toLowerCase()}</option>
-              {f.options.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+            <div key={f.key} className="sm:w-48">
+              <Select
+                aria-label={f.label}
+                value={filterValues[f.key] ?? ""}
+                onChange={(e) => {
+                  setPage(1);
+                  setFilterValues((v) => ({ ...v, [f.key]: e.target.value }));
+                }}
+                className="h-10 text-sm"
+              >
+                <option value="">All {f.label.toLowerCase()}</option>
+                {f.options.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </Select>
+            </div>
           ),
         )}
       </div>
@@ -134,10 +161,18 @@ export function DataTable({ endpoint, columns, filters = [], searchPlaceholder =
                     key={c.key}
                     scope="col"
                     aria-sort={active ? (sort.dir === "asc" ? "ascending" : "descending") : undefined}
-                    className={cn("px-4 py-3 text-[0.75rem] font-bold tracking-[0.06em] text-muted uppercase", c.align === "right" && "text-right", c.className)}
+                    className={cn(
+                      "px-4 py-3 text-[0.75rem] font-bold tracking-[0.06em] text-muted uppercase",
+                      c.align === "right" && "text-right",
+                      c.className,
+                    )}
                   >
                     {c.sortable ? (
-                      <button type="button" onClick={() => toggleSort(c.key)} className="inline-flex items-center gap-1 uppercase hover:text-ink">
+                      <button
+                        type="button"
+                        onClick={() => toggleSort(c.key)}
+                        className="inline-flex items-center gap-1 uppercase hover:text-ink"
+                      >
                         {c.label}
                         <Icon aria-hidden="true" className={cn("size-3.5", !active && "opacity-40")} />
                       </button>
@@ -163,11 +198,21 @@ export function DataTable({ endpoint, columns, filters = [], searchPlaceholder =
               : rows.map((row) => {
                   const href = rowHref?.(row);
                   return (
-                    <tr key={row.id} className="border-b border-line transition-colors last:border-0 hover:bg-surface">
+                    <tr
+                      key={row.id}
+                      className="border-b border-line transition-colors last:border-0 hover:bg-surface"
+                    >
                       {columns.map((c, ci) => {
                         const content = c.render ? c.render(row) : (row[c.key] ?? "—");
                         return (
-                          <td key={c.key} className={cn("px-4 py-3 align-middle", c.align === "right" && "text-right", c.className)}>
+                          <td
+                            key={c.key}
+                            className={cn(
+                              "px-4 py-3 align-middle",
+                              c.align === "right" && "text-right",
+                              c.className,
+                            )}
+                          >
                             {href && ci === 0 ? (
                               <Link href={href} className="font-semibold text-primary hover:underline">
                                 {content}
@@ -184,14 +229,23 @@ export function DataTable({ endpoint, columns, filters = [], searchPlaceholder =
           </tbody>
         </table>
         {!state.loading && data && rows.length === 0 ? (
-          <EmptyState title={empty?.title ?? "Nothing here yet"} text={debounced || Object.values(filterValues).some(Boolean) ? "No results match your search or filters." : empty?.text} action={empty?.action} />
+          <EmptyState
+            title={empty?.title ?? "Nothing here yet"}
+            text={
+              debounced || Object.values(filterValues).some(Boolean)
+                ? "No results match your search or filters."
+                : empty?.text
+            }
+            action={empty?.action}
+          />
         ) : null}
       </div>
 
       {data && data.total > 0 ? (
         <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted">
           <span>
-            {formatNumber((data.page - 1) * data.pageSize + 1)}–{formatNumber(Math.min(data.page * data.pageSize, data.total))} of {formatNumber(data.total)}
+            {formatNumber((data.page - 1) * data.pageSize + 1)}–
+            {formatNumber(Math.min(data.page * data.pageSize, data.total))} of {formatNumber(data.total)}
           </span>
           <div className="flex items-center gap-1">
             <button

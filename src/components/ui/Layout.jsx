@@ -19,7 +19,14 @@ const tones = {
  * Full-width section band with standard vertical rhythm (96 px desktop / 64 px mobile).
  * Alternate `tone="white"` and `tone="surface"` down a page; `band` is the dark CTA/footer style.
  */
-export function Section({ as: Tag = "section", tone = "white", spacing = "default", className, children, ...props }) {
+export function Section({
+  as: Tag = "section",
+  tone = "white",
+  spacing = "default",
+  className,
+  children,
+  ...props
+}) {
   const space = { default: "section-y", tight: "py-12 md:py-16", none: "" }[spacing];
   return (
     <Tag className={cn(tones[tone], space, className)} {...props}>
@@ -31,7 +38,14 @@ export function Section({ as: Tag = "section", tone = "white", spacing = "defaul
 /** Section heading block: eyebrow + H2 + intro paragraph, left or centre aligned. */
 export function SectionHeading({ eyebrow, title, intro, align = "left", as: H = "h2", className, children }) {
   return (
-    <div className={cn("flex flex-col gap-4", align === "center" ? "mx-auto items-center text-center" : "", "max-w-3xl", className)}>
+    <div
+      className={cn(
+        "flex flex-col gap-4",
+        align === "center" ? "mx-auto items-center text-center" : "",
+        "max-w-3xl",
+        className,
+      )}
+    >
       {eyebrow ? (
         <p className="text-eyebrow">
           <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
@@ -39,7 +53,7 @@ export function SectionHeading({ eyebrow, title, intro, align = "left", as: H = 
         </p>
       ) : null}
       {title ? <H className="text-h2">{title}</H> : null}
-      {intro ? <p className="text-lead measure">{intro}</p> : null}
+      {intro ? <p className="measure text-lead">{intro}</p> : null}
       {children}
     </div>
   );

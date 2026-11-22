@@ -15,7 +15,9 @@ import { EmptyState } from "../EmptyState";
 export function AssetThumb({ asset, className }) {
   if (asset.type === "PDF") {
     return (
-      <div className={cn("flex flex-col items-center justify-center gap-1.5 bg-surface text-muted", className)}>
+      <div
+        className={cn("flex flex-col items-center justify-center gap-1.5 bg-surface text-muted", className)}
+      >
         <FileText aria-hidden="true" className="size-8" strokeWidth={1.25} />
         <span className="font-data text-[0.6875rem] uppercase">PDF</span>
       </div>
@@ -24,11 +26,17 @@ export function AssetThumb({ asset, className }) {
   return (
     // eslint-disable-next-line @next/next/no-img-element -- admin thumbnail, any driver
     <img
-      src={asset.url.startsWith("https://res.cloudinary.com/") ? asset.url.replace("/image/upload/", "/image/upload/f_auto,q_auto,c_fill,w_320,h_240/") : asset.url}
+      src={
+        asset.url.startsWith("https://res.cloudinary.com/")
+          ? asset.url.replace("/image/upload/", "/image/upload/f_auto,q_auto,c_fill,w_320,h_240/")
+          : asset.url
+      }
       alt={asset.alt || ""}
       loading="lazy"
       className={cn("bg-surface object-cover", className)}
-      style={asset.focalX != null ? { objectPosition: `${asset.focalX * 100}% ${asset.focalY * 100}%` } : undefined}
+      style={
+        asset.focalX != null ? { objectPosition: `${asset.focalX * 100}% ${asset.focalY * 100}%` } : undefined
+      }
     />
   );
 }
@@ -66,7 +74,12 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
   useEffect(() => {
     let live = true;
     adminJson(`/api/admin/media?${query}`).then((res) => {
-      if (live) setState(res.ok ? { loading: false, data: res.data, error: "" } : { loading: false, data: null, error: res.data?.error ?? "Could not load files." });
+      if (live)
+        setState(
+          res.ok
+            ? { loading: false, data: res.data, error: "" }
+            : { loading: false, data: null, error: res.data?.error ?? "Could not load files." },
+        );
     });
     return () => {
       live = false;
@@ -79,12 +92,28 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
         <div className="relative flex-1">
-          <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted" />
-          <Input size="sm" type="search" aria-label="Search files" placeholder="Search by name or alt text" value={q} onChange={(e) => setQ(e.target.value)} className="h-10 pl-9" />
+          <Search
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted"
+          />
+          <Input
+            size="sm"
+            type="search"
+            aria-label="Search files"
+            placeholder="Search by name or alt text"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            className="h-10 pl-9"
+          />
         </div>
         {accept === "any" ? (
           <div className="lg:w-40">
-            <Select aria-label="File type" value={type} onChange={(e) => (setType(e.target.value), setPage(1))} className="h-10 text-sm">
+            <Select
+              aria-label="File type"
+              value={type}
+              onChange={(e) => (setType(e.target.value), setPage(1))}
+              className="h-10 text-sm"
+            >
               <option value="">All types</option>
               <option value="IMAGE">Images</option>
               <option value="PDF">PDFs</option>
@@ -92,7 +121,12 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
           </div>
         ) : null}
         <div className="lg:w-56">
-          <Select aria-label="Folder" value={folder} onChange={(e) => (setFolder(e.target.value), setPage(1))} className="h-10 text-sm">
+          <Select
+            aria-label="Folder"
+            value={folder}
+            onChange={(e) => (setFolder(e.target.value), setPage(1))}
+            className="h-10 text-sm"
+          >
             <option value="">All folders</option>
             {MEDIA_FOLDERS.map((f) => (
               <option key={f.value} value={f.value}>
@@ -101,7 +135,13 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
             ))}
           </Select>
         </div>
-        {accept !== "pdf" ? <Checkbox label="Missing alt text" checked={missingAlt} onChange={(e) => (setMissingAlt(e.target.checked), setPage(1))} /> : null}
+        {accept !== "pdf" ? (
+          <Checkbox
+            label="Missing alt text"
+            checked={missingAlt}
+            onChange={(e) => (setMissingAlt(e.target.checked), setPage(1))}
+          />
+        ) : null}
       </div>
 
       {state.error ? <Alert tone="error">{state.error}</Alert> : null}
@@ -114,10 +154,20 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
         </div>
       ) : rows.length === 0 ? (
         <div className="rounded-card border border-line bg-card">
-          <EmptyState title="No files here" text={debounced || folder || missingAlt ? "Nothing matches these filters." : "Upload images and PDFs above. They can then be used anywhere on the site."} />
+          <EmptyState
+            title="No files here"
+            text={
+              debounced || folder || missingAlt
+                ? "Nothing matches these filters."
+                : "Upload images and PDFs above. They can then be used anywhere on the site."
+            }
+          />
         </div>
       ) : (
-        <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6" aria-label="Files">
+        <ul
+          className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6"
+          aria-label="Files"
+        >
           {rows.map((a) => (
             <li key={a.id}>
               <button
@@ -126,12 +176,16 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
                 aria-pressed={selectedId ? selectedId === a.id : undefined}
                 className={cn(
                   "group flex w-full flex-col overflow-hidden rounded-card border bg-card text-left transition-colors",
-                  selectedId === a.id ? "border-primary ring-2 ring-primary/30" : "border-line hover:border-primary",
+                  selectedId === a.id
+                    ? "border-primary ring-2 ring-primary/30"
+                    : "border-line hover:border-primary",
                 )}
               >
                 <AssetThumb asset={a} className="aspect-[4/3] w-full" />
                 <span className="flex flex-col gap-0.5 border-t border-line px-2.5 py-2">
-                  <span className="truncate text-[0.8125rem] font-medium">{a.originalName || a.alt || "Untitled"}</span>
+                  <span className="truncate text-[0.8125rem] font-medium">
+                    {a.originalName || a.alt || "Untitled"}
+                  </span>
                   <span className="flex items-center justify-between gap-2 text-[0.75rem] text-muted">
                     <span className="font-data">{formatBytes(a.bytes)}</span>
                     {a.needsAlt ? (
@@ -149,13 +203,25 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
 
       {state.data && state.data.pages > 1 ? (
         <div className="flex items-center justify-end gap-1 text-sm text-muted">
-          <button type="button" aria-label="Previous page" disabled={page <= 1} onClick={() => setPage((p) => p - 1)} className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card disabled:opacity-40">
+          <button
+            type="button"
+            aria-label="Previous page"
+            disabled={page <= 1}
+            onClick={() => setPage((p) => p - 1)}
+            className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card disabled:opacity-40"
+          >
             <ChevronLeft aria-hidden="true" className="size-4" />
           </button>
           <span className="px-2">
             Page {state.data.page} of {state.data.pages}
           </span>
-          <button type="button" aria-label="Next page" disabled={page >= state.data.pages} onClick={() => setPage((p) => p + 1)} className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card disabled:opacity-40">
+          <button
+            type="button"
+            aria-label="Next page"
+            disabled={page >= state.data.pages}
+            onClick={() => setPage((p) => p + 1)}
+            className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card disabled:opacity-40"
+          >
             <ChevronRight aria-hidden="true" className="size-4" />
           </button>
         </div>

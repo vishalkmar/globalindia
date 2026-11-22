@@ -13,14 +13,20 @@ import { themeToCss } from "@/lib/theme/css";
  * scoped to this box only, so the rest of the admin keeps its own look. Uses the real site components.
  */
 export function ThemePreview({ tokens, mode = "light", className }) {
-  const scope = `tp-${useId().replace(/[^a-z0-9]/gi, "").toLowerCase()}`;
+  const scope = `tp-${useId()
+    .replace(/[^a-z0-9]/gi, "")
+    .toLowerCase()}`;
   const css = useMemo(() => themeToCss(tokens, `.${scope}`), [tokens, scope]);
 
   return (
     <div className={className}>
       {/* Safe: themeToCss validates every value (hex colours, whitelisted fonts, clamped numbers). */}
       <style dangerouslySetInnerHTML={{ __html: css }} />
-      <div className={`${scope} overflow-hidden rounded-card border border-line bg-bg font-body text-ink`} data-theme={mode} style={{ fontSize: 15 }}>
+      <div
+        className={`${scope} overflow-hidden rounded-card border border-line bg-bg font-body text-ink`}
+        data-theme={mode}
+        style={{ fontSize: 15 }}
+      >
         <div className="flex items-center justify-between gap-3 border-b border-line bg-bg px-4 py-3">
           <span className="font-display text-lg text-primary">Global India</span>
           <span className="hidden gap-4 text-[0.8125rem] font-semibold text-ink sm:flex">
@@ -33,8 +39,13 @@ export function ThemePreview({ tokens, mode = "light", className }) {
 
         <div className="flex flex-col gap-3 bg-surface px-5 py-8">
           <Eyebrow>Chemical raw materials · Delhi · Since 2002</Eyebrow>
-          <p className="font-display text-[1.75rem] leading-tight text-primary">Raw materials for food, cosmetics and cleaning products.</p>
-          <p className="max-w-md text-muted">We pack in 25 kg and 50 kg bags, 50 L cans and 200 L drums, and dispatch across India within about a week.</p>
+          <p className="font-display text-[1.75rem] leading-tight text-primary">
+            Raw materials for food, cosmetics and cleaning products.
+          </p>
+          <p className="max-w-md text-muted">
+            We pack in 25 kg and 50 kg bags, 50 L cans and 200 L drums, and dispatch across India within about
+            a week.
+          </p>
           <div className="flex flex-wrap gap-2 pt-1">
             <Button size="sm">Request a quote</Button>
             <Button size="sm" variant="secondary">
@@ -97,7 +108,11 @@ export function ThemeSwatch({ tokens, mode = "light" }) {
   return (
     <span className="flex overflow-hidden rounded-btn border border-line" aria-hidden="true">
       {[c.primary, c.accent, c.surface, c.ink].map((hex, i) => (
-        <span key={i} className="h-8 flex-1" style={{ background: /^#[0-9a-f]{6}$/i.test(hex ?? "") ? hex : "transparent" }} />
+        <span
+          key={i}
+          className="h-8 flex-1"
+          style={{ background: /^#[0-9a-f]{6}$/i.test(hex ?? "") ? hex : "transparent" }}
+        />
       ))}
     </span>
   );

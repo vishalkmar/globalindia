@@ -17,7 +17,9 @@ export function IconBox({ icon: Icon, size = "md", onBand = false, label, classN
     <span
       className={cn(
         "inline-flex shrink-0 items-center justify-center rounded-btn border",
-        onBand ? "border-[color-mix(in_oklab,var(--c-band-ink)_30%,transparent)] text-band-ink" : "border-line bg-card text-primary",
+        onBand
+          ? "border-[color-mix(in_oklab,var(--c-band-ink)_30%,transparent)] text-band-ink"
+          : "border-line bg-card text-primary",
         box,
         className,
       )}
@@ -62,7 +64,10 @@ export const tones = {
 export function Alert({ tone = "info", title, children, className }) {
   const { icon: Icon, cls } = tones[tone];
   return (
-    <div role={tone === "error" ? "alert" : "status"} className={cn("flex gap-3 rounded-card border px-4 py-3.5 text-sm", cls, className)}>
+    <div
+      role={tone === "error" ? "alert" : "status"}
+      className={cn("flex gap-3 rounded-card border px-4 py-3.5 text-sm", cls, className)}
+    >
       <Icon aria-hidden="true" className="mt-0.5 size-[18px] shrink-0" strokeWidth={1.75} />
       <div className="flex flex-col gap-0.5">
         {title ? <p className="font-semibold">{title}</p> : null}
@@ -71,4 +76,3 @@ export function Alert({ tone = "info", title, children, className }) {
     </div>
   );
 }
-

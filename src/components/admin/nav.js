@@ -24,7 +24,9 @@ import {
 export const NAV_GROUPS = [
   {
     label: "Overview",
-    items: [{ href: "/admin", label: "Dashboard", icon: LayoutDashboard, resource: "dashboard", exact: true }],
+    items: [
+      { href: "/admin", label: "Dashboard", icon: LayoutDashboard, resource: "dashboard", exact: true },
+    ],
   },
   {
     label: "Content",

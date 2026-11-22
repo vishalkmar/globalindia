@@ -308,26 +308,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Test CRUD permissions per role
 
 ## Phase 13 — Product Detail Template (Buyer's Guide)
-- [ ] 01 Eyebrow + H1 + SEO H2 "[Product] Supplier in Delhi, India"
-- [ ] 02 Intro paragraph with key facts
-- [ ] 03 CTA buttons: Request quotation (prefilled), Call
-- [ ] 04 Fact strip: CAS, grade, purity, pack, MOQ, shelf life
-- [ ] 05 Sticky anchor nav
-- [ ] 06 What is it section
-- [ ] 07 How it is made / sourced section
-- [ ] 08 Applications by industry list
-- [ ] 09 Specifications table (marked indicative)
-- [ ] 10 Ask the supplier table (question / why it matters)
-- [ ] 11 Packaging and storage section
-- [ ] 12 Documents download block (gated by enquiry optional)
-- [ ] 13 Supply and pricing factors table
-- [ ] 14 FAQ accordion with FAQ schema
-- [ ] 15 Related products
-- [ ] 16 Closing CTA band
-- [ ] 17 Product JSON-LD (Product, Offer without fake price)
-- [ ] 18 Write full content for 6 hero products
-- [ ] 19 Template content for remaining products from data
-- [ ] 20 Mobile QA of long page
+- [x] 01 Eyebrow + H1 + SEO H2 "[Product] Supplier in Delhi, India"
+- [x] 02 Intro paragraph with key facts
+- [x] 03 CTA buttons: Request quotation (prefilled), Call
+- [x] 04 Fact strip: CAS, grade, purity, pack, MOQ, shelf life
+- [x] 05 Sticky anchor nav
+- [x] 06 What is it section
+- [x] 07 How it is made / sourced section
+- [x] 08 Applications by industry list
+- [x] 09 Specifications table (marked indicative)
+- [x] 10 Ask the supplier table (question / why it matters)
+- [x] 11 Packaging and storage section
+- [x] 12 Documents download block (gated by enquiry optional) — public PDFs download; private ones link to the enquiry form (form itself: Phase 14)
+- [x] 13 Supply and pricing factors table
+- [x] 14 FAQ accordion with FAQ schema
+- [x] 15 Related products
+- [x] 16 Closing CTA band
+- [x] 17 Product JSON-LD (Product, Offer without fake price)
+- [x] 18 Write full content for 6 hero products
+- [x] 19 Template content for remaining products from data
+- [x] 20 Mobile QA of long page
 
 ## Phase 14 — Enquiry, Quote & Contact System
 - [ ] 01 Contact page: address, phone, email tiles, map (click to load)

@@ -40,7 +40,10 @@ export function AuthenticatorEnroll({ onEnabled, onCancel }) {
   async function sendApproval() {
     setBusy(true);
     setError("");
-    const res = await adminJson("/api/auth/mfa/request", { method: "POST", json: { method: "totp", enable: true } });
+    const res = await adminJson("/api/auth/mfa/request", {
+      method: "POST",
+      json: { method: "totp", enable: true },
+    });
     setBusy(false);
     if (!res.ok) return setError(res.data?.error ?? "Could not send the approval code.");
     setRequest(res.data);
@@ -103,7 +106,8 @@ export function AuthenticatorEnroll({ onEnabled, onCancel }) {
             </code>
           </div>
           <Alert tone="info">
-            For safety, switching on an authenticator needs an approval code sent to the owner&rsquo;s email inbox.
+            For safety, switching on an authenticator needs an approval code sent to the owner&rsquo;s email
+            inbox.
           </Alert>
           <div className="flex flex-wrap gap-3">
             <Button size="lg" onClick={sendApproval} loading={busy}>
@@ -124,10 +128,19 @@ export function AuthenticatorEnroll({ onEnabled, onCancel }) {
           <Field label="Approval code from email" error={fields.code}>
             <CodeInput value={approval} onChange={setApproval} autoFocus />
           </Field>
-          <Field label="Current code from your authenticator app" error={fields.totpCode} hint="The app shows a new code every 30 seconds.">
+          <Field
+            label="Current code from your authenticator app"
+            error={fields.totpCode}
+            hint="The app shows a new code every 30 seconds."
+          >
             <CodeInput value={appCode} onChange={setAppCode} autoFocus={false} />
           </Field>
-          <Button type="submit" size="lg" loading={busy} disabled={approval.length !== 6 || appCode.length !== 6}>
+          <Button
+            type="submit"
+            size="lg"
+            loading={busy}
+            disabled={approval.length !== 6 || appCode.length !== 6}
+          >
             Switch on authenticator
           </Button>
         </form>

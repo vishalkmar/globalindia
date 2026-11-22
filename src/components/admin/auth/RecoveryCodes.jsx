@@ -49,7 +49,11 @@ export function RecoveryCodes({ codes, onDone, doneLabel = "I have saved them, c
           <Copy aria-hidden="true" /> {copied ? "Copied" : "Copy"}
         </Button>
       </div>
-      <Checkbox label="I have stored these codes somewhere safe" checked={saved} onChange={(e) => setSaved(e.target.checked)} />
+      <Checkbox
+        label="I have stored these codes somewhere safe"
+        checked={saved}
+        onChange={(e) => setSaved(e.target.checked)}
+      />
       <Button size="lg" disabled={!saved} onClick={onDone}>
         {doneLabel}
       </Button>

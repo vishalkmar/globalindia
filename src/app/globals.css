@@ -223,6 +223,14 @@
 }
 
 /* ---------- Layout helpers ---------- */
+/* Horizontal scrollers (product anchor bar): scrollable by touch, wheel and keyboard, no visible bar */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility container-site {
   width: 100%;
   max-width: calc(1240px + 48px);

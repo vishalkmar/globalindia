@@ -12,7 +12,9 @@ export function SearchLauncher({ label = "Search products, CAS number or categor
     >
       <Search aria-hidden="true" className="size-5" strokeWidth={1.75} />
       <span className="flex-1">{label}</span>
-      <kbd className="hidden rounded border border-line px-1.5 py-0.5 font-data text-[0.6875rem] sm:inline">Ctrl K</kbd>
+      <kbd className="hidden rounded border border-line px-1.5 py-0.5 font-data text-[0.6875rem] sm:inline">
+        Ctrl K
+      </kbd>
     </button>
   );
 }

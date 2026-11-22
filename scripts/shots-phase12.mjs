@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/** Visual QA for the catalogue (Phase 12): hub, family filter, category page, desktop + mobile. */
+/** Visual QA for the catalogue (Phases 12-13): hub, family filter, category page, product pages, desktop + mobile. */
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 
@@ -11,6 +11,8 @@ const PAGES = [
   ["hub", "/products"],
   ["family", "/products?family=personal-care"],
   ["category", "/products/light-liquid-paraffin"],
+  ["product-hero", "/products/anionic-surfactants/sles-70"],
+  ["product-template", "/products/alkalis/caustic-soda-flakes"],
 ];
 mkdirSync(out, { recursive: true });
 

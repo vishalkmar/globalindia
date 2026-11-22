@@ -26,14 +26,22 @@ export function Breadcrumb({ items, className, onBand = false }) {
   };
   return (
     <nav aria-label="Breadcrumb" className={className}>
-      <ol className={cn("flex flex-wrap items-center gap-1.5 text-[0.8125rem]", onBand ? "text-band-ink/75" : "text-muted")}>
+      <ol
+        className={cn(
+          "flex flex-wrap items-center gap-1.5 text-[0.8125rem]",
+          onBand ? "text-band-ink/75" : "text-muted",
+        )}
+      >
         {trail.map((item, i) => {
           const last = i === trail.length - 1;
           return (
             <li key={`${item.label}-${i}`} className="flex items-center gap-1.5">
               {i > 0 ? <ChevronRight aria-hidden="true" className="size-3.5 opacity-60" /> : null}
               {last ? (
-                <span aria-current="page" className={cn("font-semibold", onBand ? "text-band-ink" : "text-ink")}>
+                <span
+                  aria-current="page"
+                  className={cn("font-semibold", onBand ? "text-band-ink" : "text-ink")}
+                >
                   {item.label}
                 </span>
               ) : (

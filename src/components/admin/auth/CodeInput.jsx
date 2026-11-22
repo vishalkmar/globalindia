@@ -23,7 +23,10 @@ export function CodeInput({ value, onChange, onComplete, className, autoFocus = 
         onChange(digits);
         if (digits.length === 6) onComplete?.(digits);
       }}
-      className={cn("h-14 text-center font-data text-2xl tracking-[0.5em] placeholder:tracking-[0.5em] placeholder:text-muted/40", className)}
+      className={cn(
+        "h-14 text-center font-data text-2xl tracking-[0.5em] placeholder:tracking-[0.5em] placeholder:text-muted/40",
+        className,
+      )}
       {...props}
     />
   );

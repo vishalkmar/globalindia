@@ -41,13 +41,22 @@ function NavLink({ item, className, onClick, children }) {
 /* ---------------- Desktop panels ---------------- */
 
 function DropdownPanel({ item, id, onNavigate }) {
-  const links = item.children.some((c) => c.href === item.href) ? item.children : [{ id: "overview", label: `${item.label} overview`, href: item.href }, ...item.children];
+  const links = item.children.some((c) => c.href === item.href)
+    ? item.children
+    : [{ id: "overview", label: `${item.label} overview`, href: item.href }, ...item.children];
   return (
-    <div id={id} className="absolute top-full left-0 z-40 mt-2 w-64 rounded-card border border-line bg-card p-2 shadow-[0_18px_40px_-24px_rgb(0_0_0/0.35)]">
+    <div
+      id={id}
+      className="absolute top-full left-0 z-40 mt-2 w-64 rounded-card border border-line bg-card p-2 shadow-[0_18px_40px_-24px_rgb(0_0_0/0.35)]"
+    >
       <ul className="flex flex-col">
         {links.map((c) => (
           <li key={c.id ?? c.href}>
-            <NavLink item={c} onClick={onNavigate} className="block rounded-btn px-3 py-2 text-[0.9375rem] text-ink hover:bg-surface hover:text-primary" />
+            <NavLink
+              item={c}
+              onClick={onNavigate}
+              className="block rounded-btn px-3 py-2 text-[0.9375rem] text-ink hover:bg-surface hover:text-primary"
+            />
           </li>
         ))}
       </ul>
@@ -57,7 +66,11 @@ function DropdownPanel({ item, id, onNavigate }) {
 
 function MegaPanel({ families, id, onNavigate, contact, header }) {
   return (
-    <div id={id} className="absolute inset-x-0 top-full z-40 border-y border-line bg-card shadow-[0_24px_48px_-32px_rgb(0_0_0/0.4)]" data-testid="mega-menu">
+    <div
+      id={id}
+      className="absolute inset-x-0 top-full z-40 border-y border-line bg-card shadow-[0_24px_48px_-32px_rgb(0_0_0/0.4)]"
+      data-testid="mega-menu"
+    >
       <div className="container-site grid gap-8 py-8 lg:grid-cols-[1fr_300px]">
         <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
           {families.map((f) => (
@@ -67,12 +80,20 @@ function MegaPanel({ families, id, onNavigate, contact, header }) {
                 <ul className="flex flex-col gap-1">
                   {f.children.map((c) => (
                     <li key={c.id}>
-                      <NavLink item={c} onClick={onNavigate} className="text-[0.875rem] text-muted hover:text-primary" />
+                      <NavLink
+                        item={c}
+                        onClick={onNavigate}
+                        className="text-[0.875rem] text-muted hover:text-primary"
+                      />
                     </li>
                   ))}
                 </ul>
               ) : (
-                <NavLink item={{ ...f, label: "See the range" }} onClick={onNavigate} className="text-[0.875rem] text-muted hover:text-primary" />
+                <NavLink
+                  item={{ ...f, label: "See the range" }}
+                  onClick={onNavigate}
+                  className="text-[0.875rem] text-muted hover:text-primary"
+                />
               )}
             </li>
           ))}
@@ -82,7 +103,9 @@ function MegaPanel({ families, id, onNavigate, contact, header }) {
             <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
             Not sure of the grade?
           </p>
-          <p className="font-display text-xl leading-snug">Tell us what you are making. We will suggest the product and pack size.</p>
+          <p className="font-display text-xl leading-snug">
+            Tell us what you are making. We will suggest the product and pack size.
+          </p>
           <div className="mt-1 flex flex-wrap gap-2">
             <Button size="sm" variant="onBand" href={header.ctaHref} onClick={onNavigate}>
               {header.ctaText}
@@ -93,7 +116,11 @@ function MegaPanel({ families, id, onNavigate, contact, header }) {
               </Button>
             ) : null}
           </div>
-          <Link href="/products" onClick={onNavigate} className="mt-2 text-sm font-semibold text-band-ink underline underline-offset-4">
+          <Link
+            href="/products"
+            onClick={onNavigate}
+            className="mt-2 text-sm font-semibold text-band-ink underline underline-offset-4"
+          >
             Browse all products
           </Link>
         </div>
@@ -111,19 +138,36 @@ function MobileItem({ item, families, onNavigate }) {
   if (!sub.length && !isMega(item)) {
     return (
       <li>
-        <NavLink item={item} onClick={onNavigate} className="block py-3 text-[1.0625rem] font-semibold text-ink" />
+        <NavLink
+          item={item}
+          onClick={onNavigate}
+          className="block py-3 text-[1.0625rem] font-semibold text-ink"
+        />
       </li>
     );
   }
   return (
     <li>
-      <button type="button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between py-3 text-left text-[1.0625rem] font-semibold text-ink">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((o) => !o)}
+        className="flex w-full items-center justify-between py-3 text-left text-[1.0625rem] font-semibold text-ink"
+      >
         {item.label}
-        <ChevronDown aria-hidden="true" className={cn("size-5 text-muted transition-transform", open && "rotate-180")} />
+        <ChevronDown
+          aria-hidden="true"
+          className={cn("size-5 text-muted transition-transform", open && "rotate-180")}
+        />
       </button>
       <ul id={panelId} hidden={!open} className="mb-3 flex flex-col gap-0.5 border-l-2 border-line pl-4">
         <li>
-          <NavLink item={{ ...item, label: isMega(item) ? "All products" : `${item.label} overview` }} onClick={onNavigate} className="block py-2 text-ink" />
+          <NavLink
+            item={{ ...item, label: isMega(item) ? "All products" : `${item.label} overview` }}
+            onClick={onNavigate}
+            className="block py-2 text-ink"
+          />
         </li>
         {sub.map((c) => (
           <li key={c.id}>
@@ -196,7 +240,9 @@ export function HeaderNav({ items, families, header, contact, logo }) {
   useEffect(() => {
     if (!header.showSearch) return undefined;
     const onKey = (e) => {
-      const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName ?? "") || document.activeElement?.isContentEditable;
+      const typing =
+        /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName ?? "") ||
+        document.activeElement?.isContentEditable;
       if (((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") || (e.key === "/" && !typing)) {
         e.preventDefault();
         setSearch(true);
@@ -232,7 +278,12 @@ export function HeaderNav({ items, families, header, contact, logo }) {
         data-testid="site-header"
       >
         <div ref={navRef} className="relative" onMouseLeave={hoverClose}>
-          <div className={cn("container-site flex items-center gap-6 transition-[height] duration-200", scrolled ? "h-16" : "h-20")}>
+          <div
+            className={cn(
+              "container-site flex items-center gap-6 transition-[height] duration-200",
+              scrolled ? "h-16" : "h-20",
+            )}
+          >
             {logo}
             <nav aria-label="Main" className="hidden flex-1 justify-center lg:flex">
               <ul className="flex items-center gap-1">
@@ -248,7 +299,8 @@ export function HeaderNav({ items, families, header, contact, logo }) {
                           item={item}
                           className={cn(
                             "relative inline-flex h-10 items-center px-3 text-[0.9375rem] font-semibold text-ink hover:text-primary",
-                            active && "text-primary after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:bg-accent",
+                            active &&
+                              "text-primary after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:bg-accent",
                           )}
                         />
                       </li>
@@ -256,7 +308,11 @@ export function HeaderNav({ items, families, header, contact, logo }) {
                   }
                   const open = openKey === key;
                   return (
-                    <li key={key} className={isMega(item) ? "" : "relative"} onMouseEnter={() => hoverOpen(key)}>
+                    <li
+                      key={key}
+                      className={isMega(item) ? "" : "relative"}
+                      onMouseEnter={() => hoverOpen(key)}
+                    >
                       <button
                         type="button"
                         id={`${baseId}-t-${key}`}
@@ -266,13 +322,19 @@ export function HeaderNav({ items, families, header, contact, logo }) {
                         className={cn(
                           "relative inline-flex h-10 items-center gap-1 px-3 text-[0.9375rem] font-semibold text-ink hover:text-primary",
                           (active || open) && "text-primary",
-                          active && "after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:bg-accent",
+                          active &&
+                            "after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:bg-accent",
                         )}
                       >
                         {item.label}
-                        <ChevronDown aria-hidden="true" className={cn("size-4 transition-transform duration-150", open && "rotate-180")} />
+                        <ChevronDown
+                          aria-hidden="true"
+                          className={cn("size-4 transition-transform duration-150", open && "rotate-180")}
+                        />
                       </button>
-                      {open && !isMega(item) ? <DropdownPanel item={item} id={panelId} onNavigate={close} /> : null}
+                      {open && !isMega(item) ? (
+                        <DropdownPanel item={item} id={panelId} onNavigate={close} />
+                      ) : null}
                     </li>
                   );
                 })}
@@ -291,21 +353,36 @@ export function HeaderNav({ items, families, header, contact, logo }) {
                 </button>
               ) : null}
               {header.showCall && contact.phone ? (
-                <a href={contact.phoneHref} className="hidden items-center gap-2 rounded-btn px-2 text-[0.9375rem] font-semibold text-primary hover:underline xl:inline-flex">
+                <a
+                  href={contact.phoneHref}
+                  className="hidden items-center gap-2 rounded-btn px-2 text-[0.9375rem] font-semibold text-primary hover:underline xl:inline-flex"
+                >
                   <Phone aria-hidden="true" className="size-4" strokeWidth={1.75} /> {contact.phone}
                 </a>
               ) : null}
               <Button href={header.ctaHref} size="md" className="hidden sm:inline-flex">
                 {header.ctaText}
               </Button>
-              <button type="button" onClick={() => setDrawer(true)} aria-label="Open menu" className="inline-flex size-10 items-center justify-center rounded-btn text-ink hover:bg-surface lg:hidden">
+              <button
+                type="button"
+                onClick={() => setDrawer(true)}
+                aria-label="Open menu"
+                className="inline-flex size-10 items-center justify-center rounded-btn text-ink hover:bg-surface lg:hidden"
+              >
                 <Menu aria-hidden="true" className="size-6" strokeWidth={1.75} />
               </button>
             </div>
           </div>
           {items.map((item) =>
             isMega(item) && openKey === item.id ? (
-              <MegaPanel key={item.id} families={families} id={`${baseId}-p-${item.id}`} onNavigate={close} contact={contact} header={header} />
+              <MegaPanel
+                key={item.id}
+                families={families}
+                id={`${baseId}-p-${item.id}`}
+                onNavigate={close}
+                contact={contact}
+                header={header}
+              />
             ) : null,
           )}
         </div>

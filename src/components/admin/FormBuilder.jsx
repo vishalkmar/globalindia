@@ -86,9 +86,17 @@ function TagsInput({ value = [], onChange, placeholder, ...props }) {
       {value.length ? (
         <ul className="flex flex-wrap gap-1.5">
           {value.map((t) => (
-            <li key={t} className="inline-flex h-7 items-center gap-1 rounded-btn border border-line bg-surface pr-1 pl-2.5 text-sm">
+            <li
+              key={t}
+              className="inline-flex h-7 items-center gap-1 rounded-btn border border-line bg-surface pr-1 pl-2.5 text-sm"
+            >
               {t}
-              <button type="button" aria-label={`Remove ${t}`} onClick={() => onChange(value.filter((x) => x !== t))} className="rounded p-0.5 text-muted hover:text-ink">
+              <button
+                type="button"
+                aria-label={`Remove ${t}`}
+                onClick={() => onChange(value.filter((x) => x !== t))}
+                className="rounded p-0.5 text-muted hover:text-ink"
+              >
                 <X aria-hidden="true" className="size-3.5" />
               </button>
             </li>
@@ -148,12 +156,24 @@ function MediaIdField({ def, value, onChange, error, cache }) {
 function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
   const type = def.type ?? "text";
   const error = errors[path];
-  const common = { name: path, disabled: def.disabled, placeholder: def.placeholder, autoComplete: def.autoComplete ?? "off", maxLength: def.maxLength };
+  const common = {
+    name: path,
+    disabled: def.disabled,
+    placeholder: def.placeholder,
+    autoComplete: def.autoComplete ?? "off",
+    maxLength: def.maxLength,
+  };
 
   if (type === "checkbox") {
     return (
       <div className="pt-1">
-        <Checkbox label={def.label} description={def.hint} checked={Boolean(value)} disabled={def.disabled} onChange={(e) => onChange(e.target.checked)} />
+        <Checkbox
+          label={def.label}
+          description={def.hint}
+          checked={Boolean(value)}
+          disabled={def.disabled}
+          onChange={(e) => onChange(e.target.checked)}
+        />
         {error ? <p className="mt-1 text-[0.8125rem] text-error">{error}</p> : null}
       </div>
     );
@@ -166,7 +186,10 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
       </div>
     );
   }
-  if (type === "media") return <MediaIdField def={def} value={value ?? null} onChange={onChange} error={error} cache={mediaCache} />;
+  if (type === "media")
+    return (
+      <MediaIdField def={def} value={value ?? null} onChange={onChange} error={error} cache={mediaCache} />
+    );
 
   if (type === "group") {
     const obj = value ?? {};
@@ -177,7 +200,14 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
         <div className={cn("grid gap-4", def.columns !== 1 && "md:grid-cols-2")}>
           {def.fields.map((sub) => (
             <div key={sub.name} className={sub.wide ? "md:col-span-2" : ""}>
-              <FieldControl def={sub} value={obj[sub.name]} onChange={(v) => onChange({ ...obj, [sub.name]: v })} errors={errors} path={`${path}.${sub.name}`} mediaCache={mediaCache} />
+              <FieldControl
+                def={sub}
+                value={obj[sub.name]}
+                onChange={(v) => onChange({ ...obj, [sub.name]: v })}
+                errors={errors}
+                path={`${path}.${sub.name}`}
+                mediaCache={mediaCache}
+              />
             </div>
           ))}
         </div>
@@ -208,7 +238,13 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
                 />
               ))}
             </div>
-            <Button size="icon" variant="ghost" aria-label={`Remove ${def.itemLabel ?? "item"} ${i + 1}`} onClick={() => onChange(list.filter((_, j) => j !== i))} className="mt-6">
+            <Button
+              size="icon"
+              variant="ghost"
+              aria-label={`Remove ${def.itemLabel ?? "item"} ${i + 1}`}
+              onClick={() => onChange(list.filter((_, j) => j !== i))}
+              className="mt-6"
+            >
               <Trash2 aria-hidden="true" />
             </Button>
           </div>
@@ -226,7 +262,15 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
   }
 
   let control;
-  if (type === "textarea") control = <Textarea {...common} rows={def.rows ?? 4} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />;
+  if (type === "textarea")
+    control = (
+      <Textarea
+        {...common}
+        rows={def.rows ?? 4}
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value)}
+      />
+    );
   else if (type === "select")
     control = (
       <Select {...common} value={value ?? ""} onChange={(e) => onChange(e.target.value)}>
@@ -243,10 +287,23 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
       </Select>
     );
   else if (type === "tags") control = <TagsInput {...common} value={value ?? []} onChange={onChange} />;
-  else if (type === "password") control = <PasswordInput {...common} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />;
+  else if (type === "password")
+    control = <PasswordInput {...common} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />;
   else if (type === "number")
-    control = <Input {...common} type="number" inputMode="decimal" step={def.step} value={value ?? ""} onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))} />;
-  else control = <Input {...common} type={type} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />;
+    control = (
+      <Input
+        {...common}
+        type="number"
+        inputMode="decimal"
+        step={def.step}
+        value={value ?? ""}
+        onChange={(e) => onChange(e.target.value === "" ? null : Number(e.target.value))}
+      />
+    );
+  else
+    control = (
+      <Input {...common} type={type} value={value ?? ""} onChange={(e) => onChange(e.target.value)} />
+    );
 
   return (
     <Field label={def.label} hint={def.hint} error={error} required={def.required}>
@@ -267,7 +324,14 @@ export function FormBuilder({ form, fields, columns = 2, className, mediaCache }
         const wide = f.wide || ["richtext", "textarea", "group", "repeater", "media"].includes(f.type);
         return (
           <div key={f.name} className={wide ? "md:col-span-2" : ""}>
-            <FieldControl def={f} value={values[f.name]} onChange={(v) => set(f.name, v)} errors={errors} path={f.name} mediaCache={mediaCache} />
+            <FieldControl
+              def={f}
+              value={values[f.name]}
+              onChange={(v) => set(f.name, v)}
+              errors={errors}
+              path={f.name}
+              mediaCache={mediaCache}
+            />
           </div>
         );
       })}

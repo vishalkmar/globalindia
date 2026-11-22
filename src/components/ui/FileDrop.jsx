@@ -46,8 +46,12 @@ export function FileDrop({
     const ok = [];
     if (files.length > maxFiles) nextErrors.push(`Choose up to ${maxFiles} files at a time.`);
     for (const file of files.slice(0, maxFiles)) {
-      if (!accept.includes(file.type)) nextErrors.push(`${file.name}: file type not allowed (${typeLabel} only).`);
-      else if (file.size > maxBytes) nextErrors.push(`${file.name}: ${formatBytes(file.size)} is over the ${formatBytes(maxBytes)} limit.`);
+      if (!accept.includes(file.type))
+        nextErrors.push(`${file.name}: file type not allowed (${typeLabel} only).`);
+      else if (file.size > maxBytes)
+        nextErrors.push(
+          `${file.name}: ${formatBytes(file.size)} is over the ${formatBytes(maxBytes)} limit.`,
+        );
       else ok.push(file);
     }
     setErrors(nextErrors);
@@ -95,7 +99,8 @@ export function FileDrop({
         </span>
         <span className="text-[0.9375rem] font-semibold text-ink">{label}</span>
         <span id={hintId} className="text-sm text-muted">
-          {hint ?? `${typeLabel} up to ${formatBytes(maxBytes)} each${multiple ? `, max ${maxFiles} files` : ""}`}
+          {hint ??
+            `${typeLabel} up to ${formatBytes(maxBytes)} each${multiple ? `, max ${maxFiles} files` : ""}`}
         </span>
         <input
           ref={inputRef}
