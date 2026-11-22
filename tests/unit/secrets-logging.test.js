@@ -91,3 +91,26 @@ describe("secret paths are never served", () => {
     expect(ok.status).not.toBe(404);
   });
 });
+
+describe("edge hardening (Phase 27)", () => {
+  it("with an origin lock set, requests without Cloudflare's secret header are refused; cron and health stay open", async () => {
+    process.env.ORIGIN_LOCK_SECRET = "lock-secret-for-tests-0123456789abcdef";
+    try {
+      const direct = await proxy(new NextRequest("http://localhost:3000/about"));
+      expect(direct.status).toBe(404);
+      const viaCf = await proxy(new NextRequest("http://localhost:3000/about", { headers: { "x-origin-lock": process.env.ORIGIN_LOCK_SECRET } }));
+      expect(viaCf.status).not.toBe(404);
+      expect((await proxy(new NextRequest("http://localhost:3000/api/health"))).status).not.toBe(404);
+    } finally {
+      delete process.env.ORIGIN_LOCK_SECRET;
+    }
+  });
+
+  it("image URLs only use the fixed widths and quality steps", async () => {
+    const { default: loader, IMAGE_WIDTHS } = await import("@/lib/media/imageLoader");
+    const src = "https://res.cloudinary.com/demo/image/upload/v1/gi_x.jpg";
+    expect(loader({ src, width: 333 })).toContain("w_384/");
+    expect(loader({ src, width: 99999 })).toContain(`w_${IMAGE_WIDTHS.at(-1)}/`);
+    expect(loader({ src, width: 640, quality: 77 })).toContain("q_80,");
+  });
+});

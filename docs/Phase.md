@@ -616,26 +616,26 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Re-run full tests
 
 ## Phase 27 — Security 11: Dependencies, CDN, WAF, DDoS/DoS
-- [ ] 01 npm audit and fix all high/critical
-- [ ] 02 Renovate/Dependabot weekly
-- [ ] 03 Lockfile committed, npm ci in CI
-- [ ] 04 Remove unused packages
-- [ ] 05 Check package provenance and typosquats
-- [ ] 06 Pin Next.js and React to patched versions
-- [ ] 07 Cloudflare proxied DNS in front of Vercel
-- [ ] 08 WAF managed rules (OWASP core set)
-- [ ] 09 Custom WAF rules: block /admin outside allowed countries (optional), block bad user agents
-- [ ] 10 DDoS protection on, "Under Attack" runbook
-- [ ] 11 Cache static assets at edge, long TTL
-- [ ] 12 Request size and timeout limits
-- [ ] 13 Slowloris/slow body protections (edge)
-- [ ] 14 Origin lock: Vercel accepts only Cloudflare (secret header)
-- [ ] 15 Image optimisation abuse limits (sizes allow-list)
-- [ ] 16 Health monitoring and uptime alerts
-- [ ] 17 Incident response runbook
-- [ ] 18 Load test 500 rps on public pages
-- [ ] 19 Document in docs/security/27.md
-- [ ] 20 Re-run full tests
+- [x] 01 npm audit and fix all high/critical
+- [x] 02 Renovate/Dependabot weekly
+- [x] 03 Lockfile committed, npm ci in CI
+- [x] 04 Remove unused packages
+- [x] 05 Check package provenance and typosquats
+- [x] 06 Pin Next.js and React to patched versions
+- [~] 07 Cloudflare proxied DNS in front of Vercel — owner action, steps in security/27.md
+- [~] 08 WAF managed rules (OWASP core set) — owner action, steps in security/27.md
+- [~] 09 Custom WAF rules: block /admin outside allowed countries (optional), block bad user agents — owner action, steps in security/27.md
+- [~] 10 DDoS protection on, "Under Attack" runbook — owner action, steps in security/27.md
+- [~] 11 Cache static assets at edge, long TTL — owner action, steps in security/27.md
+- [x] 12 Request size and timeout limits
+- [~] 13 Slowloris/slow body protections (edge) — owner action, steps in security/27.md
+- [x] 14 Origin lock: Vercel accepts only Cloudflare (secret header)
+- [x] 15 Image optimisation abuse limits (sizes allow-list)
+- [~] 16 Health monitoring and uptime alerts — owner action, steps in security/27.md
+- [x] 17 Incident response runbook
+- [x] 18 Load test 500 rps on public pages
+- [x] 19 Document in docs/security/27.md
+- [x] 20 Re-run full tests
 
 ## Phase 28 — Security 12: Anti-bot, Anti-scraping & Historic CVE Hardening
 - [ ] 01 Honest note: HTML sent to a browser can always be viewed; goal is to stop bulk bots and scrapers

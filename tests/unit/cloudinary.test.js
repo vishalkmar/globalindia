@@ -60,7 +60,7 @@ describe("image delivery", () => {
     expect(loader({ src: url, width: 640 })).toBe(
       "https://res.cloudinary.com/demo/image/upload/f_auto,q_auto,c_limit,w_640/v17/global-india/prod/gi_abc.jpg",
     );
-    expect(loader({ src: url, width: 320, quality: 70 })).toContain("f_auto,q_70,c_limit,w_320/");
+    expect(loader({ src: url, width: 320, quality: 70 })).toContain("f_auto,q_70,c_limit,w_384/"); // snapped to the next allowed width
     expect(loader({ src: "/api/dev-media/gi_x.png?v=1", width: 640 })).toBe(
       "/api/dev-media/gi_x.png?v=1&w=640",
     );

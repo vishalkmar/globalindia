@@ -42,6 +42,9 @@ const nextConfig = {
     // so Next's own optimiser is not used and cannot be abused as an open image proxy (Phase 27).
     loader: "custom",
     loaderFile: "./src/lib/media/imageLoader.js",
+    // Fixed size lists; the loader snaps to these (Phase 27 todo 15).
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048],
+    imageSizes: [64, 128, 256, 384],
   },
 
   turbopack: {

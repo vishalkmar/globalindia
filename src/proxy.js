@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { safeEqual } from "@/lib/auth/crypto";
 import { countRedirectHit, lookupRedirect } from "@/lib/redirectMap";
 import { isBlockedIp } from "@/lib/security/abuse";
 import { clientIp } from "@/lib/security/ip";
@@ -31,6 +32,16 @@ const FORBIDDEN_PATH = /(^|\/)\.(env|git)(\/|$|[.\w-]*$)|\.map$/i;
 export async function proxy(request) {
   const { pathname, search } = request.nextUrl;
   if (FORBIDDEN_PATH.test(pathname)) return new NextResponse(null, { status: 404 });
+
+  // Origin lock (Phase 27 todo 14): once the site sits behind Cloudflare, Cloudflare adds a secret
+  // header to every request; requests that reach Vercel directly (skipping the WAF) are refused.
+  // Cron (own bearer secret) and the health check stay reachable for Vercel and the uptime monitor.
+  const lock = process.env.ORIGIN_LOCK_SECRET;
+  if (lock && !pathname.startsWith("/api/cron/") && pathname !== "/api/health") {
+    if (!safeEqual(request.headers.get("x-origin-lock") ?? "", lock)) {
+      return new NextResponse("Not found", { status: 404, headers: { "cache-control": "no-store" } });
+    }
+  }
   const ip = clientIp(request.headers);
 
   // Blocked addresses (Settings -> Rate limits and blocked IPs, Phase 22 todo 13): a plain refusal.

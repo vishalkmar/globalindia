@@ -1,0 +1,32 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # Phase 27 todo 03: exact versions from the committed lockfile, install scripts only from it.
+      - run: npm ci
+      # Registry signatures and provenance of every installed package (todo 05).
+      - run: npm audit signatures
+      # Fails on high/critical advisories in runtime dependencies, except the documented Prisma CLI
+      # chain (docs/security/27.md) which is checked by name in scripts/audit-gate.mjs.
+      - run: node scripts/audit-gate.mjs
+      # Throw-away secrets for this run only (.env.local is git-ignored and never uploaded).
+      - run: npm run secrets
+      - run: npm run lint
+      - run: npm test
+      - run: npm run build
+      - run: npm run scan:bundle

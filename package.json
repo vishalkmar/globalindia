@@ -59,7 +59,6 @@
     "@electric-sql/pglite-socket": "^0.2.20",
     "@playwright/test": "^1.65.1",
     "@tailwindcss/turbopack": "4.3.3",
-    "dotenv": "^18.0.10",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
     "eslint-plugin-simple-import-sort": "^14.0.0",
@@ -74,5 +73,8 @@
     "@prisma/engines@6.19.3": true,
     "@prisma/client@6.19.3": true
   },
-  "type": "module"
+  "type": "module",
+  "overrides": {
+    "effect": "^3.22.5"
+  }
 }
