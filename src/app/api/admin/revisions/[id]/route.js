@@ -1,10 +1,11 @@
-import { requirePermission } from "@/lib/auth/guard";
+import { requireAdmin, requirePermission } from "@/lib/auth/guard";
 import { HttpError, json, route } from "@/lib/http";
 import { getRevision, REVISION_ENTITIES } from "@/lib/revisions";
 import { idSchema } from "@/lib/validation/auth";
 
 /** GET /api/admin/revisions/:id — one snapshot, to load into an editor. Permission follows the entity type. */
 export const GET = route(async (_req, ctx) => {
+  await requireAdmin(); // signed out: 401 before revealing whether the id exists
   const { id } = await ctx.params;
   if (!idSchema.safeParse(id).success) throw new HttpError(404);
   const rev = await getRevision(id);

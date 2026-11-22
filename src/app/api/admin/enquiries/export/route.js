@@ -1,4 +1,4 @@
-import { enquiryListQuery, exportEnquiriesCsv } from "@/lib/admin/enquiries";
+import { enquiryListQuery, enquiryScope, exportEnquiriesCsv } from "@/lib/admin/enquiries";
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
 import { route } from "@/lib/http";
@@ -8,7 +8,8 @@ export const GET = route(async (req) => {
   const user = await requirePermission("read", "enquiries");
   const params = new URL(req.url).searchParams;
   const q = enquiryListQuery(params, user.id);
-  const where = params.get("status") ? q.where : { AND: [q.where, { status: { not: "SPAM" } }] };
+  const scope = await enquiryScope(user);
+  const where = { AND: [q.where, scope, params.get("status") ? {} : { status: { not: "SPAM" } }] };
   const csv = await exportEnquiriesCsv(where);
   await audit({
     actorId: user.id,

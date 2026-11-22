@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 import { PrismaClient } from "@prisma/client";
 
 import { ARGON2_OPTIONS } from "../../src/lib/auth/argon-params.js";
-import { codeFrom, waitForMail } from "./helpers.mjs";
+import { codeFrom, csrfHeaders, waitForMail } from "./helpers.mjs";
 
 /** Phase 10: home page sections, and editing them through draft -> preview -> publish. */
 
@@ -14,7 +14,15 @@ const PASSWORD = `Home-Test-${stamp}`;
 const SHOTS = process.env.SHOT_DIR;
 
 test.beforeAll(async () => {
-  await db.adminUser.create({ data: { email, name: "Home Editor", role: "EDITOR", passwordHash: await hash(PASSWORD, ARGON2_OPTIONS), mfaSetupAt: new Date() } });
+  await db.adminUser.create({
+    data: {
+      email,
+      name: "Home Editor",
+      role: "EDITOR",
+      passwordHash: await hash(PASSWORD, ARGON2_OPTIONS),
+      mfaSetupAt: new Date(),
+    },
+  });
 });
 test.afterAll(async () => {
   await db.adminUser.deleteMany({ where: { email } });
@@ -28,20 +36,35 @@ async function signIn(page) {
   const since = Date.now() - 1000;
   await page.getByRole("button", { name: "Continue" }).click();
   await page.waitForURL(/\/admin\/verify/);
-  await page.getByLabel("6-digit code").fill(codeFrom(await waitForMail({ to: email, tag: "otp-login", since })));
+  await page
+    .getByLabel("6-digit code")
+    .fill(codeFrom(await waitForMail({ to: email, tag: "otp-login", since })));
   await page.waitForURL((u) => u.pathname === "/admin");
 }
 
 test("visitor sees every home section with real copy and structured data", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Raw materials for food, cosmetics and cleaning products");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(
+    "Raw materials for food, cosmetics and cleaning products",
+  );
   await expect(page.getByTestId("trust-facts")).toContainText("Supplying since");
-  for (const h of ["Six families of raw materials, one order desk.", "Who buys from us.", "Four things we hold to on every order.", "How an order works.", "Asked before almost every first order."]) {
+  for (const h of [
+    "Six families of raw materials, one order desk.",
+    "Who buys from us.",
+    "Four things we hold to on every order.",
+    "How an order works.",
+    "Asked before almost every first order.",
+  ]) {
     await expect(page.getByRole("heading", { name: h })).toBeVisible();
   }
-  await expect(page.getByRole("link", { name: /Food Ingredients & Additives/ }).first()).toHaveAttribute("href", "/products?family=food");
+  await expect(page.getByRole("link", { name: /Food Ingredients & Additives/ }).first()).toHaveAttribute(
+    "href",
+    "/products?family=food",
+  );
   await expect(page.getByText(`${new Date().getFullYear() - 2002}`, { exact: true }).first()).toBeVisible(); // years in the trade, computed
-  const faq = await page.$$eval('script[type="application/ld+json"]', (s) => s.map((x) => JSON.parse(x.textContent)).find((j) => j["@type"] === "FAQPage"));
+  const faq = await page.$$eval('script[type="application/ld+json"]', (s) =>
+    s.map((x) => JSON.parse(x.textContent)).find((j) => j["@type"] === "FAQPage"),
+  );
   expect(faq.mainEntity).toHaveLength(6);
   expect(await page.locator("h1").count()).toBe(1);
   if (SHOTS) await page.screenshot({ path: `${SHOTS}/home-final-1280.png`, fullPage: true });
@@ -92,11 +115,16 @@ test("editor: draft is private, preview shows it, publish makes it live", async 
   await expect(visitor.getByRole("heading", { level: 1 })).not.toContainText(title);
 
   // Preview in a new tab: draft + banner
-  const [previewTab] = await Promise.all([page.context().waitForEvent("page"), page.getByRole("button", { name: "Preview" }).click()]);
+  const [previewTab] = await Promise.all([
+    page.context().waitForEvent("page"),
+    page.getByRole("button", { name: "Preview" }).click(),
+  ]);
   await previewTab.waitForLoadState();
   await expect(previewTab.getByTestId("preview-banner")).toContainText("Preview of unpublished changes");
   await expect(previewTab.getByRole("heading", { level: 1 })).toContainText(title);
-  await expect(previewTab.getByRole("heading", { name: "Asked before almost every first order." })).toHaveCount(0);
+  await expect(
+    previewTab.getByRole("heading", { name: "Asked before almost every first order." }),
+  ).toHaveCount(0);
   await previewTab.getByRole("button", { name: "Exit preview" }).click();
   await expect(previewTab.getByTestId("preview-banner")).toHaveCount(0);
   await previewTab.close();
@@ -115,12 +143,30 @@ test("editor: draft is private, preview shows it, publish makes it live", async 
   await expect(page.getByText("Published. The page is live.")).toBeVisible();
   await visitor.goto("/");
   await expect(visitor.getByRole("heading", { level: 1 })).toContainText(title);
-  await expect(visitor.getByRole("heading", { name: "Asked before almost every first order." })).toHaveCount(0);
+  await expect(visitor.getByRole("heading", { name: "Asked before almost every first order." })).toHaveCount(
+    0,
+  );
 
   // Put the original content back the same way an editor would (draft + publish)
-  expect((await page.request.put(`/api/admin/pages/${home.id}`, { data: original, headers: { origin: "http://localhost:3100" } })).ok()).toBe(true);
-  expect((await page.request.post(`/api/admin/pages/${home.id}/publish`, { data: {}, headers: { origin: "http://localhost:3100" } })).ok()).toBe(true);
+  expect(
+    (
+      await page.request.put(`/api/admin/pages/${home.id}`, {
+        data: original,
+        headers: await csrfHeaders(page),
+      })
+    ).ok(),
+  ).toBe(true);
+  expect(
+    (
+      await page.request.post(`/api/admin/pages/${home.id}/publish`, {
+        data: {},
+        headers: await csrfHeaders(page),
+      })
+    ).ok(),
+  ).toBe(true);
   await visitor.goto("/");
-  await expect(visitor.getByRole("heading", { level: 1 })).toContainText("Raw materials for food, cosmetics and cleaning products");
+  await expect(visitor.getByRole("heading", { level: 1 })).toContainText(
+    "Raw materials for food, cosmetics and cleaning products",
+  );
   await visitorCtx.close();
 });

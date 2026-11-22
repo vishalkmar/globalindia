@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { isValidRange } from "../security/ipMatch.js";
+
 /**
  * Site settings (SiteSetting key -> JSON). One strict Zod schema per key, used by the admin form
  * (instant feedback) AND the API (the real check). Pure module: safe on client and server.
@@ -181,11 +183,49 @@ export const maintenanceSchema = z.strictObject({
 export const uploadsSchema = z.strictObject({
   imageMaxMB: z.coerce.number().min(0.5).max(5),
   pdfMaxMB: z.coerce.number().min(1).max(10),
+  imageFormats: z
+    .array(z.enum(["jpg", "png", "webp", "avif"]))
+    .min(1, "Allow at least one image format.")
+    .default(["jpg", "png", "webp", "avif"]),
+  allowPdf: z.boolean().default(true),
+});
+
+/* ---------- abuse: rate limits within safe caps + blocked IPs (Phase 22 todos 13, 16) ---------- */
+export const LIMIT_CAPS = {
+  formsPerHour: { min: 1, max: 20, default: 5 },
+  searchPerMinute: { min: 10, max: 120, default: 60 },
+  uploadsPerHour: { min: 5, max: 100, default: 30 },
+  apiPerMinute: { min: 60, max: 1000, default: 300 },
+};
+const capped = (k) =>
+  z.coerce
+    .number()
+    .int("Use a whole number.")
+    .min(LIMIT_CAPS[k].min, `At least ${LIMIT_CAPS[k].min}.`)
+    .max(LIMIT_CAPS[k].max, `At most ${LIMIT_CAPS[k].max}.`)
+    .default(LIMIT_CAPS[k].default);
+export const abuseSchema = z.strictObject({
+  formsPerHour: capped("formsPerHour"),
+  searchPerMinute: capped("searchPerMinute"),
+  uploadsPerHour: capped("uploadsPerHour"),
+  apiPerMinute: capped("apiPerMinute"),
+  blockedIps: z
+    .array(
+      z
+        .string()
+        .trim()
+        .max(49)
+        .refine(isValidRange, "Enter an IP address or range like 203.0.113.0/24 (no wider than /8, or /16 for IPv6)."),
+    )
+    .max(500)
+    .default([]),
 });
 
 /* ---------- enquiries: who is told, and the spam block list (Phase 14) ---------- */
 const listOf = (max, item) => z.array(item).max(max).default([]);
 export const enquiriesSchema = z.strictObject({
+  // Phase 21 todo 07: when on, editors and viewers only see enquiries assigned to them.
+  assignedOnly: z.boolean().default(false),
   notifyEmails: listOf(5, z.string().trim().toLowerCase().email("Enter a valid email.")),
   acknowledge: z.boolean().default(true),
   blockedEmails: listOf(200, z.string().trim().toLowerCase().email("Enter a valid email.")),
@@ -215,6 +255,7 @@ export const SETTINGS = {
   maintenance: { schema: maintenanceSchema, resource: "security", label: "Maintenance mode" },
   uploads: { schema: uploadsSchema, resource: "security", label: "Upload limits" },
   enquiries: { schema: enquiriesSchema, resource: "security", label: "Enquiries and spam" },
+  abuse: { schema: abuseSchema, resource: "security", label: "Rate limits and blocked IPs" },
 };
 
 /** Real defaults (docs/Content.md, Memory.md). Used by the seed and whenever a key is missing. */
@@ -290,8 +331,9 @@ export const SETTING_DEFAULTS = {
     title: "We are updating the website",
     message: "The site will be back shortly. For orders and quotes, please call +91 80717 79152.",
   },
-  uploads: { imageMaxMB: 5, pdfMaxMB: 10 },
-  enquiries: { notifyEmails: [], acknowledge: true, blockedEmails: [], blockedDomains: [], blockedWords: [] },
+  uploads: { imageMaxMB: 5, pdfMaxMB: 10, imageFormats: ["jpg", "png", "webp", "avif"], allowPdf: true },
+  abuse: { formsPerHour: 5, searchPerMinute: 60, uploadsPerHour: 30, apiPerMinute: 300, blockedIps: [] },
+  enquiries: { assignedOnly: false, notifyEmails: [], acknowledge: true, blockedEmails: [], blockedDomains: [], blockedWords: [] },
 };
 
 /** Merge a stored value over defaults and validate; invalid stored data falls back to defaults. */

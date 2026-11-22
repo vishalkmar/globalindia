@@ -3,8 +3,10 @@ import "server-only";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
-import { isProduction, isTest, optionalEnv } from "@/lib/env";
+import { hmac } from "@/lib/auth/crypto";
+import { authEnv, isProduction, isTest, optionalEnv } from "@/lib/env";
 import { logger } from "@/lib/logger";
+import { rateLimit } from "@/lib/security/rateLimit";
 
 /**
  * Transactional email via the Brevo REST API (no SDK: one dependency less).
@@ -37,6 +39,14 @@ export async function sendEmail({ to, toName, subject, html, text, tags = [] }) 
     textContent: text,
     tags: tags.map((t) => clean(t, 40)),
   };
+
+  // Email bombing guard (Phase 22 todo 15): at most a few emails per address per hour, whatever
+  // asked for them (sign-in codes, resets, newsletter, enquiry receipts). Keyed by a hash, not the address.
+  const perRecipient = await rateLimit("mailRecipient", hmac(payload.to[0].email.toLowerCase(), authEnv.ipHashSalt));
+  if (!perRecipient.success) {
+    logger.warn("email.recipient_limited", { tags });
+    return false;
+  }
 
   if (isTest) {
     (globalThis.__giSentMail ??= []).push({ to: payload.to[0].email, subject: payload.subject, text, tags });

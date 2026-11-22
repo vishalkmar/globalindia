@@ -35,3 +35,6 @@ export const DOCUMENT_TYPES = [
 ];
 
 export const PUBLIC_ID_RE = /^gi_[a-f0-9]{32}$/;
+
+/** Image formats the site can accept at all (Settings may switch some off, never add others). */
+export const IMAGE_FORMATS = ["jpg", "png", "webp", "avif"];

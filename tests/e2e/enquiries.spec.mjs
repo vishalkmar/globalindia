@@ -13,7 +13,15 @@ const SHOTS = process.env.SHOT_DIR;
 const editor = { email: `e2e-enq-editor-${stamp}@test.local`, password: `Enquiry-Editor-${stamp}` };
 
 test.beforeAll(async () => {
-  await db.adminUser.create({ data: { email: editor.email, name: `Sales ${stamp}`, role: "EDITOR", passwordHash: await hash(editor.password, ARGON2_OPTIONS), mfaSetupAt: new Date() } });
+  await db.adminUser.create({
+    data: {
+      email: editor.email,
+      name: `Sales ${stamp}`,
+      role: "EDITOR",
+      passwordHash: await hash(editor.password, ARGON2_OPTIONS),
+      mfaSetupAt: new Date(),
+    },
+  });
 });
 test.afterAll(async () => {
   await db.enquiry.deleteMany({ where: { email: { contains: stamp } } });
@@ -65,7 +73,9 @@ test("add two products to a quote, then send the three-step quote form", async (
 test("sample, callback and message forms; a document request link fills the message", async ({ page }) => {
   await page.goto("/contact?product=sles-70&doc=COA#contact");
   const contact = page.getByRole("form", { name: "Send a message" });
-  await expect(contact.getByLabel("Message")).toHaveValue("Please send the COA (certificate of analysis) for SLES 70%.");
+  await expect(contact.getByLabel("Message")).toHaveValue(
+    "Please send the COA (certificate of analysis) for SLES 70%.",
+  );
   await contact.getByLabel("Your name").fill(`Message ${stamp}`);
   await contact.getByLabel("Email").fill(`msg-${stamp}@example.in`);
   await contact.getByRole("button", { name: "Send message" }).click();
@@ -91,7 +101,9 @@ test("sample, callback and message forms; a document request link fills the mess
   await callback.getByRole("button", { name: "Call me back" }).click();
   await expect(page).toHaveURL(/thank-you\?type=callback/);
 
-  const types = (await db.enquiry.findMany({ where: { name: { contains: stamp } }, select: { type: true } })).map((r) => r.type);
+  const types = (
+    await db.enquiry.findMany({ where: { name: { contains: stamp } }, select: { type: true } })
+  ).map((r) => r.type);
   expect(types).toEqual(expect.arrayContaining(["CONTACT", "SAMPLE", "CALLBACK"]));
 });
 
@@ -104,9 +116,13 @@ test("tabs follow the keyboard and the URL hash", async ({ page }) => {
   await expect(page).toHaveURL(/#sample$/);
 });
 
-test("admin: bell shows new enquiries, inbox filters, detail changes status and keeps a timeline", async ({ page }) => {
+test("admin: bell shows new enquiries, inbox filters, detail changes status and keeps a timeline", async ({
+  page,
+}) => {
   test.setTimeout(120_000);
-  await db.enquiry.create({ data: { type: "CALLBACK", name: `Bell ${stamp}`, phone: "9810012345", email: `bell-${stamp}@example.in` } });
+  await db.enquiry.create({
+    data: { type: "CALLBACK", name: `Bell ${stamp}`, phone: "9810012345", email: `bell-${stamp}@example.in` },
+  });
   await signInWithOtp(page, editor.email, editor.password);
   const bell = page.getByTestId("enquiry-bell");
   await expect(bell).toHaveAccessibleName(/\d+ new enquir/);
@@ -115,7 +131,10 @@ test("admin: bell shows new enquiries, inbox filters, detail changes status and 
   await expect(page.getByRole("heading", { name: "Enquiries", level: 1 })).toBeVisible();
   await page.getByLabel(/Search name, company/).fill(`Bell ${stamp}`);
   await expect(page.getByRole("row")).toHaveCount(2);
-  await page.getByRole("row", { name: new RegExp(`Bell ${stamp}`) }).getByRole("link").click();
+  await page
+    .getByRole("row", { name: new RegExp(`Bell ${stamp}`) })
+    .getByRole("link")
+    .click();
 
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(`Callback from Bell ${stamp}`);
   await page.getByLabel("Status", { exact: true }).selectOption("IN_PROGRESS");

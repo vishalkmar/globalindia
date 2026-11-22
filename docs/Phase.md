@@ -374,136 +374,136 @@ Phases 1–16 build the site and admin · 17–29 security · 30 security testin
 - [x] 20 Content review for human tone
 
 ## Phase 16 — Admin Completion, Backups & Polish
-- [ ] 01 Dashboard charts (enquiries per week, top products)
-- [ ] 02 Global admin search
-- [ ] 03 Redirect manager (301/302)
-- [ ] 04 Email templates preview and test send
-- [ ] 05 Settings: upload limits, allowed file types
-- [ ] 06 Settings: notification recipients
-- [ ] 07 Trash / restore for deleted items (30 days)
-- [ ] 08 Scheduled publish for posts
-- [ ] 09 Cache purge button (revalidate all tags)
-- [ ] 10 Neon backup schedule documented
-- [ ] 11 Restore drill on a Neon branch
-- [ ] 12 Health check endpoint (no secrets in output)
-- [ ] 13 Admin help tooltips on each field
-- [ ] 14 Empty states for every list
-- [ ] 15 Accessibility audit (axe) on public pages
-- [ ] 16 Accessibility audit on admin
-- [ ] 17 Performance budget check (JS < 170 KB per route)
-- [ ] 18 Image audit (all alt texts present)
-- [ ] 19 Final copy proofread
-- [ ] 20 Freeze features before security phases
+- [x] 01 Dashboard charts (enquiries per week, top products)
+- [x] 02 Global admin search
+- [x] 03 Redirect manager (301/302)
+- [x] 04 Email templates preview and test send
+- [x] 05 Settings: upload limits, allowed file types
+- [x] 06 Settings: notification recipients (Settings > Enquiries and spam, Phase 14)
+- [x] 07 Trash / restore for deleted items (30 days)
+- [x] 08 Scheduled publish for posts (Phase 15: publishedAt in the future)
+- [x] 09 Cache purge button (revalidate all tags)
+- [x] 10 Neon backup schedule documented (docs/operations/backups.md)
+- [~] 11 Restore drill on a Neon branch — procedure and log in docs/operations/backups.md; first drill needs the Neon account
+- [x] 12 Health check endpoint (no secrets in output)
+- [x] 13 Admin help tooltips on each field (hint text under fields in every editor)
+- [x] 14 Empty states for every list
+- [x] 15 Accessibility audit (axe) on public pages (tests/e2e/a11y.spec.mjs, 14 pages, 0 serious/critical)
+- [x] 16 Accessibility audit on admin (8 pages, 0 serious/critical)
+- [x] 17 Performance budget check (JS < 170 KB per route) — npm run budget; 164-167 KB gzip after moving zod, the enquiry forms and the footer newsletter out of the initial load
+- [x] 18 Image audit (all alt texts present) — media library refuses alt-less images in use, dashboard counts missing alt, axe image-alt passes
+- [x] 19 Final copy proofread
+- [x] 20 Freeze features before security phases (from here on: security hardening, tests, SEO, launch only)
 
 ## Phase 17 — Security 1: SQL Injection & Injection Flaws
-- [ ] 01 List all injection types: classic, blind, time-based, second-order, ORM operator injection, JSON filter injection, header, log, command, template, LDAP-style
-- [ ] 02 Audit: all DB access through Prisma, no string-built SQL
-- [ ] 03 Any raw query uses Prisma.sql template only
-- [ ] 04 Block user-controlled orderBy/where keys (allow-list fields)
-- [ ] 05 Validate IDs (cuid format) before queries
-- [ ] 06 Search input: length limit, escape LIKE wildcards
-- [ ] 07 No eval, new Function, child_process with user data
-- [ ] 08 No dynamic import() from user input
-- [ ] 09 Sanitise data written to logs (strip CR/LF)
-- [ ] 10 CSV export: prefix =,+,-,@ cells to stop formula injection
-- [ ] 11 Email header injection: strip newlines in names/subjects
-- [ ] 12 Least-privilege Neon DB role for app (no superuser)
-- [ ] 13 Separate migration role
-- [ ] 14 JSON body size limit
-- [ ] 15 Prototype pollution guard (reject __proto__, constructor)
-- [ ] 16 Path traversal guard on any file path use
-- [ ] 17 ReDoS check of all regexes
-- [ ] 18 Add sqlmap-style test cases to test suite
-- [ ] 19 Document findings in docs/security/17.md
-- [ ] 20 Re-run full tests
+- [x] 01 List all injection types: classic, blind, time-based, second-order, ORM operator injection, JSON filter injection, header, log, command, template, LDAP-style
+- [x] 02 Audit: all DB access through Prisma, no string-built SQL
+- [x] 03 Any raw query uses Prisma.sql template only
+- [x] 04 Block user-controlled orderBy/where keys (allow-list fields)
+- [x] 05 Validate IDs (cuid format) before queries
+- [x] 06 Search input: length limit, escape LIKE wildcards
+- [x] 07 No eval, new Function, child_process with user data
+- [x] 08 No dynamic import() from user input
+- [x] 09 Sanitise data written to logs (strip CR/LF)
+- [x] 10 CSV export: prefix =,+,-,@ cells to stop formula injection
+- [x] 11 Email header injection: strip newlines in names/subjects
+- [x] 12 Least-privilege Neon DB role for app (no superuser)
+- [x] 13 Separate migration role
+- [x] 14 JSON body size limit
+- [x] 15 Prototype pollution guard (reject __proto__, constructor)
+- [x] 16 Path traversal guard on any file path use
+- [x] 17 ReDoS check of all regexes
+- [x] 18 Add sqlmap-style test cases to test suite
+- [x] 19 Document findings in docs/security/17.md
+- [x] 20 Re-run full tests
 
 ## Phase 18 — Security 2: CSRF Protection
-- [ ] 01 List CSRF types: form POST, JSON with simple content types, login CSRF, logout CSRF, cookie tossing, subdomain attacks
-- [ ] 02 All auth cookies SameSite=Strict
-- [ ] 03 Double-submit CSRF token for all admin state-changing requests
-- [ ] 04 Verify Origin and Sec-Fetch-Site headers on POST/PUT/PATCH/DELETE
-- [ ] 05 Reject requests without Content-Type: application/json on JSON APIs
-- [ ] 06 Server Actions: confirm Next.js origin check is enabled, set allowedOrigins
-- [ ] 07 No state changes on GET
-- [ ] 08 Login CSRF: pre-session token on login form
-- [ ] 09 Logout via POST only
-- [ ] 10 __Host- cookie prefix for session cookies
-- [ ] 11 Rotate CSRF token on login
-- [ ] 12 Public forms protected by Turnstile + origin check
-- [ ] 13 frame-ancestors 'none' (clickjacking)
-- [ ] 14 Test cross-site form from another origin fails
-- [ ] 15 Test missing/invalid token returns 403
-- [ ] 16 Test Server Action from foreign origin fails
-- [ ] 17 Document all protected routes
-- [ ] 18 Add CSRF middleware unit tests
-- [ ] 19 Document in docs/security/18.md
-- [ ] 20 Re-run full tests
+- [x] 01 List CSRF types: form POST, JSON with simple content types, login CSRF, logout CSRF, cookie tossing, subdomain attacks
+- [x] 02 All auth cookies SameSite=Strict
+- [x] 03 Double-submit CSRF token for all admin state-changing requests
+- [x] 04 Verify Origin and Sec-Fetch-Site headers on POST/PUT/PATCH/DELETE
+- [x] 05 Reject requests without Content-Type: application/json on JSON APIs
+- [x] 06 Server Actions: confirm Next.js origin check is enabled, set allowedOrigins
+- [x] 07 No state changes on GET
+- [x] 08 Login CSRF: pre-session token on login form
+- [x] 09 Logout via POST only
+- [x] 10 __Host- cookie prefix for session cookies
+- [x] 11 Rotate CSRF token on login
+- [x] 12 Public forms protected by Turnstile + origin check
+- [x] 13 frame-ancestors 'none' (clickjacking)
+- [x] 14 Test cross-site form from another origin fails
+- [x] 15 Test missing/invalid token returns 403
+- [x] 16 Test Server Action from foreign origin fails
+- [x] 17 Document all protected routes
+- [x] 18 Add CSRF middleware unit tests
+- [x] 19 Document in docs/security/18.md
+- [x] 20 Re-run full tests
 
 ## Phase 19 — Security 3: Validation & File Upload Safety
-- [ ] 01 Zod schema for every API input (body, query, params)
-- [ ] 02 Strip unknown keys (.strict())
-- [ ] 03 Length limits on every string field
-- [ ] 04 Email, phone, URL, slug format validation
-- [ ] 05 Number ranges (quantity, order fields)
-- [ ] 06 Server-side re-validation even if client validated
-- [ ] 07 Rich text sanitised with DOMPurify allow-list
-- [ ] 08 File type allow-list (jpg, png, webp, avif, pdf)
-- [ ] 09 Magic-byte check, not only extension
-- [ ] 10 Size limits enforced server side and in Cloudinary preset
-- [ ] 11 Random file names, no user file names in paths
-- [ ] 12 PDF scan: reject files with JavaScript/embedded actions
-- [ ] 13 SVG blocked or sanitised
-- [ ] 14 Image re-encode via Cloudinary to strip payloads
-- [ ] 15 Max files per request and per minute
-- [ ] 16 Uploads only for authenticated roles with permission
-- [ ] 17 Error messages generic (no stack traces)
-- [ ] 18 Fuzz test inputs with random payloads
-- [ ] 19 Document in docs/security/19.md
-- [ ] 20 Re-run full tests
+- [x] 01 Zod schema for every API input (body, query, params)
+- [x] 02 Strip unknown keys (.strict())
+- [x] 03 Length limits on every string field
+- [x] 04 Email, phone, URL, slug format validation
+- [x] 05 Number ranges (quantity, order fields)
+- [x] 06 Server-side re-validation even if client validated
+- [x] 07 Rich text sanitised with DOMPurify allow-list
+- [x] 08 File type allow-list (jpg, png, webp, avif, pdf)
+- [x] 09 Magic-byte check, not only extension
+- [x] 10 Size limits enforced server side and in Cloudinary preset
+- [x] 11 Random file names, no user file names in paths
+- [x] 12 PDF scan: reject files with JavaScript/embedded actions
+- [x] 13 SVG blocked or sanitised
+- [x] 14 Image re-encode via Cloudinary to strip payloads
+- [x] 15 Max files per request and per minute
+- [x] 16 Uploads only for authenticated roles with permission
+- [x] 17 Error messages generic (no stack traces)
+- [x] 18 Fuzz test inputs with random payloads
+- [x] 19 Document in docs/security/19.md
+- [x] 20 Re-run full tests
 
 ## Phase 20 — Security 4: XSS & CORS Lockdown (incl. tighter CORS)
-- [ ] 01 List XSS types: stored, reflected, DOM, mutation XSS, via SVG, via markdown, via URL (javascript:)
-- [ ] 02 No dangerouslySetInnerHTML except sanitised rich text
-- [ ] 03 Validate all link hrefs (http/https/mailto/tel only)
-- [ ] 04 CSP with per-request nonce and strict-dynamic
-- [ ] 05 object-src 'none', base-uri 'self', form-action 'self'
-- [ ] 06 Trusted Types in report-only, then enforce
-- [ ] 07 CSP report endpoint and monitoring
-- [ ] 08 Escape JSON-LD output (< → <)
-- [ ] 09 CORS: deny by default on all API routes
-- [ ] 10 CORS allow-list only for own origin(s); no *
-- [ ] 11 No Access-Control-Allow-Credentials with wildcard
-- [ ] 12 Preflight handling returns minimal headers
-- [ ] 13 Webhook routes accept only provider origin/IPs
-- [ ] 14 Remove CORS from admin APIs entirely (same-origin only)
-- [ ] 15 Cross-Origin-Resource-Policy: same-origin on API
-- [ ] 16 Cross-Origin-Opener-Policy: same-origin
-- [ ] 17 Test XSS payload list against every input
-- [ ] 18 Test cross-origin fetch blocked
-- [ ] 19 Document in docs/security/20.md
-- [ ] 20 Re-run full tests
+- [x] 01 List XSS types: stored, reflected, DOM, mutation XSS, via SVG, via markdown, via URL (javascript:)
+- [x] 02 No dangerouslySetInnerHTML except sanitised rich text
+- [x] 03 Validate all link hrefs (http/https/mailto/tel only)
+- [~] 04 CSP with per-request nonce and strict-dynamic — static CSP + SRI instead (PPR cannot carry nonces; see security/20.md)
+- [x] 05 object-src 'none', base-uri 'self', form-action 'self'
+- [~] 06 Trusted Types in report-only, then enforce — report-only live; enforce after reports are clean
+- [x] 07 CSP report endpoint and monitoring
+- [x] 08 Escape JSON-LD output (< → <)
+- [x] 09 CORS: deny by default on all API routes
+- [x] 10 CORS allow-list only for own origin(s); no *
+- [x] 11 No Access-Control-Allow-Credentials with wildcard
+- [x] 12 Preflight handling returns minimal headers
+- [x] 13 Webhook routes accept only provider origin/IPs
+- [x] 14 Remove CORS from admin APIs entirely (same-origin only)
+- [x] 15 Cross-Origin-Resource-Policy: same-origin on API
+- [x] 16 Cross-Origin-Opener-Policy: same-origin
+- [x] 17 Test XSS payload list against every input
+- [x] 18 Test cross-origin fetch blocked
+- [x] 19 Document in docs/security/20.md
+- [x] 20 Re-run full tests
 
 ## Phase 21 — Security 5: Broken Object & Function Level Authorization + Server-side Permissions
-- [ ] 01 List BOLA/IDOR, BFLA, mass assignment, privilege escalation cases
-- [ ] 02 Every admin route calls requireAdmin + can()
-- [ ] 03 Never trust role/userId sent from client
-- [ ] 04 Mass assignment: pick allowed fields explicitly per role
-- [ ] 05 Users cannot change own role
-- [ ] 06 Only SUPER_ADMIN manages users, MFA settings, theme publish
-- [ ] 07 Enquiry access scoped by assignment for EDITOR (if enabled)
-- [ ] 08 Draft content not readable via public API
-- [ ] 09 Media delete checks ownership/role
-- [ ] 10 Server Actions each check permission (not only page)
-- [ ] 11 Proxy/middleware not used as the only auth layer
-- [ ] 12 Hidden admin UI buttons are also blocked server side
-- [ ] 13 Sequential IDs not exposed (use cuid)
-- [ ] 14 Test matrix: each role × each endpoint
-- [ ] 15 Test IDOR by swapping IDs
-- [ ] 16 Test escalation via body role field
-- [ ] 17 Audit log on every permission denial
-- [ ] 18 Alert on repeated denials
-- [ ] 19 Document in docs/security/21.md
-- [ ] 20 Re-run full tests
+- [x] 01 List BOLA/IDOR, BFLA, mass assignment, privilege escalation cases
+- [x] 02 Every admin route calls requireAdmin + can()
+- [x] 03 Never trust role/userId sent from client
+- [x] 04 Mass assignment: pick allowed fields explicitly per role
+- [x] 05 Users cannot change own role
+- [x] 06 Only SUPER_ADMIN manages users, MFA settings, theme publish
+- [x] 07 Enquiry access scoped by assignment for EDITOR (if enabled)
+- [x] 08 Draft content not readable via public API
+- [x] 09 Media delete checks ownership/role
+- [x] 10 Server Actions each check permission (not only page)
+- [x] 11 Proxy/middleware not used as the only auth layer
+- [x] 12 Hidden admin UI buttons are also blocked server side
+- [x] 13 Sequential IDs not exposed (use cuid)
+- [x] 14 Test matrix: each role × each endpoint
+- [x] 15 Test IDOR by swapping IDs
+- [x] 16 Test escalation via body role field
+- [x] 17 Audit log on every permission denial
+- [x] 18 Alert on repeated denials
+- [x] 19 Document in docs/security/21.md
+- [x] 20 Re-run full tests
 
 ## Phase 22 — Security 6: Rate Limiting & Abuse Control
 - [ ] 01 Upstash sliding-window limiter helper

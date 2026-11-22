@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle2, CircleAlert } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
 import { Honeypot, Turnstile } from "@/components/enquiry/FormSecurity";
@@ -106,6 +106,69 @@ export function NewsletterResult() {
         Confirmation links work once and for 7 days. Sign up again from the form at the bottom of any page.
       </p>
       <Button href="/">Go to the home page</Button>
+    </>
+  );
+}
+
+/**
+ * /newsletter/confirm#t=<token>: the link in the email opens this, and only the button confirms
+ * (POST), so a mail scanner opening the link changes nothing (Phase 18 todo 07).
+ */
+export function NewsletterConfirm() {
+  const router = useRouter();
+  const [state, setState] = useState("idle"); // idle | busy | error | missing
+  const token = useRef("");
+  // Read the token from the #fragment into memory and drop it from the address bar and history.
+  // Called on mount and again on click, in case the button is pressed before the effect has run.
+  const takeToken = () => {
+    const t = new URLSearchParams(window.location.hash.slice(1)).get("t") ?? "";
+    if (t) window.history.replaceState(null, "", window.location.pathname);
+    if (/^[A-Za-z0-9_-]{20,200}$/.test(t)) token.current = t;
+  };
+  useEffect(takeToken, []);
+
+  async function confirm() {
+    if (!token.current) takeToken();
+    if (!token.current) return setState("missing");
+    setState("busy");
+    try {
+      const res = await fetch("/api/public/newsletter/confirm", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ token: token.current }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) return setState("error");
+      router.push(`/newsletter/confirmed?status=${data.status === "ok" ? "ok" : "invalid"}`);
+    } catch {
+      setState("error");
+    }
+  }
+
+  if (state === "missing") {
+    return (
+      <>
+        <CircleAlert aria-hidden="true" className="size-10 text-accent" strokeWidth={1.5} />
+        <h1 className="text-display">This link is incomplete.</h1>
+        <p className="measure text-lead">Open the link from the email again, or sign up again from the form at the bottom of any page.</p>
+        <Button href="/">Go to the home page</Button>
+      </>
+    );
+  }
+  return (
+    <>
+      <h1 className="text-display">Confirm your subscription</h1>
+      <p className="measure text-lead">
+        Press the button to start getting our notes on prices, stock and new products, at most once a month.
+      </p>
+      <Button onClick={confirm} loading={state === "busy"}>
+        Confirm subscription
+      </Button>
+      {state === "error" && (
+        <p role="alert" className="text-[0.9375rem] text-error">
+          That did not work. Check your connection and press the button again.
+        </p>
+      )}
     </>
   );
 }

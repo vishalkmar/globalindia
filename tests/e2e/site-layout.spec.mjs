@@ -21,10 +21,26 @@ const ownerEmail = `e2e-layout-owner-${stamp}@test.local`;
 const ownerPassword = `Layout-Owner-${stamp}`;
 test.beforeAll(async () => {
   await db.adminUser.create({
-    data: { email: ownerEmail, name: "Layout Owner", role: "SUPER_ADMIN", passwordHash: await hash(ownerPassword, ARGON2_OPTIONS), mfaSetupAt: new Date() },
+    data: {
+      email: ownerEmail,
+      name: "Layout Owner",
+      role: "SUPER_ADMIN",
+      passwordHash: await hash(ownerPassword, ARGON2_OPTIONS),
+      mfaSetupAt: new Date(),
+    },
   });
-  const cat = await db.productCategory.create({ data: { slug: `e2e-paraffin-${stamp}`, name: `E2E Paraffin ${stamp}`, family: "PARAFFINS_OILS_GLYCOLS" } });
-  await db.product.create({ data: { slug: `e2e-llp-${stamp}`, name: `Light Liquid Paraffin E2E ${stamp}`, casNo: "8012-95-1", categoryId: cat.id, status: "PUBLISHED" } });
+  const cat = await db.productCategory.create({
+    data: { slug: `e2e-paraffin-${stamp}`, name: `E2E Paraffin ${stamp}`, family: "PARAFFINS_OILS_GLYCOLS" },
+  });
+  await db.product.create({
+    data: {
+      slug: `e2e-llp-${stamp}`,
+      name: `Light Liquid Paraffin E2E ${stamp}`,
+      casNo: "8012-95-1",
+      categoryId: cat.id,
+      status: "PUBLISHED",
+    },
+  });
 });
 test.afterAll(async () => {
   await db.product.deleteMany({ where: { slug: `e2e-llp-${stamp}` } });
@@ -36,9 +52,13 @@ test.afterAll(async () => {
 test("top bar, header and footer show the admin data", async ({ page }) => {
   await page.goto("/");
   const business = (await db.siteSetting.findUnique({ where: { key: "business" } })).value;
-  await expect(page.getByTestId("topbar").getByRole("link", { name: business.phones[0].number })).toHaveAttribute("href", /^tel:\+?\d+$/);
+  await expect(
+    page.getByTestId("topbar").getByRole("link", { name: business.phones[0].number }),
+  ).toHaveAttribute("href", /^tel:\+?\d+$/);
   await expect(page.getByTestId("site-footer").getByText(`GSTIN ${business.gst}`)).toBeVisible();
-  await expect(page.getByTestId("site-footer").getByText(new RegExp(`© ${new Date().getFullYear()}`))).toBeVisible();
+  await expect(
+    page.getByTestId("site-footer").getByText(new RegExp(`© ${new Date().getFullYear()}`)),
+  ).toBeVisible();
   await expect(page.getByRole("navigation", { name: "Main" })).toBeVisible();
 });
 
@@ -49,7 +69,9 @@ test("mega menu and dropdowns work with keyboard and mouse", async ({ page }) =>
   await page.keyboard.press("Enter");
   await expect(products).toHaveAttribute("aria-expanded", "true");
   await expect(page.getByTestId("mega-menu")).toBeVisible();
-  await expect(page.getByTestId("mega-menu").getByRole("link", { name: "Food Ingredients & Additives" })).toBeVisible();
+  await expect(
+    page.getByTestId("mega-menu").getByRole("link", { name: "Food Ingredients & Additives" }),
+  ).toBeVisible();
   await page.keyboard.press("Escape");
   await expect(page.getByTestId("mega-menu")).toHaveCount(0);
   await expect(products).toBeFocused();
@@ -77,7 +99,9 @@ test("search finds products by name and CAS, opens with Ctrl+K", async ({ page }
   const dialog = page.getByRole("dialog", { name: "Search products" });
   await expect(dialog).toBeVisible({ timeout: 45_000 }); // first open downloads the lazy search chunk (dev compiles it on demand)
   await dialog.getByRole("combobox").fill(`${stamp}`);
-  await expect(dialog.getByRole("option", { name: new RegExp(`Light Liquid Paraffin E2E ${stamp}`) })).toBeVisible();
+  await expect(
+    dialog.getByRole("option", { name: new RegExp(`Light Liquid Paraffin E2E ${stamp}`) }),
+  ).toBeVisible();
   await dialog.getByRole("combobox").fill("zzzz-no-such-chemical");
   await expect(dialog.getByText(/Nothing found for/)).toBeVisible();
   await expect(dialog.getByRole("link", { name: /Ask for/ })).toHaveAttribute("href", /\/contact\?product=/);
@@ -155,11 +179,20 @@ test("cookie banner: necessary only by default, analytics only after consent", a
   await adminCtx.close();
 });
 
-test("every header, mega menu and footer link works or is scheduled for a later phase", async ({ page, request }) => {
+test("every header, mega menu and footer link works or is scheduled for a later phase", async ({
+  page,
+  request,
+}) => {
   await page.goto("/");
-  const hrefs = await page.$$eval('header a[href], footer a[href], [data-testid="topbar"] a[href]', (as) => as.map((a) => a.getAttribute("href")));
+  const hrefs = await page.$$eval('header a[href], footer a[href], [data-testid="topbar"] a[href]', (as) =>
+    as.map((a) => a.getAttribute("href")),
+  );
   await page.getByRole("button", { name: "Products", exact: true }).click();
-  hrefs.push(...(await page.$$eval('[data-testid="mega-menu"] a[href]', (as) => as.map((a) => a.getAttribute("href")))));
+  hrefs.push(
+    ...(await page.$$eval('[data-testid="mega-menu"] a[href]', (as) =>
+      as.map((a) => a.getAttribute("href")),
+    )),
+  );
   const internal = [...new Set(hrefs.filter((h) => h.startsWith("/")).map((h) => h.split(/[?#]/)[0]))];
   const broken = [];
   const scheduled = [];

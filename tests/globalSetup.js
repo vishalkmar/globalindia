@@ -21,7 +21,12 @@ export default async function setup() {
   // Async spawn: the PGlite server lives in this process, so the event loop must stay free.
   const res = await new Promise((resolve) => {
     const child = spawn(process.execPath, [prisma, "migrate", "deploy"], {
-      env: { ...process.env, DATABASE_URL: TEST_DB_URL, DIRECT_URL: TEST_DB_URL, SHADOW_DATABASE_URL: TEST_DB_URL.replace(String(TEST_DB_PORT), "5499") },
+      env: {
+        ...process.env,
+        DATABASE_URL: TEST_DB_URL,
+        DIRECT_URL: TEST_DB_URL,
+        SHADOW_DATABASE_URL: TEST_DB_URL.replace(String(TEST_DB_PORT), "5499"),
+      },
     });
     let stdout = "";
     let stderr = "";

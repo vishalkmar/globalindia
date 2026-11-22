@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, Plus, Send, Trash2 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
@@ -9,10 +10,14 @@ import { Field, Input, Select, Textarea } from "@/components/ui/Field";
 import { Alert } from "@/components/ui/Static";
 import { readBasket } from "@/lib/client/quoteBasket";
 import { cn } from "@/lib/utils";
-import { callbackSchema, contactSchema, quoteSchema, sampleSchema } from "@/lib/validation/enquiry";
 
-import { Honeypot, Turnstile } from "./FormSecurity";
+import { Footer, Person, ProductSelect } from "./FormParts";
 import { useEnquiry } from "./useEnquiry";
+
+const loading = () => <p className="text-sm text-muted">Loading the form…</p>;
+const SampleForm = dynamic(() => import("./OtherForms").then((m) => m.SampleForm), { loading });
+const CallbackForm = dynamic(() => import("./OtherForms").then((m) => m.CallbackForm), { loading });
+const ContactForm = dynamic(() => import("./OtherForms").then((m) => m.ContactForm), { loading });
 
 const TABS = [
   { id: "quote", label: "Request a quote" },
@@ -26,110 +31,6 @@ const DOC_TEXT = {
   TDS: "the TDS (technical data sheet)",
 };
 
-function ProductSelect({ products, value, onChange, label, error, id }) {
-  const groups = useMemo(() => {
-    const out = new Map();
-    for (const p of products) out.set(p.category, [...(out.get(p.category) ?? []), p]);
-    return [...out.entries()];
-  }, [products]);
-  return (
-    <Field label={label} error={error} required id={id}>
-      <Select
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-invalid={error ? true : undefined}
-      >
-        <option value="">Choose a product</option>
-        {groups.map(([cat, list]) => (
-          <optgroup key={cat} label={cat}>
-            {list.map((p) => (
-              <option key={p.slug} value={p.slug}>
-                {p.name}
-              </option>
-            ))}
-          </optgroup>
-        ))}
-      </Select>
-    </Field>
-  );
-}
-
-function Person({ f, phoneRequired = false, cityRequired = false, cityLabel = "City", showCity = true }) {
-  return (
-    <div className="grid gap-4 sm:grid-cols-2">
-      <Field label="Your name" required error={f.errors.name}>
-        <Input
-          value={f.values.name}
-          onChange={(e) => f.set("name", e.target.value)}
-          autoComplete="name"
-          maxLength={80}
-        />
-      </Field>
-      <Field label="Company" error={f.errors.company}>
-        <Input
-          value={f.values.company}
-          onChange={(e) => f.set("company", e.target.value)}
-          autoComplete="organization"
-          maxLength={120}
-        />
-      </Field>
-      <Field label="Email" required error={f.errors.email}>
-        <Input
-          type="email"
-          value={f.values.email}
-          onChange={(e) => f.set("email", e.target.value)}
-          autoComplete="email"
-          maxLength={254}
-        />
-      </Field>
-      <Field
-        label="Phone"
-        required={phoneRequired}
-        error={f.errors.phone}
-        hint="Mobile or landline, with STD code."
-      >
-        <Input
-          type="tel"
-          value={f.values.phone}
-          onChange={(e) => f.set("phone", e.target.value)}
-          autoComplete="tel"
-          maxLength={20}
-          inputMode="tel"
-        />
-      </Field>
-      {showCity ? (
-        <Field label={cityLabel} required={cityRequired} error={f.errors.city}>
-          <Input
-            value={f.values.city}
-            onChange={(e) => f.set("city", e.target.value)}
-            autoComplete="address-level2"
-            maxLength={80}
-          />
-        </Field>
-      ) : null}
-    </div>
-  );
-}
-
-function Footer({ f, label = "Send", children }) {
-  return (
-    <div className="flex flex-col gap-4">
-      <Honeypot value={f.honeypot} onChange={f.setHoneypot} />
-      <Turnstile onToken={f.setToken} resetKey={f.resetKey} />
-      {f.formError ? <Alert tone="error">{f.formError}</Alert> : null}
-      <div className="flex flex-wrap items-center gap-3">
-        {children}
-        <Button type="submit" loading={f.busy}>
-          <Send aria-hidden="true" /> {label}
-        </Button>
-      </div>
-      <p className="text-[0.8125rem] text-muted">
-        We use your details only to answer this enquiry. No newsletters unless you sign up for them.
-      </p>
-    </div>
-  );
-}
-
 /* ------------------------------------------------------------------ quote (multi-step, todo 03) */
 
 const STEPS = [
@@ -139,7 +40,7 @@ const STEPS = [
 ];
 
 function QuoteForm({ products, initialItems, initialMessage }) {
-  const f = useEnquiry(quoteSchema, {
+  const f = useEnquiry("QUOTE", {
     type: "QUOTE",
     items: initialItems.length ? initialItems : [{ slug: "", quantity: "", packSize: "" }],
     name: "",
@@ -158,8 +59,8 @@ function QuoteForm({ products, initialItems, initialMessage }) {
       f.values.items.map((it, j) => (j === i ? { ...it, ...patch } : it)),
     );
 
-  function go(next) {
-    if (next > step && !f.check(STEPS[step].fields)) return;
+  async function go(next) {
+    if (next > step && !(await f.check(STEPS[step].fields))) return;
     setStep(next);
     requestAnimationFrame(() => headingRef.current?.focus());
   }
@@ -321,154 +222,6 @@ function QuoteForm({ products, initialItems, initialMessage }) {
           </Button>
         </div>
       )}
-    </form>
-  );
-}
-
-/* ------------------------------------------------------------------ sample, callback, contact (todos 02, 04, 05) */
-
-function SampleForm({ products, initialSlug }) {
-  const f = useEnquiry(sampleSchema, {
-    type: "SAMPLE",
-    items: [{ slug: initialSlug, quantity: "", packSize: "" }],
-    name: "",
-    company: "",
-    email: "",
-    phone: "",
-    city: "",
-    message: "",
-  });
-  const item = f.values.items[0];
-  return (
-    <form
-      noValidate
-      onSubmit={(e) => (e.preventDefault(), f.submit())}
-      className="relative flex flex-col gap-5"
-      aria-label="Ask for a sample"
-    >
-      <div className="grid gap-4 sm:grid-cols-2">
-        <ProductSelect
-          products={products}
-          label="Product"
-          value={item.slug}
-          onChange={(v) => f.set("items", [{ ...item, slug: v }])}
-          error={f.errors["items.0.slug"] ?? f.errors.items}
-        />
-        <Field label="Sample size" hint="Usually 250 g to 1 kg, or 500 ml.">
-          <Input
-            value={item.quantity}
-            onChange={(e) => f.set("items", [{ ...item, quantity: e.target.value }])}
-            maxLength={60}
-          />
-        </Field>
-      </div>
-      <Field
-        label="What will you test it for?"
-        required
-        error={f.errors.message}
-        hint="Your product and the batch size you plan, so we send the right grade."
-      >
-        <Textarea
-          rows={3}
-          value={f.values.message}
-          onChange={(e) => f.set("message", e.target.value)}
-          maxLength={1000}
-        />
-      </Field>
-      <Person f={f} phoneRequired cityRequired cityLabel="Delivery city" />
-      <Footer f={f} label="Ask for a sample" />
-    </form>
-  );
-}
-
-function CallbackForm() {
-  const f = useEnquiry(callbackSchema, {
-    type: "CALLBACK",
-    name: "",
-    phone: "",
-    email: "",
-    company: "",
-    city: "",
-    message: "",
-  });
-  return (
-    <form
-      noValidate
-      onSubmit={(e) => (e.preventDefault(), f.submit())}
-      className="relative flex flex-col gap-5"
-      aria-label="Request a callback"
-    >
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Your name" required error={f.errors.name}>
-          <Input
-            value={f.values.name}
-            onChange={(e) => f.set("name", e.target.value)}
-            autoComplete="name"
-            maxLength={80}
-          />
-        </Field>
-        <Field label="Phone" required error={f.errors.phone}>
-          <Input
-            type="tel"
-            value={f.values.phone}
-            onChange={(e) => f.set("phone", e.target.value)}
-            autoComplete="tel"
-            inputMode="tel"
-            maxLength={20}
-          />
-        </Field>
-        <Field label="Company" error={f.errors.company}>
-          <Input
-            value={f.values.company}
-            onChange={(e) => f.set("company", e.target.value)}
-            autoComplete="organization"
-            maxLength={120}
-          />
-        </Field>
-        <Field
-          label="What is it about?"
-          error={f.errors.message}
-          hint="Optional, e.g. price of SLES 70%, best time to call."
-        >
-          <Input
-            value={f.values.message}
-            onChange={(e) => f.set("message", e.target.value)}
-            maxLength={300}
-          />
-        </Field>
-      </div>
-      <Footer f={f} label="Call me back" />
-    </form>
-  );
-}
-
-function ContactForm({ initialMessage }) {
-  const f = useEnquiry(contactSchema, {
-    type: "CONTACT",
-    name: "",
-    company: "",
-    email: "",
-    phone: "",
-    city: "",
-    message: initialMessage,
-  });
-  return (
-    <form
-      noValidate
-      onSubmit={(e) => (e.preventDefault(), f.submit())}
-      className="relative flex flex-col gap-5"
-      aria-label="Send a message"
-    >
-      <Person f={f} />
-      <Field label="Message" required error={f.errors.message}>
-        <Textarea
-          rows={5}
-          value={f.values.message}
-          onChange={(e) => f.set("message", e.target.value)}
-          maxLength={2000}
-        />
-      </Field>
-      <Footer f={f} label="Send message" />
     </form>
   );
 }

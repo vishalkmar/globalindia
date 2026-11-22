@@ -16,6 +16,9 @@ const secure = process.env.NODE_ENV === "production";
 export const REFRESH_TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
 export const MFA_PENDING_TTL_SECONDS = 5 * 60;
 
+/** Pre-sign-in CSRF nonce cookie (see lib/security/csrf.js). */
+export const PRE_CSRF_COOKIE = process.env.NODE_ENV === "production" ? "__Host-gi_pre" : "gi_pre";
+
 export const COOKIE = {
   access: secure ? "__Host-gi_at" : "gi_at",
   refresh: secure ? "__Secure-gi_rt" : "gi_rt",
@@ -33,6 +36,8 @@ export function setSessionCookies(res, { accessToken, refreshToken }) {
   res.cookies.set(COOKIE.access, accessToken, base(ACCESS_TOKEN_TTL_SECONDS));
   res.cookies.set(COOKIE.refresh, refreshToken, base(REFRESH_TOKEN_TTL_SECONDS, REFRESH_PATH));
   res.cookies.set(COOKIE.mfaPending, "", base(0));
+  // The pre-sign-in CSRF nonce ends with the session start: tokens rotate on login (Phase 18 todo 11).
+  res.cookies.set(PRE_CSRF_COOKIE, "", { ...base(0), sameSite: "strict" });
   return res;
 }
 

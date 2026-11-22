@@ -1,9 +1,9 @@
 import { assertMediaRefs, assertSlugFree, invalidateCatalogue } from "@/lib/admin/catalogue";
 import { audit } from "@/lib/audit";
-import { requirePermission } from "@/lib/auth/guard";
+import { denyAccess, requirePermission } from "@/lib/auth/guard";
 import { can } from "@/lib/auth/permissions";
 import { db } from "@/lib/db";
-import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
+import { assertSameOrigin, json, readJson, route } from "@/lib/http";
 import { saveRevision } from "@/lib/revisions";
 import { sanitizeRichText } from "@/lib/security/sanitize";
 import { categorySchema } from "@/lib/validation/catalogue";
@@ -37,7 +37,7 @@ export const POST = route(async (req) => {
   const user = await requirePermission("create", "categories");
   const data = await readJson(req, categorySchema, { maxBytes: 128 * 1024 });
   if (data.status === "PUBLISHED" && !can(user, "publish", "categories"))
-    throw new HttpError(403, "You can save it as a draft; publishing needs a publisher.");
+    await denyAccess(user, { action: "publish", resource: "categories", message: "You can save it as a draft; publishing needs a publisher." });
   await assertSlugFree("productCategory", data.slug);
   await assertMediaRefs([{ path: "imageId", id: data.imageId, kind: "image" }]);
   const last = await db.productCategory.aggregate({

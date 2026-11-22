@@ -14,7 +14,15 @@ let savedFaqs = [];
 
 test.beforeAll(async () => {
   savedFaqs = await db.faq.findMany({ orderBy: { order: "asc" } });
-  await db.adminUser.create({ data: { email: editor.email, name: `Writer ${stamp}`, role: "EDITOR", passwordHash: await hash(editor.password, ARGON2_OPTIONS), mfaSetupAt: new Date() } });
+  await db.adminUser.create({
+    data: {
+      email: editor.email,
+      name: `Writer ${stamp}`,
+      role: "EDITOR",
+      passwordHash: await hash(editor.password, ARGON2_OPTIONS),
+      mfaSetupAt: new Date(),
+    },
+  });
 });
 test.afterAll(async () => {
   await db.faq.deleteMany({});
@@ -26,13 +34,19 @@ test.afterAll(async () => {
 
 test("industries link to products and products link back", async ({ page }) => {
   await page.goto("/industries");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText(/Raw materials for the way your industry works/);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    /Raw materials for the way your industry works/,
+  );
   await page.getByRole("link", { name: /Detergents & Home Care/ }).click();
   await expect(page).toHaveURL(/\/industries\/detergents-home-care$/);
-  await expect(page.getByRole("heading", { name: /What detergents & home care buyers ask us for/ })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /What detergents & home care buyers ask us for/ }),
+  ).toBeVisible();
   await page.getByRole("link", { name: "SLES 70%" }).click();
   await expect(page).toHaveURL(/\/products\/anionic-surfactants\/sles-70$/);
-  await expect(page.getByRole("list", { name: "Industries" }).getByRole("link", { name: "Detergents & Home Care" })).toHaveAttribute("href", "/industries/detergents-home-care");
+  await expect(
+    page.getByRole("list", { name: "Industries" }).getByRole("link", { name: "Detergents & Home Care" }),
+  ).toHaveAttribute("href", "/industries/detergents-home-care");
 });
 
 test("insights: topics, article with table of contents and article data", async ({ page }) => {
@@ -42,11 +56,15 @@ test("insights: topics, article with table of contents and article data", async 
   await expect(page).toHaveURL(/category=Quality/);
   await expect(page.getByRole("link", { name: /LABSA 90 or LABSA 96/ })).toHaveCount(0);
   await page.getByRole("link", { name: /How to read a COA/ }).click();
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("How to read a COA before you accept a delivery");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    "How to read a COA before you accept a delivery",
+  );
   const toc = page.getByRole("navigation", { name: /In this article/ }).first();
   await toc.getByRole("link", { name: /Is it the grade you ordered/ }).click();
   await expect(page).toHaveURL(/#s-2-is-it-the-grade-you-ordered$/);
-  const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).map((t) => JSON.parse(t)).find((d) => d["@type"] === "Article");
+  const ld = (await page.locator('script[type="application/ld+json"]').allTextContents())
+    .map((t) => JSON.parse(t))
+    .find((d) => d["@type"] === "Article");
   expect(ld.headline).toBe("How to read a COA before you accept a delivery");
   await expect(page.getByText("By the Global India sales desk")).toBeVisible();
 });
@@ -79,11 +97,17 @@ test("newsletter: double opt-in from the footer", async ({ page }) => {
   await form.getByRole("button", { name: "Subscribe" }).click();
   await expect(form.getByText("Check your inbox and click the link to confirm.")).toBeVisible();
   const html = await waitForMail({ to: email, tag: "newsletter-confirm", since });
-  const token = html.match(/confirm\?token=([A-Za-z0-9_-]+)/)[1];
-  await page.goto(`/api/public/newsletter/confirm?token=${token}`);
+  const token = html.match(/\/newsletter\/confirm#t=([A-Za-z0-9_-]+)/)[1];
+  // Opening the link only shows a button; the token leaves the address bar at once.
+  await page.goto(`/newsletter/confirm#t=${token}`);
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Confirm your subscription");
+  await expect(page).toHaveURL(/\/newsletter\/confirm$/);
+  await page.getByRole("button", { name: "Confirm subscription" }).click();
   await expect(page).toHaveURL(/\/newsletter\/confirmed\?status=ok$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("You are subscribed.");
+  // An old-style link redirects to the same page; the used token is refused.
   await page.goto(`/api/public/newsletter/confirm?token=${token}`);
+  await page.getByRole("button", { name: "Confirm subscription" }).click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(/expired or was already used/);
 });
 
@@ -103,14 +127,20 @@ test("admin: FAQ edits reach the FAQ page; a new article is published", async ({
 
   await page.goto("/admin/insights/new");
   await page.getByRole("textbox", { name: /^Title/ }).fill(`Soda ash light vs dense ${stamp}`);
-  await page.getByLabel("Summary", { exact: true }).fill("When light soda ash is enough and when dense pays for itself.");
+  await page
+    .getByLabel("Summary", { exact: true })
+    .fill("When light soda ash is enough and when dense pays for itself.");
   await page.getByLabel("Status", { exact: true }).selectOption("PUBLISHED");
   const editorBox = page.locator(".ProseMirror").first();
   await editorBox.click();
-  await page.keyboard.type("Light soda ash is the usual choice for detergent powder because it blends evenly and dissolves fast in the slurry.");
+  await page.keyboard.type(
+    "Light soda ash is the usual choice for detergent powder because it blends evenly and dissolves fast in the slurry.",
+  );
   await page.getByRole("button", { name: "Create article" }).click();
   await expect(page.getByText("Article created.")).toBeVisible();
-  await expect(page.getByRole("heading", { level: 1, name: `Soda ash light vs dense ${stamp}` })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: `Soda ash light vs dense ${stamp}` }),
+  ).toBeVisible();
   await page.goto(`/insights/soda-ash-light-vs-dense-${stamp}`);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(`Soda ash light vs dense ${stamp}`);
 });

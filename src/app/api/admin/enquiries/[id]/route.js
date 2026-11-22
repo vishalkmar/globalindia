@@ -1,4 +1,4 @@
-import { withRef } from "@/lib/admin/enquiries";
+import { enquiryScope, withRef } from "@/lib/admin/enquiries";
 import { audit } from "@/lib/audit";
 import { requirePermission } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
@@ -6,11 +6,12 @@ import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
 import { idSchema } from "@/lib/validation/auth";
 import { enquiryUpdateSchema } from "@/lib/validation/enquiry";
 
-async function load(ctx) {
+/** The enquiry, if this admin may see it; 404 otherwise (same answer as "does not exist"). */
+async function load(ctx, user) {
   const { id } = await ctx.params;
   if (!idSchema.safeParse(id).success) throw new HttpError(404);
-  const e = await db.enquiry.findUnique({
-    where: { id },
+  const e = await db.enquiry.findFirst({
+    where: { id, ...(await enquiryScope(user)) },
     include: { assignedTo: { select: { id: true, name: true, email: true } } },
   });
   if (!e) throw new HttpError(404);
@@ -57,8 +58,8 @@ async function timeline(enquiryId) {
 
 /** GET /api/admin/enquiries/:id — the enquiry, its products, timeline and who it can be assigned to. */
 export const GET = route(async (_req, ctx) => {
-  await requirePermission("read", "enquiries");
-  const e = await load(ctx);
+  const user = await requirePermission("read", "enquiries");
+  const e = await load(ctx, user);
   const [products, assignees, events] = await Promise.all([
     db.product.findMany({
       where: { id: { in: e.productIds } },
@@ -78,7 +79,7 @@ export const GET = route(async (_req, ctx) => {
 export const PATCH = route(async (req, ctx) => {
   assertSameOrigin(req);
   const user = await requirePermission("update", "enquiries");
-  const before = await load(ctx);
+  const before = await load(ctx, user);
   const data = await readJson(req, enquiryUpdateSchema);
   if (data.assignedToId) {
     const assignee = await db.adminUser.findFirst({

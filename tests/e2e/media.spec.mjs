@@ -15,7 +15,13 @@ const SHOTS = process.env.SHOT_DIR;
 
 test.beforeAll(async () => {
   await db.adminUser.create({
-    data: { email, name: "Media Editor", role: "EDITOR", passwordHash: await hash(PASSWORD, ARGON2_OPTIONS), mfaSetupAt: new Date() },
+    data: {
+      email,
+      name: "Media Editor",
+      role: "EDITOR",
+      passwordHash: await hash(PASSWORD, ARGON2_OPTIONS),
+      mfaSetupAt: new Date(),
+    },
   });
 });
 test.afterAll(async () => {
@@ -30,7 +36,9 @@ async function signIn(page) {
   const since = Date.now() - 1000;
   await page.getByRole("button", { name: "Continue" }).click();
   await page.waitForURL(/\/admin\/verify/);
-  await page.getByLabel("6-digit code").fill(codeFrom(await waitForMail({ to: email, tag: "otp-login", since })));
+  await page
+    .getByLabel("6-digit code")
+    .fill(codeFrom(await waitForMail({ to: email, tag: "otp-login", since })));
   await page.waitForURL((u) => u.pathname === "/admin");
 }
 
@@ -40,7 +48,9 @@ test("upload by picker and drag-drop, add alt text and focal point, link guard",
   await expect(page.getByRole("heading", { name: "Media", level: 1 })).toBeVisible();
 
   // 1. File picker
-  await page.getByTestId("media-file-input").setInputFiles({ name: "warehouse-drums.png", mimeType: "image/png", buffer: png(1600, 900) });
+  await page
+    .getByTestId("media-file-input")
+    .setInputFiles({ name: "warehouse-drums.png", mimeType: "image/png", buffer: png(1600, 900) });
   await expect(page.getByText(/1 file uploaded/)).toBeVisible();
   const drawer = page.getByRole("dialog", { name: "File details" });
   await expect(drawer).toBeVisible();
@@ -66,7 +76,11 @@ test("upload by picker and drag-drop, add alt text and focal point, link guard",
   await page.getByRole("dialog", { name: "File details" }).getByRole("button", { name: "Close" }).click();
 
   // 3. A fake "image" that is really SVG is refused
-  await page.getByTestId("media-file-input").setInputFiles({ name: "logo.png", mimeType: "image/png", buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"/>') });
+  await page.getByTestId("media-file-input").setInputFiles({
+    name: "logo.png",
+    mimeType: "image/png",
+    buffer: Buffer.from('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"/>'),
+  });
   await expect(page.getByText(/SVG, HTML and XML files are not accepted/)).toBeVisible();
 
   // 4. Link upload to an internal address is refused by the server

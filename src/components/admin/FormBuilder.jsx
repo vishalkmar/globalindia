@@ -150,7 +150,7 @@ function MediaIdField({ def, value, onChange, error, cache }) {
 }
 
 /**
- * One field. Types: text, email, tel, url, number, password, textarea, select, checkbox, richtext,
+ * One field. Types: text, email, tel, url, number, password, textarea, select, checkbox, checklist, richtext,
  * tags, media, group (nested object) and repeater (list of objects).
  */
 function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
@@ -176,6 +176,29 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
         />
         {error ? <p className="mt-1 text-[0.8125rem] text-error">{error}</p> : null}
       </div>
+    );
+  }
+  if (type === "checklist") {
+    const list = Array.isArray(value) ? value : [];
+    return (
+      <fieldset className="flex flex-col gap-2">
+        <legend className="text-label text-ink">{def.label}</legend>
+        {def.hint ? <p className="text-[0.8125rem] text-muted">{def.hint}</p> : null}
+        <div className="flex flex-wrap gap-4">
+          {(def.options ?? []).map((o) => (
+            <Checkbox
+              key={o.value}
+              label={o.label}
+              checked={list.includes(o.value)}
+              disabled={def.disabled}
+              onChange={(e) =>
+                onChange(e.target.checked ? [...list, o.value] : list.filter((v) => v !== o.value))
+              }
+            />
+          ))}
+        </div>
+        {error ? <p className="text-[0.8125rem] text-error">{error}</p> : null}
+      </fieldset>
     );
   }
   if (type === "richtext") {

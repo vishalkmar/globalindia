@@ -23,10 +23,7 @@ async function Content({ params }) {
   if (!page) notFound();
   return (
     <>
-      <PageHeader
-        title={page.title}
-        description={`Address: ${pagePublicPath(page.slug)}`}
-      />
+      <PageHeader title={page.title} description={`Address: ${pagePublicPath(page.slug)}`} />
       <PageEditor
         pageId={id}
         perms={{ update: can(user, "update", "pages"), publish: can(user, "publish", "pages") }}

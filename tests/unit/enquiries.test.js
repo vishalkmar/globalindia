@@ -257,7 +257,8 @@ describe("public enquiry API", () => {
           )
         ).status,
       );
-    expect(statuses.slice(0, 6).every((s) => s === 201)).toBe(true);
+    expect(statuses.slice(0, 5).every((s) => s === 201)).toBe(true);
+    expect(statuses[5]).toBe(429); // 5 per hour per IP (Phase 22)
     expect(statuses.at(-1)).toBe(429);
   });
 

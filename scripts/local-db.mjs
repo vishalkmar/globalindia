@@ -29,7 +29,12 @@ let shadowDb;
 let shadowServer;
 if (!memory) {
   shadowDb = await PGlite.create("memory://");
-  shadowServer = new PGLiteSocketServer({ db: shadowDb, port: port + 1, host: "127.0.0.1", maxConnections: 10 });
+  shadowServer = new PGLiteSocketServer({
+    db: shadowDb,
+    port: port + 1,
+    host: "127.0.0.1",
+    maxConnections: 10,
+  });
   await shadowServer.start();
   console.log(`Shadow database listening on 127.0.0.1:${port + 1} (in-memory)`);
 }

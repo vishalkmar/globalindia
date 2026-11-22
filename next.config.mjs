@@ -1,6 +1,12 @@
+import { buildCsp, buildReportOnlyCsp } from "./src/lib/security/csp.js";
+
+const isDev = process.env.NODE_ENV === "development";
+
 /**
  * Next.js configuration — Global India website.
- * Security-relevant defaults live here; the per-request CSP (nonce) is added in src/proxy.js (Phase 20).
+ * Security-relevant defaults live here, including the Content-Security-Policy (Phase 20). Pages are
+ * prerendered, so the CSP is static (no per-request nonce); script files carry SRI hashes instead.
+ * See docs/security/20.md.
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
@@ -12,6 +18,17 @@ const nextConfig = {
   poweredByHeader: false,
   productionBrowserSourceMaps: false,
   reactStrictMode: true,
+
+  // The site uses no Server Actions; if one is ever added, Next's origin check only accepts our host
+  // (Phase 18 todo 06).
+  experimental: {
+    // Subresource Integrity: every Next script tag gets an integrity hash (Phase 20 todo 03).
+    sri: { algorithm: "sha256" },
+    serverActions: {
+      allowedOrigins: [new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").host],
+      bodySizeLimit: "1mb",
+    },
+  },
 
   // Native / server-only packages that must not be bundled
   serverExternalPackages: ["@node-rs/argon2", "@prisma/client", "prisma"],
@@ -33,13 +50,17 @@ const nextConfig = {
   },
 
   async headers() {
-    // Static baseline headers for every route. CSP with nonce is set per request in proxy.js.
+    // Static baseline headers for every route.
     const base = [
       { key: "X-Content-Type-Options", value: "nosniff" },
       { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
       { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), browsing-topics=()" },
       { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
       { key: "X-Frame-Options", value: "DENY" },
+      // Full policy incl. clickjacking (frame-ancestors), Phase 18 todo 13 and Phase 20.
+      { key: "Content-Security-Policy", value: buildCsp({ dev: isDev }) },
+      // Trusted Types reported, not enforced yet (Phase 20 todo 06).
+      { key: "Content-Security-Policy-Report-Only", value: buildReportOnlyCsp() },
       { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
     ];
     return [

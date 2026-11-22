@@ -45,7 +45,7 @@ export async function subscribe({ email, website, turnstileToken }, { ip }) {
 
   after(async () => {
     try {
-      const confirmUrl = `${siteUrl()}/api/public/newsletter/confirm?token=${encodeURIComponent(token)}`;
+      const confirmUrl = `${siteUrl()}/newsletter/confirm#t=${token}`;
       await sendEmail({ to: email, ...newsletterConfirmEmail({ confirmUrl }), tags: ["newsletter-confirm"] });
     } catch (err) {
       logger.error("newsletter.confirm_mail_failed", { err });

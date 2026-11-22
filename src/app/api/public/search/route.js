@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { errorResponse, json, route } from "@/lib/http";
 import { clientIp } from "@/lib/security/ip";
+import { likeTerm } from "@/lib/security/like";
 import { rateLimit } from "@/lib/security/rateLimit";
 
 /**
@@ -20,7 +21,7 @@ export const GET = route(async (req) => {
   const q = (new URL(req.url).searchParams.get("q") ?? "").trim().slice(0, 80);
   if (q.length < 2) return json({ ok: true, products: [], categories: [] });
 
-  const contains = { contains: q, mode: "insensitive" };
+  const contains = { contains: likeTerm(q), mode: "insensitive" };
   const [products, categories] = await Promise.all([
     db.product.findMany({
       where: {

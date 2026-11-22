@@ -61,8 +61,8 @@ async function List() {
                 {p.draftAt ? <Badge tone="accent">Unpublished changes</Badge> : null}
               </p>
               <p className="text-sm text-muted">
-                <span className="font-data">{pagePublicPath(p.slug)}</span> ·{" "}
-                {p._count.sections} sections · published {when(p.publishedAt)}
+                <span className="font-data">{pagePublicPath(p.slug)}</span> · {p._count.sections} sections ·
+                published {when(p.publishedAt)}
               </p>
             </div>
             <ChevronRight aria-hidden="true" className="size-5 text-muted" />

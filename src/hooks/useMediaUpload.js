@@ -2,10 +2,12 @@
 
 import { useCallback } from "react";
 
-import { adminJson } from "@/lib/client/adminFetch";
+import { adminJson, csrfToken } from "@/lib/client/adminFetch";
 
 /** Browser upload with progress (fetch has no upload progress, so XMLHttpRequest is used). */
-function xhrUpload(url, fields, file, onProgress) {
+async function xhrUpload(url, fields, file, onProgress) {
+  // Same-origin uploads carry the CSRF token (Phase 18); Cloudinary never sees it.
+  const token = url.startsWith("/") ? await csrfToken() : null;
   return new Promise((resolve, reject) => {
     const form = new FormData();
     for (const [k, v] of Object.entries(fields)) form.append(k, v);
@@ -14,6 +16,7 @@ function xhrUpload(url, fields, file, onProgress) {
     xhr.open("POST", url);
     // Same-origin local uploads carry the session cookie; Cloudinary uploads must not get our cookies.
     xhr.withCredentials = url.startsWith("/");
+    if (token) xhr.setRequestHeader("x-csrf-token", token);
     xhr.upload.onprogress = (e) => e.lengthComputable && onProgress?.(Math.round((e.loaded / e.total) * 100));
     xhr.onload = () => {
       if (xhr.status >= 200 && xhr.status < 300) return resolve();

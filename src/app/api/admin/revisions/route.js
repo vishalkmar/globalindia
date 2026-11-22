@@ -1,10 +1,11 @@
-import { requirePermission } from "@/lib/auth/guard";
+import { requireAdmin, requirePermission } from "@/lib/auth/guard";
 import { HttpError, json, route } from "@/lib/http";
 import { listRevisions, REVISION_ENTITIES } from "@/lib/revisions";
 import { idSchema } from "@/lib/validation/auth";
 
 /** GET /api/admin/revisions?entity=page&entityId=... — newest 20 snapshots (metadata only). */
 export const GET = route(async (req) => {
+  await requireAdmin(); // signed out: 401 before anything about the input is revealed
   const params = new URL(req.url).searchParams;
   const entity = params.get("entity");
   const entityId = params.get("entityId");

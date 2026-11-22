@@ -9,6 +9,7 @@ import {
   Inbox,
   LayoutDashboard,
   ListTree,
+  Mail,
   Newspaper,
   Package,
   Palette,
@@ -17,6 +18,7 @@ import {
   Search,
   Settings,
   ShieldCheck,
+  Trash2,
   Users,
 } from "lucide-react";
 
@@ -56,7 +58,8 @@ export const NAV_GROUPS = [
       { href: "/admin/menus", label: "Menus", icon: ListTree, resource: "menus" },
       { href: "/admin/theme", label: "Theme", icon: Palette, resource: "theme" },
       { href: "/admin/settings", label: "Settings", icon: Settings, resource: "siteSettings" },
-      { href: "/admin/seo", label: "SEO & redirects", icon: Search, resource: "seo", phase: 16 },
+      { href: "/admin/redirects", label: "Redirects", icon: Search, resource: "seo" },
+      { href: "/admin/emails", label: "Emails", icon: Mail, resource: "siteSettings" },
     ],
   },
   {
@@ -64,6 +67,7 @@ export const NAV_GROUPS = [
     items: [
       { href: "/admin/users", label: "Users", icon: Users, resource: "users" },
       { href: "/admin/audit", label: "Audit log", icon: ScrollText, resource: "audit" },
+      { href: "/admin/trash", label: "Trash", icon: Trash2, resource: "dashboard" },
       { href: "/admin/security", label: "My security", icon: ShieldCheck, resource: null },
     ],
   },

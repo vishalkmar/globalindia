@@ -48,6 +48,11 @@ export function errorResponse(status, message = errorMessages[status] ?? errorMe
 export function route(handler) {
   return async (req, ctx) => {
     try {
+      // CSRF token on every state-changing admin/auth request (Phase 18). Loaded lazily: public routes never pay for it.
+      if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method)) {
+        const csrf = await import("@/lib/security/csrf");
+        if (csrf.needsCsrf(req)) await csrf.verifyCsrf(req);
+      }
       return await handler(req, ctx);
     } catch (err) {
       if (err instanceof HttpError) return errorResponse(err.status, err.message, err.extra);

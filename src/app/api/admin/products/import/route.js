@@ -4,7 +4,7 @@ import { productEditorShape } from "@/lib/admin/catalogue";
 import { CSV_COLUMNS, CSV_MAX_ROWS, productFromRow } from "@/lib/admin/productCsv";
 import { loadProduct, saveProduct } from "@/lib/admin/products";
 import { audit } from "@/lib/audit";
-import { requirePermission } from "@/lib/auth/guard";
+import { denyAccess, requirePermission } from "@/lib/auth/guard";
 import { can } from "@/lib/auth/permissions";
 import { parseCsvObjects } from "@/lib/csv";
 import { db } from "@/lib/db";
@@ -24,7 +24,7 @@ const bodySchema = z.strictObject({
 export const POST = route(async (req) => {
   assertSameOrigin(req);
   const user = await requirePermission("update", "products");
-  if (!can(user, "create", "products")) throw new HttpError(403);
+  if (!can(user, "create", "products")) await denyAccess(user, { action: "create", resource: "products" });
   const { csv, apply } = await readJson(req, bodySchema, { maxBytes: MAX_BYTES + 4096 });
 
   let parsed;

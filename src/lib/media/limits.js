@@ -2,10 +2,10 @@ import "server-only";
 
 import { db } from "@/lib/db";
 
-import { HARD_LIMITS } from "./constants";
+import { HARD_LIMITS, IMAGE_FORMATS } from "./constants";
 
 /**
- * Effective upload limits = admin setting (SiteSetting "uploads": { imageMaxMB, pdfMaxMB })
+ * Effective upload limits = admin setting (SiteSetting "uploads": { imageMaxMB, pdfMaxMB, imageFormats, allowPdf })
  * clamped to the hard caps in code. A tampered or missing setting can only make limits stricter.
  */
 export async function uploadLimits() {
@@ -23,6 +23,12 @@ export async function uploadLimits() {
     imageBytes: mb(setting?.imageMaxMB, HARD_LIMITS.imageBytes),
     pdfBytes: mb(setting?.pdfMaxMB, HARD_LIMITS.pdfBytes),
     filesPerBatch: HARD_LIMITS.filesPerBatch,
+    // Allowed types can only be narrowed from the built-in allow-list (never widened).
+    imageFormats:
+      Array.isArray(setting?.imageFormats) && setting.imageFormats.length
+        ? IMAGE_FORMATS.filter((f) => setting.imageFormats.includes(f))
+        : IMAGE_FORMATS,
+    allowPdf: setting?.allowPdf !== false,
   };
 }
 

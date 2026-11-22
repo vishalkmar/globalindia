@@ -10,7 +10,7 @@ import {
   retiredSlug,
 } from "@/lib/admin/catalogue";
 import { audit } from "@/lib/audit";
-import { requirePermission } from "@/lib/auth/guard";
+import { denyAccess, requirePermission } from "@/lib/auth/guard";
 import { can } from "@/lib/auth/permissions";
 import { db } from "@/lib/db";
 import { assertSameOrigin, HttpError, json, readJson, route } from "@/lib/http";
@@ -45,7 +45,7 @@ export const PUT = route(async (req, ctx) => {
   const before = await load(ctx);
   const data = await readJson(req, categorySchema, { maxBytes: 128 * 1024 });
   if (needsPublish(before.status, data.status) && !can(user, "publish", "categories"))
-    throw new HttpError(403, "Only a publisher can change whether this category is live.");
+    await denyAccess(user, { action: "publish", resource: "categories", message: "Only a publisher can change whether this category is live." });
   await assertSlugFree("productCategory", data.slug, before.id);
   await assertMediaRefs([{ path: "imageId", id: data.imageId, kind: "image" }]);
   const guide = sanitizeRichText(data.guide);

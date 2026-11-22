@@ -34,7 +34,9 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
-  await db.adminUser.deleteMany({ where: { email: { in: [...Object.values(accounts), `invitee-${stamp}@test.local`] } } });
+  await db.adminUser.deleteMany({
+    where: { email: { in: [...Object.values(accounts), `invitee-${stamp}@test.local`] } },
+  });
   await db.$disconnect();
 });
 

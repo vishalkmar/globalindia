@@ -16,7 +16,15 @@ const SHOTS = process.env.SHOT_DIR;
 let savedGallery = [];
 test.beforeAll(async () => {
   savedGallery = await db.galleryItem.findMany({ orderBy: { order: "asc" } });
-  await db.adminUser.create({ data: { email, name: "Gallery Editor", role: "EDITOR", passwordHash: await hash(PASSWORD, ARGON2_OPTIONS), mfaSetupAt: new Date() } });
+  await db.adminUser.create({
+    data: {
+      email,
+      name: "Gallery Editor",
+      role: "EDITOR",
+      passwordHash: await hash(PASSWORD, ARGON2_OPTIONS),
+      mfaSetupAt: new Date(),
+    },
+  });
 });
 test.afterAll(async () => {
   // Put the gallery back the way it was and retire the test uploads.
@@ -31,7 +39,12 @@ test("about page tells the story with timeline, facts and the proprietor's note"
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(/same promise since 2002/);
   await expect(page).toHaveTitle(/About Global India/);
   await expect(page.getByRole("navigation", { name: "Breadcrumb" }).getByText("About us")).toBeVisible();
-  for (const h of ["How the business grew.", "Key facts.", "How we work, in plain words.", "Why we still answer the phone ourselves."]) {
+  for (const h of [
+    "How the business grew.",
+    "Key facts.",
+    "How we work, in plain words.",
+    "Why we still answer the phone ourselves.",
+  ]) {
     await expect(page.getByRole("heading", { name: h })).toBeVisible();
   }
   await expect(page.getByText("07BMMPA5592C1Z4").first()).toBeVisible();
@@ -65,17 +78,35 @@ test("draft pages and unknown slugs return a real 404 status", async ({ request 
 test("gallery: editor adds photos with categories, visitors filter and open them", async ({ page }) => {
   test.setTimeout(120_000);
   await signInWithOtp(page, email, PASSWORD);
-  await page.getByRole("navigation", { name: "Admin" }).first().getByRole("link", { name: "Gallery" }).click();
+  await page
+    .getByRole("navigation", { name: "Admin" })
+    .first()
+    .getByRole("link", { name: "Gallery" })
+    .click();
   await expect(page.getByRole("heading", { name: "Gallery", level: 1 })).toBeVisible();
 
   const photos = [
-    { file: "drums.png", alt: "Blue 200 L drums lined up for dispatch", caption: "Drums ready for dispatch", category: "Dispatch", rgb: [15, 59, 58] },
-    { file: "racks.png", alt: "Bags of soda ash on warehouse racks", caption: "Soda ash on the racks", category: "Warehouse", rgb: [185, 133, 47] },
+    {
+      file: "drums.png",
+      alt: "Blue 200 L drums lined up for dispatch",
+      caption: "Drums ready for dispatch",
+      category: "Dispatch",
+      rgb: [15, 59, 58],
+    },
+    {
+      file: "racks.png",
+      alt: "Bags of soda ash on warehouse racks",
+      caption: "Soda ash on the racks",
+      category: "Warehouse",
+      rgb: [185, 133, 47],
+    },
   ];
   for (const p of photos) {
     await page.getByRole("button", { name: "Choose image" }).click();
     const dialog = page.getByRole("dialog", { name: "Choose an image" });
-    await dialog.getByTestId("media-file-input").setInputFiles({ name: p.file, mimeType: "image/png", buffer: png(1200, 900, p.rgb) });
+    await dialog
+      .getByTestId("media-file-input")
+      .setInputFiles({ name: p.file, mimeType: "image/png", buffer: png(1200, 900, p.rgb) });
     await dialog.getByLabel("Alt text (required)").fill(p.alt);
     await dialog.getByRole("button", { name: "Use this file" }).click();
     await expect(dialog).toBeHidden();

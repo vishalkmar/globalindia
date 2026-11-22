@@ -240,6 +240,38 @@ export const SETTINGS_FIELDS = {
     fields: [
       { name: "imageMaxMB", label: "Largest image (MB)", type: "number", step: 0.5 },
       { name: "pdfMaxMB", label: "Largest PDF (MB)", type: "number", step: 1 },
+      {
+        name: "imageFormats",
+        label: "Image formats allowed",
+        type: "checklist",
+        wide: true,
+        hint: "Switch off formats you do not want uploaded. SVG and other formats are never accepted.",
+        options: [
+          { value: "jpg", label: "JPG" },
+          { value: "png", label: "PNG" },
+          { value: "webp", label: "WebP" },
+          { value: "avif", label: "AVIF" },
+        ],
+      },
+      { name: "allowPdf", label: "Allow PDF uploads (COA, SDS, brochures)", type: "checkbox", wide: true },
+    ],
+  },
+  abuse: {
+    description:
+      "How often one visitor may use the forms, search and API, and addresses that are refused outright. Limits can only be set within safe ranges.",
+    fields: [
+      { name: "formsPerHour", label: "Form sends per visitor per hour", type: "number", hint: "Enquiry and newsletter forms. 1 to 20." },
+      { name: "searchPerMinute", label: "Searches per visitor per minute", type: "number", hint: "10 to 120." },
+      { name: "uploadsPerHour", label: "Uploads per admin per hour", type: "number", hint: "5 to 100." },
+      { name: "apiPerMinute", label: "API calls per visitor per minute (all)", type: "number", hint: "60 to 1000." },
+      {
+        name: "blockedIps",
+        label: "Blocked IP addresses and ranges",
+        type: "tags",
+        wide: true,
+        placeholder: "203.0.113.7 or 203.0.113.0/24 (Enter after each)",
+        hint: "These addresses get a plain refusal on every page and API. Ranges wider than /8 (IPv4) or /16 (IPv6) are not accepted.",
+      },
     ],
   },
   enquiries: {
@@ -259,6 +291,13 @@ export const SETTINGS_FIELDS = {
         label: "Send customers a “we received your enquiry” email",
         type: "checkbox",
         wide: true,
+      },
+      {
+        name: "assignedOnly",
+        label: "Editors and viewers see only enquiries assigned to them",
+        type: "checkbox",
+        wide: true,
+        hint: "Super admins always see every enquiry. Unassigned enquiries stay with the super admins until assigned.",
       },
       { name: "blockedEmails", label: "Blocked email addresses", type: "tags", wide: true },
       {

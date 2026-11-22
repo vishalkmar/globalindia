@@ -8,8 +8,10 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Badge } from "@/components/ui/Card";
 import { Drawer } from "@/components/ui/Dialog";
 import { can } from "@/lib/auth/permissions";
+import { adminFetch } from "@/lib/client/adminFetch";
 import { cn } from "@/lib/utils";
 
+import { AdminSearch } from "./AdminSearch";
 import { EnquiryBell } from "./EnquiryBell";
 import { NAV_GROUPS, SEGMENT_LABELS } from "./nav";
 
@@ -140,12 +142,7 @@ function UserMenu({ user }) {
   }, [open]);
 
   async function logout() {
-    await fetch("/api/auth/logout", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "content-type": "application/json" },
-      body: "{}",
-    }).catch(() => null);
+    await adminFetch("/api/auth/logout", { method: "POST", json: {}, noRedirect: true }).catch(() => null);
     window.location.replace("/admin/login");
   }
 
@@ -275,6 +272,7 @@ export function AdminShell({ user, children }) {
           <div className="min-w-0 flex-1">
             <Breadcrumb pathname={pathname} />
           </div>
+          <AdminSearch />
           {can(user, "read", "enquiries") ? <EnquiryBell /> : null}
           <UserMenu user={user} />
         </header>

@@ -9,7 +9,9 @@ for (const preset of THEME_PRESETS) {
     console.log(`\n${preset.name} — ${mode}`);
     for (const r of checkPairs(preset.tokens.colors[mode], CONTRAST_PAIRS)) {
       if (!r.pass) failed++;
-      console.log(`  ${r.pass ? "PASS" : "FAIL"}  ${r.ratio.toFixed(2).padStart(5)} (min ${r.min})  ${r.fg} on ${r.bg} — ${r.use}`);
+      console.log(
+        `  ${r.pass ? "PASS" : "FAIL"}  ${r.ratio.toFixed(2).padStart(5)} (min ${r.min})  ${r.fg} on ${r.bg} — ${r.use}`,
+      );
     }
   }
 }

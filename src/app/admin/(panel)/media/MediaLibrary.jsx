@@ -1,5 +1,6 @@
 "use client";
 
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 import { MediaBrowser } from "@/components/admin/media/MediaBrowser";
@@ -11,7 +12,9 @@ import { Alert } from "@/components/ui/Static";
 export function MediaLibrary({ canUpload, driver }) {
   const toast = useToast();
   const [reloadKey, setReloadKey] = useState(0);
-  const [openId, setOpenId] = useState(null);
+  // ?open=<id> opens a file straight away (links from admin search and the dashboard)
+  const requested = useSearchParams().get("open");
+  const [openId, setOpenId] = useState(/^c[a-z0-9]{20,32}$/.test(requested ?? "") ? requested : null);
 
   return (
     <div className="flex flex-col gap-6">

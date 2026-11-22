@@ -1,6 +1,7 @@
 import "server-only";
 
 import { HttpError } from "@/lib/http";
+import { likeTerm } from "@/lib/security/like";
 
 /**
  * Parses list query-string params for admin tables (Phase 6 todo 05).
@@ -66,9 +67,9 @@ function clampInt(v, min, max, fallback) {
 /** Helper for enum filters: only listed values are accepted. */
 export const enumFilter = (field, values) => (v) => (values.includes(v) ? { [field]: v } : null);
 
-/** Case-insensitive "contains" across fields. Prisma escapes the value; we only cap its length. */
+/** Case-insensitive "contains" across fields. Wildcards in the text are escaped (likeTerm); length is capped by the caller. */
 export const containsAny = (fields) => (q) => ({
-  OR: fields.map((f) => ({ [f]: { contains: q, mode: "insensitive" } })),
+  OR: fields.map((f) => ({ [f]: { contains: likeTerm(q), mode: "insensitive" } })),
 });
 
 /** Standard list response. */

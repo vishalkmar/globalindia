@@ -337,6 +337,16 @@ describe("newsletter", () => {
     );
   const confirm = (token) =>
     import("@/app/api/public/newsletter/confirm/route").then((m) =>
+      m.POST(
+        new Request(`${ORIGIN}/api/public/newsletter/confirm`, {
+          method: "POST",
+          headers: { "content-type": "application/json", origin: ORIGIN },
+          body: JSON.stringify({ token }),
+        }),
+      ),
+    );
+  const openLink = (token) =>
+    import("@/app/api/public/newsletter/confirm/route").then((m) =>
       m.GET(new Request(`${ORIGIN}/api/public/newsletter/confirm?token=${encodeURIComponent(token)}`)),
     );
 
@@ -347,12 +357,16 @@ describe("newsletter", () => {
     expect((await db.newsletterSubscriber.findUnique({ where: { email } })).status).toBe("PENDING");
     await tick();
     const mail = sentMail().find((m) => m.tags.includes("newsletter-confirm"));
-    const token = decodeURIComponent(mail.text.match(/token=([^\s]+)/)[1]);
+    const token = mail.text.match(/\/newsletter\/confirm#t=([A-Za-z0-9_-]+)/)[1];
+    // Opening an old-style link (or a mail scanner opening it) changes nothing.
+    const opened = await openLink(token);
+    expect(opened.headers.get("location")).toBe(`${ORIGIN}/newsletter/confirm#t=${token}`);
+    expect((await db.newsletterSubscriber.findUnique({ where: { email } })).status).toBe("PENDING");
     const first = await confirm(token);
-    expect(first.headers.get("location")).toMatch(/status=ok/);
+    expect(await first.json()).toEqual({ ok: true, status: "ok" });
     expect((await db.newsletterSubscriber.findUnique({ where: { email } })).status).toBe("CONFIRMED");
     const again = await confirm(token);
-    expect(again.headers.get("location")).toMatch(/status=invalid/);
+    expect(await again.json()).toEqual({ ok: true, status: "invalid" });
   });
 
   it("answers the same for an address that is already subscribed and sends nothing", async () => {
@@ -370,12 +384,13 @@ describe("newsletter", () => {
     const email = `expired-${stamp}@example.in`;
     await signup(email);
     await tick();
-    const token = decodeURIComponent(sentMail()[0].text.match(/token=([^\s]+)/)[1]);
+    const token = sentMail()[0].text.match(/\/newsletter\/confirm#t=([A-Za-z0-9_-]+)/)[1];
     await db.newsletterSubscriber.update({
       where: { email },
       data: { tokenExpiresAt: new Date(Date.now() - 1000) },
     });
-    expect((await confirm(token)).headers.get("location")).toMatch(/status=invalid/);
-    expect((await confirm("short")).headers.get("location")).toMatch(/status=invalid/);
+    expect(await (await confirm(token)).json()).toEqual({ ok: true, status: "invalid" });
+    expect((await confirm("short")).status).toBe(400);
+    expect((await openLink("short")).headers.get("location")).toMatch(/status=invalid/);
   });
 });

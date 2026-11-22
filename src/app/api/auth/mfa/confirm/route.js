@@ -2,7 +2,7 @@ import { after } from "next/server";
 import { z } from "zod";
 
 import { audit } from "@/lib/audit";
-import { requireAdmin } from "@/lib/auth/guard";
+import { denyAccess, requireAdmin } from "@/lib/auth/guard";
 import { defaultAdminContact } from "@/lib/auth/mfa";
 import { notifySecurityChange } from "@/lib/auth/notify";
 import { OtpError, otpErrorMessage, verifyOtp } from "@/lib/auth/otp";
@@ -40,7 +40,8 @@ export const POST = route(async (req) => {
   const { targetUserId, method, enable } = pending.meta;
 
   // Authorization is re-checked at apply time.
-  if (targetUserId !== actor.id && actor.role !== "SUPER_ADMIN") throw new HttpError(403);
+  if (targetUserId !== actor.id && actor.role !== "SUPER_ADMIN")
+    await denyAccess(actor, { action: "mfa", resource: "users", detail: { target: targetUserId } });
   const target = await db.adminUser.findUnique({ where: { id: targetUserId } });
   if (!target) throw new HttpError(404);
 

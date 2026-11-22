@@ -98,7 +98,9 @@ test("full sign-in, setup, TOTP and recovery journey", async ({ page, context })
 
   // 4. Recovery codes shown once
   await expect(page.getByText("Save these 10 recovery codes now")).toBeVisible();
-  const codes = (await page.locator("ol li").allInnerTexts()).filter((t) => /^[A-Z2-9]{5}-[A-Z2-9]{5}$/.test(t.trim()));
+  const codes = (await page.locator("ol li").allInnerTexts()).filter((t) =>
+    /^[A-Z2-9]{5}-[A-Z2-9]{5}$/.test(t.trim()),
+  );
   expect(codes).toHaveLength(10);
   await page.getByLabel("I have stored these codes somewhere safe").check();
   await page.getByRole("button", { name: /continue/i }).click();
@@ -112,7 +114,10 @@ test("full sign-in, setup, TOTP and recovery journey", async ({ page, context })
   await page.waitForURL(/\/admin\/login/); // back button / direct visit shows nothing after logout
 
   await signIn(page, newPassword);
-  await expect(page.getByRole("radio", { name: "Authenticator app" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("radio", { name: "Authenticator app" })).toHaveAttribute(
+    "aria-checked",
+    "true",
+  );
   while (currentStep() <= setupStep) await page.waitForTimeout(1000); // same 30 s code cannot be replayed
   await page.getByLabel("6-digit code").fill(totpCode(secret));
   await page.waitForURL((url) => url.pathname === "/admin");
@@ -137,8 +142,18 @@ test("full sign-in, setup, TOTP and recovery journey", async ({ page, context })
 
   // Audit trail recorded the journey
   const user = await db.adminUser.findUnique({ where: { email } });
-  const actions = (await db.auditLog.findMany({ where: { actorId: user.id }, select: { action: true } })).map((a) => a.action);
-  for (const a of ["auth.login.failed", "auth.login.success", "auth.password.changed", "mfa.totp.enabled", "auth.mfa.recovery_used", "auth.mfa.recovery_failed", "auth.logout"]) {
+  const actions = (await db.auditLog.findMany({ where: { actorId: user.id }, select: { action: true } })).map(
+    (a) => a.action,
+  );
+  for (const a of [
+    "auth.login.failed",
+    "auth.login.success",
+    "auth.password.changed",
+    "mfa.totp.enabled",
+    "auth.mfa.recovery_used",
+    "auth.mfa.recovery_failed",
+    "auth.logout",
+  ]) {
     expect(actions).toContain(a);
   }
 });

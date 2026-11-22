@@ -1,4 +1,4 @@
-import { ENQUIRY_LIST_SELECT, enquiryListQuery, withRef } from "@/lib/admin/enquiries";
+import { ENQUIRY_LIST_SELECT, enquiryListQuery, enquiryScope, withRef } from "@/lib/admin/enquiries";
 import { listResponse } from "@/lib/admin/listQuery";
 import { requirePermission } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
@@ -9,7 +9,8 @@ export const GET = route(async (req) => {
   const user = await requirePermission("read", "enquiries");
   const params = new URL(req.url).searchParams;
   const q = enquiryListQuery(params, user.id);
-  const where = params.get("status") ? q.where : { AND: [q.where, { status: { not: "SPAM" } }] };
+  const scope = await enquiryScope(user);
+  const where = { AND: [q.where, scope, params.get("status") ? {} : { status: { not: "SPAM" } }] };
   const [rows, total] = await Promise.all([
     db.enquiry.findMany({
       where,

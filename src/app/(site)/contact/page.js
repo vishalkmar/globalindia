@@ -1,7 +1,7 @@
 import { Clock, Mail, MapPin, MessageCircle, Phone, ReceiptText } from "lucide-react";
 import { Suspense } from "react";
 
-import { EnquiryForms } from "@/components/enquiry/EnquiryForms";
+import { LazyEnquiryForms } from "@/components/enquiry/LazyEnquiryForms";
 import { MapEmbed } from "@/components/enquiry/MapEmbed";
 import { Breadcrumb } from "@/components/site/Breadcrumb";
 import { Eyebrow } from "@/components/ui/Card";
@@ -64,7 +64,7 @@ export default async function ContactPage() {
           <div id="quote" className="scroll-mt-28">
             <h2 className="sr-only">Enquiry forms</h2>
             <Suspense fallback={<p className="text-muted">Loading the form…</p>}>
-              <EnquiryForms products={products} />
+              <LazyEnquiryForms products={products} />
             </Suspense>
           </div>
           <aside className="flex flex-col gap-3" aria-label="Contact details">

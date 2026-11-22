@@ -15,10 +15,23 @@ const firstError = (issues) => {
 /**
  * Shared state for the public enquiry forms: values, field errors, honeypot, form-open time,
  * Turnstile token, submit and redirect to the thank-you page (Phase 14 todos 06-08, 16).
- * @param {import('zod').ZodType} schema   full schema for the form type (same as the server's)
+ * @param {string} type   QUOTE | CONTACT | SAMPLE | CALLBACK. Its schema (the server's own) is loaded on the
+ *   first check, so the validation library is not part of the page's initial JavaScript (Phase 16 todo 17).
  * @param {object} initial
  */
-export function useEnquiry(schema, initial) {
+const SCHEMA_NAME = {
+  QUOTE: "quoteSchema",
+  CONTACT: "contactSchema",
+  SAMPLE: "sampleSchema",
+  CALLBACK: "callbackSchema",
+};
+let schemas = null;
+const loadSchema = async (type) => {
+  schemas ??= import("@/lib/validation/enquiry");
+  return (await schemas)[SCHEMA_NAME[type]];
+};
+
+export function useEnquiry(type, initial) {
   const router = useRouter();
   const pathname = usePathname();
   const [values, setValues] = useState(initial);
@@ -44,7 +57,8 @@ export function useEnquiry(schema, initial) {
 
   /** Validate only some fields (for one step of a multi-step form). */
   const check = useCallback(
-    (fields) => {
+    async (fields) => {
+      const schema = await loadSchema(type);
       const r = schema.safeParse({ ...values, website: "", startedAt: 1, turnstileToken: "", source: "" });
       if (r.success) return true;
       const all = firstError(r.error.issues);
@@ -56,7 +70,7 @@ export function useEnquiry(schema, initial) {
       setErrors((e) => ({ ...e, ...relevant }));
       return Object.keys(relevant).length === 0;
     },
-    [schema, values],
+    [type, values],
   );
 
   async function submit() {
@@ -68,6 +82,7 @@ export function useEnquiry(schema, initial) {
       turnstileToken: token,
       source: pathname,
     };
+    const schema = await loadSchema(type);
     const r = schema.safeParse(payload);
     if (!r.success) {
       setErrors(firstError(r.error.issues));

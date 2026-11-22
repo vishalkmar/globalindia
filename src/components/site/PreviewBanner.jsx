@@ -3,6 +3,8 @@
 import { Eye } from "lucide-react";
 import { useState } from "react";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 /** Shown at the top of a page in preview mode, with a way out. */
 export function PreviewBanner({ isDraft }) {
   const [busy, setBusy] = useState(false);
@@ -21,9 +23,7 @@ export function PreviewBanner({ isDraft }) {
         disabled={busy}
         onClick={async () => {
           setBusy(true);
-          await fetch("/api/admin/preview", { method: "DELETE", credentials: "same-origin" }).catch(
-            () => null,
-          );
+          await adminFetch("/api/admin/preview", { method: "DELETE", noRedirect: true }).catch(() => null);
           window.location.reload();
         }}
         className="rounded border border-white/60 px-2 py-0.5 hover:bg-white/10"

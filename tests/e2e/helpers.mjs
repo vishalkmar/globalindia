@@ -46,13 +46,25 @@ export async function signInWithOtp(page, email, password) {
   const since = Date.now() - 1000;
   await page.getByRole("button", { name: "Continue" }).click();
   await page.waitForURL(/\/admin\/verify/);
-  await page.getByLabel("6-digit code").fill(codeFrom(await waitForMail({ to: email, tag: "otp-login", since })));
+  await page
+    .getByLabel("6-digit code")
+    .fill(codeFrom(await waitForMail({ to: email, tag: "otp-login", since })));
   await page.waitForURL((u) => u.pathname === "/admin");
+}
+
+/** Headers a same-site admin write needs: Origin + the session's CSRF token (Phase 18). */
+export async function csrfHeaders(page) {
+  const origin = new URL(page.url()).origin;
+  const { token } = await (await page.request.get(`${origin}/api/auth/csrf`)).json();
+  return { origin, "x-csrf-token": token };
 }
 
 /** Change a setting through the admin API (so the public cache is expired like a real save). */
 export async function putSetting(page, key, value) {
-  const res = await page.request.put(`/api/admin/settings/${key}`, { data: value, headers: { origin: new URL(page.url()).origin } });
+  const res = await page.request.put(`/api/admin/settings/${key}`, {
+    data: value,
+    headers: await csrfHeaders(page),
+  });
   if (!res.ok()) throw new Error(`PUT ${key} failed: ${res.status()} ${await res.text()}`);
 }
 

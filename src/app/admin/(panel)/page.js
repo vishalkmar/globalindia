@@ -1,10 +1,13 @@
-import { FileText, FolderTree, Images, Inbox, Package, ShieldAlert } from "lucide-react";
+import { FileText, FolderTree, ImageOff, Images, Inbox, Package, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 
+import { RankBars, WeekBars } from "@/components/admin/Charts";
 import { EmptyState, PageHeader } from "@/components/admin/EmptyState";
 import { Badge } from "@/components/ui/Card";
 import { Alert, IconBox, Skeleton } from "@/components/ui/Static";
+import { enquiryStats, imagesMissingAlt } from "@/lib/admin/dashboard";
+import { enquiryScope } from "@/lib/admin/enquiries";
 import { requirePermissionPage } from "@/lib/auth/guard";
 import { can } from "@/lib/auth/permissions";
 import { remainingRecoveryCodes } from "@/lib/auth/recovery";
@@ -74,6 +77,7 @@ function Stat({ icon, label, value, note, href }) {
 async function Dashboard() {
   const user = await requirePermissionPage("read", "dashboard", "/admin");
   const since = istMidnight();
+  const scope = can(user, "read", "enquiries") ? await enquiryScope(user) : {};
 
   const [
     enqToday,
@@ -87,9 +91,11 @@ async function Dashboard() {
     recentEnquiries,
     codesLeft,
     securityEvents,
+    stats,
+    missingAlt,
   ] = await Promise.all([
-    db.enquiry.count({ where: { createdAt: { gte: since } } }),
-    db.enquiry.count({ where: { status: "NEW" } }),
+    db.enquiry.count({ where: { createdAt: { gte: since }, ...scope } }),
+    db.enquiry.count({ where: { status: "NEW", ...scope } }),
     db.product.count({ where: { status: "PUBLISHED", deletedAt: null } }),
     db.product.count({ where: { status: "DRAFT", deletedAt: null } }),
     db.productCategory.count({ where: { deletedAt: null } }),
@@ -109,6 +115,7 @@ async function Dashboard() {
     }),
     can(user, "read", "enquiries")
       ? db.enquiry.findMany({
+          where: scope,
           orderBy: { createdAt: "desc" },
           take: 5,
           select: { id: true, name: true, company: true, type: true, status: true, createdAt: true },
@@ -128,6 +135,8 @@ async function Dashboard() {
           },
         })
       : 0,
+    can(user, "read", "enquiries") ? enquiryStats(new Date(), 12, scope) : null,
+    can(user, "read", "media") ? imagesMissingAlt() : 0,
   ]);
 
   return (
@@ -163,6 +172,15 @@ async function Dashboard() {
         <Stat icon={FolderTree} label="Categories" value={categories} />
         <Stat icon={FileText} label="Pages" value={pages} />
         <Stat icon={Images} label="Media files" value={media} />
+        {missingAlt ? (
+          <Stat
+            icon={ImageOff}
+            label="Images without alt text"
+            value={missingAlt}
+            note="Screen readers and Google need it. Open the media library"
+            href="/admin/media"
+          />
+        ) : null}
         {can(user, "read", "audit") ? (
           <Stat
             icon={ShieldAlert}
@@ -173,6 +191,29 @@ async function Dashboard() {
           />
         ) : null}
       </section>
+
+      {stats ? (
+        <section
+          aria-labelledby="trend-title"
+          className="grid gap-6 rounded-card border border-line bg-card p-5 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+        >
+          <h2 id="trend-title" className="sr-only">
+            Enquiry trends
+          </h2>
+          <WeekBars
+            data={stats.perWeek}
+            title="Enquiries per week (last 12 weeks, spam excluded)"
+            unit="enquiries"
+          />
+          {stats.top.length ? (
+            <RankBars data={stats.top} title="Products asked about most" unit="enquiries" />
+          ) : (
+            <p className="self-center text-sm text-muted">
+              Products asked about most will appear here once quote requests come in.
+            </p>
+          )}
+        </section>
+      ) : null}
 
       <div className="grid gap-6 xl:grid-cols-2">
         <section className="rounded-card border border-line bg-card">

@@ -49,6 +49,14 @@ export function validateBuffer(buffer, expectedKind, limits) {
       expectedKind === "pdf" ? "Please choose a PDF file." : "Please choose an image file.",
     );
 
+  if (type.kind === "image" && limits.imageFormats && !limits.imageFormats.includes(type.ext))
+    throw new HttpError(
+      415,
+      `${type.ext.toUpperCase()} images are switched off in Settings > Upload limits.`,
+    );
+  if (type.kind === "pdf" && limits.allowPdf === false)
+    throw new HttpError(415, "PDF uploads are switched off in Settings > Upload limits.");
+
   let width = null;
   let height = null;
   if (type.kind === "image") {

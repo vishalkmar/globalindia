@@ -16,6 +16,18 @@ import { hashPassword, needsRehash, verifyPassword } from "./password";
 
 export const MAX_FAILED_LOGINS = 5;
 export const LOCK_MINUTES = 15;
+export const MAX_LOCK_MINUTES = 24 * 60;
+
+/**
+ * Exponential back-off (Phase 22 todo 11): each lockout in the last 24 hours doubles the next one,
+ * 15 -> 30 -> 60 -> ... minutes, capped at 24 hours. Counted from the audit log, so no extra column.
+ */
+export async function nextLockMinutes(userId, now = new Date()) {
+  const recent = await db.auditLog.count({
+    where: { actorId: userId, action: "auth.login.locked", at: { gte: new Date(now.getTime() - 24 * 60 * 60_000) } },
+  });
+  return Math.min(LOCK_MINUTES * 2 ** Math.min(recent, 10), MAX_LOCK_MINUTES);
+}
 export const GENERIC_LOGIN_ERROR = "Invalid email or password.";
 
 /**
@@ -42,20 +54,25 @@ export async function checkPassword(email, password, { ipHash = "" } = {}) {
   if (!valid || user.status !== "ACTIVE") {
     const failed = user.failedLogins + 1;
     const lockNow = failed >= MAX_FAILED_LOGINS;
+    const lockMinutes = lockNow ? await nextLockMinutes(user.id, now) : 0;
     await db.adminUser.update({
       where: { id: user.id },
       data: lockNow
-        ? { failedLogins: 0, lockedUntil: new Date(now.getTime() + LOCK_MINUTES * 60_000) }
+        ? { failedLogins: 0, lockedUntil: new Date(now.getTime() + lockMinutes * 60_000) }
         : { failedLogins: failed },
     });
     await audit({
       actorId: user.id,
       action: lockNow ? "auth.login.locked" : "auth.login.failed",
-      diff: { reason: user.status !== "ACTIVE" ? "inactive" : "bad_password", attempt: failed },
+      diff: {
+        reason: user.status !== "ACTIVE" ? "inactive" : "bad_password",
+        attempt: failed,
+        ...(lockNow ? { minutes: lockMinutes } : {}),
+      },
       ipHash,
     });
     // Sent after the response so the 5th attempt is not slower (no account discovery by timing).
-    if (lockNow) after(() => notifyLockout(user.id));
+    if (lockNow) after(() => notifyLockout(user.id, lockMinutes));
     return { ok: false, locked: lockNow };
   }
 

@@ -30,6 +30,28 @@ export function refreshSession() {
   return refreshing;
 }
 
+/* CSRF token (Phase 18): fetched once, kept in memory only, refreshed after a "csrf" 403 (e.g. login rotated it). */
+let csrf = null;
+export function csrfToken(fresh = false) {
+  if (fresh || !csrf) {
+    csrf = fetch("/api/auth/csrf", { credentials: "same-origin", cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : {}))
+      .then((d) => d.token ?? "")
+      .catch(() => "");
+  }
+  return csrf;
+}
+const UNSAFE = new Set(["POST", "PUT", "PATCH", "DELETE"]);
+
+async function isCsrfFailure(res) {
+  if (res.status !== 403) return false;
+  try {
+    return (await res.clone().json())?.code === "csrf";
+  } catch {
+    return false;
+  }
+}
+
 export function goToLogin() {
   const here = window.location.pathname + window.location.search;
   const next = here.startsWith("/admin") && !here.startsWith("/admin/login") ? here : "/admin";
@@ -57,7 +79,14 @@ export async function adminFetch(url, options = {}) {
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   };
 
+  const unsafe = UNSAFE.has((init.method ?? "GET").toUpperCase());
+  if (unsafe) init.headers["x-csrf-token"] = await csrfToken();
+
   let res = await fetch(url, init);
+  if (unsafe && (await isCsrfFailure(res))) {
+    init.headers["x-csrf-token"] = await csrfToken(true);
+    res = await fetch(url, init);
+  }
   if (res.status === 401 && !url.startsWith("/api/auth/")) {
     if (await refreshSession()) res = await fetch(url, init);
     else if (!noRedirect) goToLogin();

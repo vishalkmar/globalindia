@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/auth/guard";
+import { denyAccess, requireAdmin } from "@/lib/auth/guard";
 import { requestMfaChange } from "@/lib/auth/mfa";
 import { OtpError, otpErrorMessage } from "@/lib/auth/otp";
 import { db } from "@/lib/db";
@@ -25,14 +25,15 @@ export const POST = route(async (req) => {
 
   const { method, enable, userId } = await readJson(req, mfaToggleRequestSchema);
   const targetId = userId ?? actor.id;
-  if (targetId !== actor.id && actor.role !== "SUPER_ADMIN") throw new HttpError(403);
+  if (targetId !== actor.id && actor.role !== "SUPER_ADMIN")
+    await denyAccess(actor, { action: "mfa", resource: "users", detail: { target: targetId } });
 
   const target = await db.adminUser.findUnique({ where: { id: targetId } });
   if (!target) throw new HttpError(404);
 
   if (method === "totp" && enable) {
     if (target.id !== actor.id)
-      throw new HttpError(403, "Only the account owner can add an authenticator app.");
+      await denyAccess(actor, { action: "mfa", resource: "users", message: "Only the account owner can add an authenticator app.", detail: { target: target.id } });
     if (!target.totpPendingEnc) throw new HttpError(400, "Scan the QR code first.");
   }
   if (!enable) {

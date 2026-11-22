@@ -2,6 +2,7 @@ import "server-only";
 
 import { assertMediaRefs, assertSlugFree, recordRedirects, retiredSlug } from "@/lib/admin/catalogue";
 import { audit } from "@/lib/audit";
+import { denyAccess } from "@/lib/auth/guard";
 import { can } from "@/lib/auth/permissions";
 import { invalidate, TAGS } from "@/lib/cache";
 import { db } from "@/lib/db";
@@ -34,7 +35,7 @@ export async function saveIndustry({ user, before, data }) {
     (before?.status === "PUBLISHED" || data.status === "PUBLISHED") &&
     !can(user, "publish", "industries")
   ) {
-    throw new HttpError(403, "Only a publisher can change whether this industry page is live.");
+    await denyAccess(user, { action: "publish", resource: "industries", message: "Only a publisher can change whether this industry page is live." });
   }
   await assertSlugFree("industry", data.slug, before?.id ?? null);
   await assertMediaRefs([{ path: "imageId", id: data.imageId, kind: "image" }]);
@@ -137,7 +138,7 @@ export async function savePost({ user, before, data }) {
     (before?.status === "PUBLISHED" || data.status === "PUBLISHED") &&
     !can(user, "publish", "insights")
   ) {
-    throw new HttpError(403, "Only a publisher can publish or unpublish articles.");
+    await denyAccess(user, { action: "publish", resource: "insights", message: "Only a publisher can publish or unpublish articles." });
   }
   await assertSlugFree("post", data.slug, before?.id ?? null);
   await assertMediaRefs([{ path: "coverId", id: data.coverId, kind: "image" }]);

@@ -9,6 +9,7 @@ import { HttpError } from "@/lib/http";
 
 import { COOKIE } from "./cookies";
 import { verifyAccessToken } from "./jwt";
+import { checkDenialBurst } from "./notify";
 import { can } from "./permissions";
 import { isSessionActive } from "./session";
 
@@ -69,7 +70,7 @@ export async function requireAdmin({ role = "VIEWER", allowSetup = false } = {})
   if (!user) throw new HttpError(401, "Please sign in again.");
   if (!allowSetup && setupPending(user))
     throw new HttpError(403, "Finish account setup first.", { body: { next: "setup" } });
-  if (!roleAtLeast(user.role, role)) throw new HttpError(403, "You do not have permission to do that.");
+  if (!roleAtLeast(user.role, role)) await denyAccess(user, { action: "role", resource: role });
   return user;
 }
 
@@ -86,6 +87,22 @@ export async function requireAdminPage({ role = "VIEWER", allowSetup = false, ne
 }
 
 /**
+ * Refuse a signed-in admin (Phase 21 todos 12, 17, 18): writes an "authz.denied" audit row, checks for a
+ * burst of denials (alert), then throws 403. Use it for every permission refusal, including the
+ * per-field ones (publish, assignee, other people's MFA), so none goes unrecorded.
+ */
+export async function denyAccess(user, { action, resource, message = "You do not have permission to do that.", detail } = {}) {
+  await audit({
+    actorId: user.id,
+    action: "authz.denied",
+    entity: String(resource ?? "unknown"),
+    diff: { action, role: user.role, ...(detail ? { detail } : {}) },
+  });
+  await checkDenialBurst(user);
+  throw new HttpError(403, message);
+}
+
+/**
  * requireAdmin + permission check from the role matrix (src/lib/auth/permissions.js).
  * Every denial is written to the audit log (Phase 21 todo 17).
  * @param {"read"|"create"|"update"|"delete"|"publish"} action
@@ -93,15 +110,7 @@ export async function requireAdminPage({ role = "VIEWER", allowSetup = false, ne
  */
 export async function requirePermission(action, resource) {
   const user = await requireAdmin();
-  if (!can(user, action, resource)) {
-    await audit({
-      actorId: user.id,
-      action: "authz.denied",
-      entity: resource,
-      diff: { action, role: user.role },
-    });
-    throw new HttpError(403, "You do not have permission to do that.");
-  }
+  if (!can(user, action, resource)) await denyAccess(user, { action, resource });
   return user;
 }
 
@@ -115,6 +124,7 @@ export async function requirePermissionPage(action, resource, next = "/admin") {
       entity: resource,
       diff: { action, role: user.role, page: true },
     });
+    await checkDenialBurst(user);
     redirect("/admin/forbidden");
   }
   return user;
