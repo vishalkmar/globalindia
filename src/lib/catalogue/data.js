@@ -194,7 +194,7 @@ export async function getProductPage(slug) {
         where: { ...PUBLISHED, categoryId: p.category.id, id: { not: p.id } },
         orderBy: [{ order: "asc" }, { name: "asc" }],
         take: 6,
-        select: { ...listProductSelect, category: { select: { slug: true, name: true } } },
+        select: { ...listProductSelect, category: { select: { slug: true, name: true, family: true } } },
       });
       let related = sameCategory;
       if (related.length < 3) {
@@ -206,7 +206,7 @@ export async function getProductPage(slug) {
           },
           orderBy: [{ featured: "desc" }, { order: "asc" }],
           take: 6 - related.length,
-          select: { ...listProductSelect, category: { select: { slug: true, name: true } } },
+          select: { ...listProductSelect, category: { select: { slug: true, name: true, family: true } } },
         });
         related = [...related, ...more];
       }

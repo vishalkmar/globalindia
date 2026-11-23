@@ -33,7 +33,7 @@ describe("themeToCss", () => {
     const css = themeToCss(DEFAULT_THEME.tokens);
     expect(css).toContain("--c-primary:#0F3B3A;");
     expect(css).toContain(':root[data-theme="dark"]');
-    expect(css).toContain("--ff-display:var(--font-fraunces)");
+    expect(css).toContain("--ff-display:var(--font-jakarta)");
   });
 
   it("refuses injected values and falls back to safe defaults", () => {
@@ -42,7 +42,7 @@ describe("themeToCss", () => {
         light: { primary: "red;}</style><script>alert(1)</script>", ink: "url(javascript:alert(1))" },
         dark: {},
       },
-      fonts: { display: "x;}body{display:none", body: "manrope", data: "jetbrains-mono" },
+      fonts: { display: "x;}body{display:none", body: "plus-jakarta", data: "jetbrains-mono" },
       radius: { button: "999", card: "abc" },
     };
     const css = themeToCss(evil);

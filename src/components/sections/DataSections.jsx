@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Container, Section, SectionHeading } from "@/components/ui/Layout";
 import { MediaImage } from "@/components/ui/MediaImage";
 import { getClientLogos, getFeaturedProducts, getLatestPosts, getTestimonials } from "@/lib/sections/data";
+import { COVER_ROTATION } from "@/lib/stockImages";
 
 const HeadingRow = ({ d, cta }) => (
   <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -122,17 +123,22 @@ export async function Insights({ data, tone }) {
       <Container className="flex flex-col gap-10">
         <HeadingRow d={data} cta={data.cta} />
         <ul className="grid gap-6 md:grid-cols-3">
-          {posts.map((p) => (
+          {posts.map((p, i) => (
             <li key={p.id}>
               <article className="lift group relative flex h-full flex-col overflow-hidden surface-card">
                 {p.cover ? (
-                  <MediaImage
-                    asset={p.cover}
-                    aspect="16:9"
-                    sizes="(min-width: 768px) 33vw, 100vw"
-                    className="w-full border-b border-line"
-                  />
-                ) : null}
+                  <MediaImage asset={p.cover} aspect="16:9" sizes="(min-width: 768px) 33vw, 100vw" className="w-full" />
+                ) : (
+                  <div className="relative aspect-video overflow-hidden">
+                    <Image
+                      src={COVER_ROTATION[i % COVER_ROTATION.length].src}
+                      alt=""
+                      fill
+                      sizes="(min-width: 768px) 33vw, 100vw"
+                      className="object-cover transition-transform duration-700 motion-safe:group-hover:scale-105"
+                    />
+                  </div>
+                )}
                 <div className="flex flex-1 flex-col gap-3 p-5">
                   <p className="text-[0.8125rem] text-muted">
                     {p.category} ·{" "}

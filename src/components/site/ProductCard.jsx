@@ -1,11 +1,13 @@
-import { ArrowRight, FlaskConical } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { MediaImage } from "@/components/ui/MediaImage";
+import { imageForProduct } from "@/lib/stockImages";
 
 /**
- * Product card (Design.md §6): name, CAS, grade, pack sizes, MOQ, "View details". No price — prices
- * are quoted on request (Memory.md content rule 4).
+ * Product card (Design.md §6): photo, name, grade, pack sizes, MOQ. No price — prices are quoted on
+ * request (Memory.md content rule 4). Without an uploaded photo the family's default photo is used.
  */
 export function ProductCard({ product }) {
   const href = `/products/${product.category.slug}/${product.slug}`;
@@ -16,58 +18,65 @@ export function ProductCard({ product }) {
     product.packSizes?.length ? ["Packs", product.packSizes.slice(0, 3).join(", ")] : null,
     product.moq ? ["MOQ", product.moq] : null,
   ].filter(Boolean);
+  const stock = product.image ? null : imageForProduct(product);
 
   return (
-    <article className="lift group relative flex h-full flex-col overflow-hidden surface-card duration-150 motion-reduce:hover:translate-y-0">
-      <div className="relative aspect-[16/10] overflow-hidden bg-surface">
+    <article className="group relative flex h-full flex-col overflow-hidden rounded-[calc(var(--r-card)+2px)] bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-sm)] transition-[box-shadow,transform] duration-300 ease-[var(--ease-standard)] hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_25%,transparent),var(--sh-lg)] motion-safe:hover:-translate-y-1">
+      <div className="relative aspect-[16/9] overflow-hidden bg-surface">
         {product.image ? (
           <MediaImage
             asset={product.image}
-            aspect="16:10"
+            aspect="16:9"
             sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
-            className="h-full w-full transition-transform duration-500 ease-[var(--ease-standard)] motion-safe:group-hover:scale-[1.03]"
+            className="h-full w-full transition-transform duration-700 ease-[var(--ease-standard)] motion-safe:group-hover:scale-105"
           />
         ) : (
-          <div className="relative h-full bg-[radial-gradient(90%_120%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_22%,transparent),transparent_60%),linear-gradient(160deg,color-mix(in_oklab,var(--c-primary)_10%,var(--c-surface)),var(--c-surface))]">
-            <FlaskConical
-              aria-hidden="true"
-              className="absolute top-1/2 left-1/2 size-24 -translate-x-1/2 -translate-y-1/2 -rotate-12 text-primary/12 transition-transform duration-500 motion-safe:group-hover:-rotate-6"
-              strokeWidth={1}
-            />
-          </div>
+          <Image
+            src={stock.src}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
+            className="object-cover transition-transform duration-700 ease-[var(--ease-standard)] motion-safe:group-hover:scale-105"
+          />
         )}
-        <span className="absolute bottom-3 left-3 max-w-[80%] truncate rounded-pill bg-[color-mix(in_oklab,var(--c-card)_82%,transparent)] px-3 py-1 text-[0.75rem] font-semibold text-primary shadow-xs backdrop-blur">
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(180deg,transparent,rgb(0_0_0/0.45))]"
+        />
+        <span className="absolute bottom-3 left-3 max-w-[75%] truncate rounded-pill bg-white/92 px-3 py-1 text-xs font-bold text-primary shadow-sm backdrop-blur">
           {product.category.name}
         </span>
         {product.casNo ? (
-          <span className="absolute top-3 right-3 rounded-pill bg-[color-mix(in_oklab,var(--c-primary)_88%,transparent)] px-2.5 py-1 font-data text-[0.6875rem] font-semibold text-primary-ink">
+          <span className="absolute top-3 left-3 rounded-pill bg-[color-mix(in_oklab,var(--c-band)_85%,transparent)] px-2.5 py-1 text-[0.6875rem] font-semibold tracking-wide text-white tabular-nums backdrop-blur">
             CAS {product.casNo}
           </span>
         ) : null}
       </div>
       <div className="flex flex-1 flex-col gap-4 p-5">
-        <h3 className="text-h3 leading-snug">
-          <Link href={href} className="after:absolute after:inset-0">
+        <h3 className="text-[1.125rem] leading-snug font-bold tracking-tight text-ink">
+          <Link href={href} className="after:absolute after:inset-0 group-hover:text-primary">
             {product.name}
           </Link>
         </h3>
         {facts.length ? (
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-[0.875rem]">
+          <dl className="flex flex-col gap-2 text-sm">
             {facts.map(([k, v]) => (
-              <div key={k} className="contents">
-                <dt className="text-muted">{k}</dt>
-                <dd className="font-data text-ink">{v}</dd>
+              <div key={k} className="flex items-baseline justify-between gap-4 border-b border-dashed border-hairline pb-2 last:border-0 last:pb-0">
+                <dt className="shrink-0 text-muted">{k}</dt>
+                <dd className="truncate text-right font-semibold text-ink tabular-nums">{v}</dd>
               </div>
             ))}
           </dl>
         ) : null}
-        <span className="mt-auto inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
-          View details{" "}
-          <ArrowRight
+        <div className="mt-auto flex items-center justify-between gap-3 pt-1">
+          <span className="text-sm font-bold text-primary">View details</span>
+          <span
             aria-hidden="true"
-            className="size-4 transition-transform group-hover:translate-x-0.5"
-          />
-        </span>
+            className="inline-flex size-9 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--c-primary)_10%,transparent)] text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-ink"
+          >
+            <ArrowUpRight className="size-[18px]" strokeWidth={2} />
+          </span>
+        </div>
       </div>
     </article>
   );

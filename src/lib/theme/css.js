@@ -53,7 +53,7 @@ export function themeToCss(tokens, scope = ":root") {
     // No monospace anywhere: "data" text (CAS numbers, specs, figures) uses the body font with tabular numbers.
     `--ff-data:var(--ff-body);` +
     `--r-btn:${radiusBtn}px;--r-card:${radiusCard}px;` +
-    `--sy:${compact ? "64px" : "96px"};--sy-sm:${compact ? "48px" : "64px"};`;
+    `--sy:${compact ? "60px" : "76px"};--sy-sm:${compact ? "44px" : "52px"};`;
 
   const darkSel = scope === ":root" ? ':root[data-theme="dark"]' : `${scope}[data-theme="dark"]`;
   const outline =

@@ -76,7 +76,7 @@ export async function getIndustryPage(slug) {
               packSizes: true,
               moq: true,
               image: imageSelect,
-              category: { select: { slug: true, name: true } },
+              category: { select: { slug: true, name: true, family: true } },
             },
           },
         },

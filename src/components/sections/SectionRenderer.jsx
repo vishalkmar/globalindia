@@ -101,7 +101,7 @@ export async function SectionRenderer({ sections, year, page }) {
     // The first two sections are above the fold; later ones skip layout until scrolled near.
     return (
       <div key={s.id} className={i > 1 ? "cv-auto" : undefined}>
-        <Component data={s.data} ctx={ctx} tone={tone} />
+        <Component data={s.data} ctx={{ ...ctx, prev: visible[i - 1]?.type }} tone={tone} />
       </div>
     );
   });

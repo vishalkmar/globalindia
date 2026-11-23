@@ -34,13 +34,13 @@ export const COLOR_TOKENS = [
 
 /** Fonts allowed in the theme editor. `id` maps to a CSS variable set by next/font in src/lib/fonts.js */
 export const FONT_WHITELIST = {
+  // Unknown ids (e.g. the retired serif fonts still saved in old theme rows) fall back to the first entry.
   display: [
-    { id: "fraunces", label: "Fraunces", cssVar: "--font-fraunces" },
-    { id: "source-serif", label: "Source Serif 4", cssVar: "--font-source-serif" },
-    { id: "newsreader", label: "Newsreader", cssVar: "--font-newsreader" },
+    { id: "plus-jakarta", label: "Plus Jakarta Sans", cssVar: "--font-jakarta" },
+    { id: "inter-tight", label: "Inter Tight", cssVar: "--font-inter-tight" },
   ],
   body: [
-    { id: "manrope", label: "Manrope", cssVar: "--font-manrope" },
+    { id: "plus-jakarta", label: "Plus Jakarta Sans", cssVar: "--font-jakarta" },
     { id: "inter-tight", label: "Inter Tight", cssVar: "--font-inter-tight" },
     { id: "ibm-plex-sans", label: "IBM Plex Sans", cssVar: "--font-ibm-plex-sans" },
     { id: "work-sans", label: "Work Sans", cssVar: "--font-work-sans" },
@@ -157,7 +157,7 @@ const graphiteSaffron = {
 };
 
 const baseTokens = {
-  fonts: { display: "fraunces", body: "manrope", data: "jetbrains-mono" },
+  fonts: { display: "plus-jakarta", body: "plus-jakarta", data: "jetbrains-mono" },
   radius: { button: 10, card: 16 },
   density: "comfortable", // comfortable | compact
   buttonStyle: "solid", // solid | outline
@@ -171,7 +171,7 @@ export const THEME_PRESETS = [
     name: "Graphite & Saffron",
     tokens: {
       ...baseTokens,
-      fonts: { display: "source-serif", body: "ibm-plex-sans", data: "ibm-plex-mono" },
+      fonts: { display: "inter-tight", body: "ibm-plex-sans", data: "ibm-plex-mono" },
       colors: graphiteSaffron,
     },
   },

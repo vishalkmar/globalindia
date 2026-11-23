@@ -1,39 +1,16 @@
-import {
-  Fraunces,
-  IBM_Plex_Sans,
-  Inter_Tight,
-  Manrope,
-  Newsreader,
-  Source_Serif_4,
-  Work_Sans,
-} from "next/font/google";
+import { IBM_Plex_Sans, Inter_Tight, Plus_Jakarta_Sans, Work_Sans } from "next/font/google";
 
 /**
  * Every font in the theme whitelist (Design.md §3) is self-hosted by next/font.
- * Only the default trio is preloaded; the others download only if the active theme uses them.
- * The active theme maps --font-display / --font-body to one of these variables.
- * No monospace font is loaded (UI phase, owner's choice): figures use the body font with tabular numbers.
+ * Owner's choice (UI phase): Plus Jakarta Sans for headings and text; no serif, no monospace.
+ * Only Jakarta is preloaded; the others download only if a theme switches to them.
  */
 
-const fraunces = Fraunces({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  axes: ["opsz"],
-  variable: "--font-fraunces",
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
   display: "swap",
-});
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
-
-const sourceSerif = Source_Serif_4({
-  subsets: ["latin"],
-  variable: "--font-source-serif",
-  display: "swap",
-  preload: false,
-});
-const newsreader = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-newsreader",
-  display: "swap",
-  preload: false,
 });
 const interTight = Inter_Tight({
   subsets: ["latin"],
@@ -56,14 +33,4 @@ const workSans = Work_Sans({
 });
 
 /** All font CSS-variable classes; put on <html> once. */
-export const fontVariables = [
-  fraunces,
-  manrope,
-  sourceSerif,
-  newsreader,
-  interTight,
-  plexSans,
-  workSans,
-]
-  .map((f) => f.variable)
-  .join(" ");
+export const fontVariables = [jakarta, interTight, plexSans, workSans].map((f) => f.variable).join(" ");

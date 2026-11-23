@@ -40,7 +40,7 @@ export async function getFeaturedProducts(limit = 6) {
           purity: true,
           packSizes: true,
           moq: true,
-          category: { select: { slug: true, name: true } },
+          category: { select: { slug: true, name: true, family: true } },
           image: { select: { url: true, alt: true, width: true, height: true, focalX: true, focalY: true } },
         },
       });
