@@ -59,7 +59,7 @@ export default function StyleguidePage() {
           />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {COLOR_TOKENS.map((t) => (
-              <div key={t.key} className="overflow-hidden rounded-card border border-line bg-card">
+              <div key={t.key} className="overflow-hidden surface-card">
                 <div
                   className="h-20 border-b border-line"
                   style={{ background: `var(--c-${t.key.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)})` }}
@@ -97,7 +97,7 @@ export default function StyleguidePage() {
       <Section tone="surface">
         <Container className="flex flex-col gap-8">
           <SectionHeading eyebrow="02 Typography" title="Type scale" />
-          <div className="flex flex-col gap-6 rounded-card border border-line bg-card p-6 md:p-10">
+          <div className="flex flex-col gap-6 surface-card p-6 md:p-10">
             <p className="text-display">Raw materials, supplied without the run-around.</p>
             <p className="text-h2">Twenty-four years of supplying the people who make things.</p>
             <p className="text-h3">Pack sizes that match real orders</p>
@@ -245,7 +245,7 @@ export default function StyleguidePage() {
             Check the highlighted fields and try again.
           </Alert>
           <div className="grid gap-6 md:grid-cols-3">
-            <div className="flex flex-col gap-4 rounded-card border border-line bg-card p-6">
+            <div className="flex flex-col gap-4 surface-card p-6">
               <Skeleton className="size-11" />
               <Skeleton className="h-5 w-2/3" />
               <Skeleton lines={3} />

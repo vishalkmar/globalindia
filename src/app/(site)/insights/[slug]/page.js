@@ -103,13 +103,13 @@ export default async function PostPage({ params }) {
                 aspect="16:9"
                 priority
                 sizes="(min-width: 1024px) 760px, 100vw"
-                className="w-full rounded-card border border-line"
+                className="w-full surface-card"
               />
             ) : null}
             {toc.length > 1 ? (
               <nav
                 aria-label="In this article"
-                className="rounded-card border border-line bg-surface p-5 lg:hidden"
+                className="surface-card bg-surface p-5 lg:hidden"
               >
                 <p className="mb-2 text-sm font-bold tracking-wide text-muted uppercase">In this article</p>
                 <TocList toc={toc} />

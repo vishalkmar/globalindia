@@ -136,7 +136,7 @@ export function EnquiryDetail({ enquiryId, canEdit }) {
       <div className="grid gap-5 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         <div className="flex flex-col gap-5">
           <section
-            className="flex flex-col gap-4 rounded-card border border-line bg-card p-5"
+            className="flex flex-col gap-4 surface-card p-5"
             aria-labelledby="enq-details"
           >
             <div className="flex items-center justify-between gap-3">
@@ -196,7 +196,7 @@ export function EnquiryDetail({ enquiryId, canEdit }) {
           </section>
 
           <section
-            className="flex flex-col gap-4 rounded-card border border-line bg-card p-5"
+            className="flex flex-col gap-4 surface-card p-5"
             aria-labelledby="enq-timeline"
           >
             <h2 id="enq-timeline" className="font-display text-lg text-primary">
@@ -247,7 +247,7 @@ export function EnquiryDetail({ enquiryId, canEdit }) {
         </div>
 
         <aside
-          className="flex flex-col gap-4 self-start rounded-card border border-line bg-card p-5"
+          className="flex flex-col gap-4 self-start surface-card p-5"
           aria-label="Work this enquiry"
         >
           <Field label="Status">

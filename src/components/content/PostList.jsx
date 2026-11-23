@@ -9,7 +9,7 @@ const fmt = (d) =>
 
 export function PostCard({ post }) {
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-card transition-colors hover:border-primary">
+    <article className="lift group relative flex h-full flex-col overflow-hidden surface-card">
       <div className="aspect-[16/9] overflow-hidden border-b border-line bg-surface">
         {post.cover ? (
           <MediaImage

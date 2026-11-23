@@ -196,7 +196,7 @@ function Form({ postId, initial, isLive, perms }) {
           {error}
         </Alert>
       ) : null}
-      <fieldset disabled={!perms.update} className="rounded-card border border-line bg-card p-5 md:p-6">
+      <fieldset disabled={!perms.update} className="surface-card p-5 md:p-6">
         <legend className="sr-only">Article</legend>
         <FormBuilder form={form} fields={fields(perms.publish)} />
       </fieldset>

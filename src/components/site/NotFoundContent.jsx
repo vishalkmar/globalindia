@@ -16,7 +16,7 @@ export async function NotFoundContent() {
         <div className="flex max-w-2xl flex-col items-start gap-5">
           <IconBox icon={FileSearch} size="lg" />
           <p className="text-eyebrow">
-            <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
+            <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
             Error 404
           </p>
           <h1 className="text-display">This page is not here.</h1>
@@ -40,7 +40,7 @@ export async function NotFoundContent() {
                 <li key={f.id}>
                   <Link
                     href={f.href}
-                    className="flex items-center justify-between gap-3 rounded-card border border-line bg-card px-5 py-4 font-semibold text-primary transition-colors hover:border-primary"
+                    className="lift flex items-center justify-between gap-3 surface-card px-5 py-4 font-semibold text-primary"
                   >
                     {f.label}
                     <ArrowRight aria-hidden="true" className="size-4 shrink-0" />

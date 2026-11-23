@@ -181,7 +181,7 @@ function UserMenu({ user }) {
         <div
           id={menuId}
           role="menu"
-          className="absolute right-0 z-50 mt-2 w-60 overflow-hidden rounded-card border border-line bg-card py-1.5 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.3)]"
+          className="absolute right-0 z-50 mt-2 w-60 overflow-hidden surface-card py-1.5 shadow-[0_12px_32px_-16px_rgb(0_0_0/0.3)]"
         >
           <div className="border-b border-line px-4 pt-2 pb-3">
             <p className="truncate text-sm font-semibold">{user.email}</p>

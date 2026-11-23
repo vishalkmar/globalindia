@@ -64,7 +64,7 @@ export function RevisionHistory({ open, onClose, entity, entityId, onRestore }) 
             text="A version is stored every time this item is saved."
           />
         ) : (
-          <ol className="flex flex-col divide-y divide-line rounded-card border border-line">
+          <ol className="flex flex-col divide-y divide-line surface-card">
             {state.rows.map((r, i) => (
               <li key={r.id} className="flex items-center gap-3 px-4 py-3">
                 <div className="min-w-0 flex-1">

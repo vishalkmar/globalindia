@@ -126,7 +126,7 @@ export function FileDrop({
       ) : null}
 
       {picked.length ? (
-        <ul className="flex flex-col divide-y divide-line rounded-card border border-line bg-card">
+        <ul className="flex flex-col divide-y divide-line surface-card">
           {picked.map((file, i) => (
             <li key={`${file.name}-${i}`} className="flex items-center gap-3 px-4 py-2.5 text-sm">
               {file.type === "application/pdf" ? (

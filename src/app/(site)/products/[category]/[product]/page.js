@@ -191,10 +191,10 @@ export default async function ProductPage({ params }) {
                 aspect="4:3"
                 priority
                 sizes="(min-width: 1024px) 460px, 100vw"
-                className="w-full rounded-card border border-line"
+                className="w-full surface-card"
               />
             ) : (
-              <div className="flex aspect-[4/3] w-full flex-col justify-end gap-2 rounded-card border border-line bg-card p-6">
+              <div className="flex aspect-[4/3] w-full flex-col justify-end gap-2 surface-card p-6">
                 <FlaskConical aria-hidden="true" className="size-8 text-primary/40" strokeWidth={1.25} />
                 <p className="font-display text-xl text-primary">{p.name}</p>
                 <p className="text-sm text-muted">
@@ -338,7 +338,7 @@ export default async function ProductPage({ params }) {
               note="Specifications are indicative. Confirm the exact values on the COA supplied with your batch."
             />
           ) : (
-            <div className="flex flex-col items-start gap-3 rounded-card border border-line bg-card p-6">
+            <div className="flex flex-col items-start gap-3 surface-card p-6">
               <p className="text-ink">
                 We send the latest COA with your quote, so you see the values of the batch you will actually
                 receive.
@@ -382,7 +382,7 @@ export default async function ProductPage({ params }) {
         <Container className="grid gap-10 lg:grid-cols-2 lg:gap-16">
           <div className="flex flex-col gap-6">
             <Heading id="packaging-title" eyebrow="Packaging" title="Packs, minimum order and dispatch." />
-            <dl className="grid gap-px overflow-hidden rounded-card border border-line bg-line">
+            <dl className="grid gap-px overflow-hidden surface-card bg-line">
               {[
                 ["Pack sizes", p.packSizes.length ? p.packSizes.join(", ") : "On request"],
                 ["Minimum order", p.moq || "On request"],
@@ -419,7 +419,7 @@ export default async function ProductPage({ params }) {
                   <a
                     href={`/d/${d.media.id}`}
                     rel="nofollow"
-                    className="flex items-center gap-4 rounded-card border border-line bg-card px-5 py-4 transition-colors hover:border-primary"
+                    className="lift flex items-center gap-4 surface-card px-5 py-4 transition-colors "
                   >
                     <Download aria-hidden="true" className="size-5 shrink-0 text-primary" />
                     <span className="flex flex-1 flex-col">
@@ -432,7 +432,7 @@ export default async function ProductPage({ params }) {
                 <li key={d.id}>
                   <a
                     href={`/contact?product=${encodeURIComponent(p.slug)}&doc=${d.type}#quote`}
-                    className="flex items-center gap-4 rounded-card border border-line bg-card px-5 py-4 transition-colors hover:border-primary"
+                    className="lift flex items-center gap-4 surface-card px-5 py-4 transition-colors "
                   >
                     <FileLock2 aria-hidden="true" className="size-5 shrink-0 text-primary" />
                     <span className="flex flex-1 flex-col">
@@ -485,7 +485,7 @@ export default async function ProductPage({ params }) {
             intro="We quote in writing, per kg or per litre, with GST and freight shown separately."
           />
           {p.showPrice && p.indicativePrice ? (
-            <p className="rounded-card border border-line bg-card px-5 py-4">
+            <p className="surface-card px-5 py-4">
               <span className="font-semibold text-ink">Indicative price: {p.indicativePrice}.</span>{" "}
               <span className="text-muted">
                 For guidance only; your quote depends on grade, quantity and delivery city.

@@ -154,7 +154,7 @@ export function DataTable({
 
       {state.error ? <Alert tone="error">{state.error}</Alert> : null}
 
-      <div className="overflow-x-auto rounded-card border border-line bg-card">
+      <div className="overflow-x-auto surface-card">
         <table className="w-full min-w-[640px] border-collapse text-left text-sm" aria-busy={state.loading}>
           <caption className="sr-only">{caption}</caption>
           <thead>

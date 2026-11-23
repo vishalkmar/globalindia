@@ -217,7 +217,7 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
   if (type === "group") {
     const obj = value ?? {};
     return (
-      <fieldset className="flex flex-col gap-3 rounded-card border border-line p-4">
+      <fieldset className="flex flex-col gap-3 surface-card p-4">
         <legend className="px-1 text-label text-ink">{def.label}</legend>
         {def.hint ? <p className="-mt-1 text-[0.8125rem] text-muted">{def.hint}</p> : null}
         <div className={cn("grid gap-4", def.columns !== 1 && "md:grid-cols-2")}>
@@ -252,7 +252,7 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
       onChange(next);
     };
     return (
-      <fieldset className="flex flex-col gap-3 rounded-card border border-line p-4">
+      <fieldset className="flex flex-col gap-3 surface-card p-4">
         <legend className="px-1 text-label text-ink">{def.label}</legend>
         {def.hint ? <p className="-mt-1 text-[0.8125rem] text-muted">{def.hint}</p> : null}
         {list.length === 0 ? <p className="text-sm text-muted">None added.</p> : null}

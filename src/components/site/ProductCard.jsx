@@ -19,7 +19,7 @@ export function ProductCard({ product }) {
   ].filter(Boolean);
 
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-card transition-[border-color,transform] duration-150 hover:-translate-y-0.5 hover:border-primary motion-reduce:hover:translate-y-0">
+    <article className="lift group relative flex h-full flex-col overflow-hidden surface-card duration-150 motion-reduce:hover:translate-y-0">
       <div className="relative aspect-[4/3] overflow-hidden border-b border-line bg-surface">
         {product.image ? (
           <MediaImage

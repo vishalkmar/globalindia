@@ -43,14 +43,15 @@ export function themeToCss(tokens, scope = ":root") {
   const light = colorBlock(t.colors?.light, fallback.colors.light);
   const dark = colorBlock(t.colors?.dark, fallback.colors.dark);
   const fonts = t.fonts ?? fallback.fonts;
-  const radiusBtn = clampInt(t.radius?.button, 0, 24, 6);
-  const radiusCard = clampInt(t.radius?.card, 0, 32, 10);
+  const radiusBtn = clampInt(t.radius?.button, 0, 24, 10);
+  const radiusCard = clampInt(t.radius?.card, 0, 32, 16);
   const compact = t.density === "compact";
 
   const shared =
     `--ff-display:${fontVar("display", fonts.display)};` +
     `--ff-body:${fontVar("body", fonts.body)};` +
-    `--ff-data:${fontVar("data", fonts.data)};` +
+    // No monospace anywhere: "data" text (CAS numbers, specs, figures) uses the body font with tabular numbers.
+    `--ff-data:var(--ff-body);` +
     `--r-btn:${radiusBtn}px;--r-card:${radiusCard}px;` +
     `--sy:${compact ? "64px" : "96px"};--sy-sm:${compact ? "48px" : "64px"};`;
 

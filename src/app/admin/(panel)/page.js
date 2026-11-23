@@ -65,12 +65,12 @@ function Stat({ icon, label, value, note, href }) {
   return href ? (
     <Link
       href={href}
-      className="block rounded-card border border-line bg-card p-5 transition-colors hover:border-primary"
+      className="lift block surface-card p-5 transition-colors "
     >
       {body}
     </Link>
   ) : (
-    <div className="rounded-card border border-line bg-card p-5">{body}</div>
+    <div className="surface-card p-5">{body}</div>
   );
 }
 
@@ -195,7 +195,7 @@ async function Dashboard() {
       {stats ? (
         <section
           aria-labelledby="trend-title"
-          className="grid gap-6 rounded-card border border-line bg-card p-5 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
+          className="grid gap-6 surface-card p-5 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]"
         >
           <h2 id="trend-title" className="sr-only">
             Enquiry trends
@@ -216,7 +216,7 @@ async function Dashboard() {
       ) : null}
 
       <div className="grid gap-6 xl:grid-cols-2">
-        <section className="rounded-card border border-line bg-card">
+        <section className="surface-card">
           <h2 className="border-b border-line px-5 py-4 text-h4 text-primary">Latest enquiries</h2>
           {recentEnquiries.length ? (
             <ul className="divide-y divide-line">
@@ -242,7 +242,7 @@ async function Dashboard() {
           )}
         </section>
 
-        <section className="rounded-card border border-line bg-card">
+        <section className="surface-card">
           <h2 className="border-b border-line px-5 py-4 text-h4 text-primary">Last edits</h2>
           {lastEdits.length ? (
             <ul className="divide-y divide-line">

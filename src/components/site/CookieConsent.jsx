@@ -74,7 +74,7 @@ export function CookieConsent() {
       role="dialog"
       aria-modal="false"
       aria-labelledby="cookie-title"
-      className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-3xl rounded-card border border-line bg-card p-5 shadow-[0_18px_48px_-24px_rgb(0_0_0/0.45)] md:inset-x-6 md:bottom-6"
+      className="fixed inset-x-3 bottom-3 z-[60] mx-auto max-w-3xl surface-card p-5 shadow-[0_18px_48px_-24px_rgb(0_0_0/0.45)] md:inset-x-6 md:bottom-6"
       data-testid="cookie-consent"
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-center">

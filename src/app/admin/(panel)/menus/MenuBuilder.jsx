@@ -278,7 +278,7 @@ export function MenuBuilder({ canEdit }) {
           ))}
         </Select>
       </div>
-      <section className="rounded-card border border-line bg-card p-5">
+      <section className="surface-card p-5">
         <LocationEditor key={location} location={location} canEdit={canEdit} />
       </section>
     </div>

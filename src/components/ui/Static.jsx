@@ -16,10 +16,10 @@ export function IconBox({ icon: Icon, size = "md", onBand = false, label, classN
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center justify-center rounded-btn border",
+        "inline-flex shrink-0 items-center justify-center rounded-[calc(var(--r-btn)+2px)]",
         onBand
-          ? "border-[color-mix(in_oklab,var(--c-band-ink)_30%,transparent)] text-band-ink"
-          : "border-line bg-card text-primary",
+          ? "bg-[color-mix(in_oklab,var(--c-band-ink)_10%,transparent)] text-band-ink shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--c-band-ink)_18%,transparent)]"
+          : "bg-[linear-gradient(145deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_20%,var(--c-card)))] text-primary",
         box,
         className,
       )}

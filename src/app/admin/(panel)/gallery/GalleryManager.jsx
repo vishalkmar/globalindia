@@ -129,7 +129,7 @@ export function GalleryManager({ canEdit }) {
         ))}
       </datalist>
 
-      <section className="flex flex-col gap-4 rounded-card border border-line bg-card p-5">
+      <section className="flex flex-col gap-4 surface-card p-5">
         {items.length ? (
           <fieldset disabled={!canEdit} className="flex flex-col gap-3">
             <legend className="sr-only">Gallery photos</legend>

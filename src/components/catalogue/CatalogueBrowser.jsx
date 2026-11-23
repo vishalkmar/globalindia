@@ -113,7 +113,7 @@ export function CatalogueBrowser({ categories, family = null }) {
             <section
               key={c.id}
               aria-labelledby={`cat-${c.slug}`}
-              className="rounded-card border border-line bg-card"
+              className="surface-card"
               data-testid="hub-category"
             >
               <div className="flex flex-col gap-2 border-b border-line p-5 md:flex-row md:items-end md:justify-between md:gap-8 md:p-6">

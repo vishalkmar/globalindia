@@ -82,7 +82,7 @@ export function EnquiryBell() {
       {open ? (
         <div
           id={panelId}
-          className="absolute right-0 z-30 mt-2 w-80 rounded-card border border-line bg-card p-2 shadow-[0_18px_48px_-24px_rgb(0_0_0/0.45)]"
+          className="absolute right-0 z-30 mt-2 w-80 surface-card p-2 shadow-[0_18px_48px_-24px_rgb(0_0_0/0.45)]"
         >
           <p className="px-2 py-1.5 text-sm font-semibold text-ink">{label}</p>
           {data.latest.length ? (

@@ -17,7 +17,7 @@ export function Table({ columns, rows, caption, note, zebra = true, className, s
   return (
     <figure className={cn("flex flex-col gap-3", className)}>
       <div
-        className="overflow-x-auto rounded-card border border-line"
+        className="overflow-x-auto surface-card"
         tabIndex={0}
         role="region"
         aria-label={caption ?? "Table"}

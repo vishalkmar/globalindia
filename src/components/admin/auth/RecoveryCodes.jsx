@@ -27,7 +27,7 @@ export function RecoveryCodes({ codes, onDone, doneLabel = "I have saved them, c
       <Alert tone="info" title="Save these 10 recovery codes now">
         If your phone is lost, each code lets you sign in once. They will not be shown again.
       </Alert>
-      <ol className="grid grid-cols-2 gap-2 rounded-card border border-line bg-surface p-4 font-data text-[0.9375rem] tracking-wider">
+      <ol className="grid grid-cols-2 gap-2 surface-card bg-surface p-4 font-data text-[0.9375rem] tracking-wider">
         {codes.map((c) => (
           <li key={c} className="text-center">
             {c}

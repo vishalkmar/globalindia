@@ -50,7 +50,7 @@ async function Cards() {
           <li key={key}>
             <Link
               href={`/admin/settings/${key}`}
-              className="flex h-full items-start gap-4 rounded-card border border-line bg-card p-5 transition-colors hover:border-primary"
+              className="lift flex h-full items-start gap-4 surface-card p-5 transition-colors "
             >
               <IconBox icon={ICONS[key]} />
               <span className="flex flex-1 flex-col gap-1">

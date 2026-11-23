@@ -23,7 +23,7 @@ export function ThemePreview({ tokens, mode = "light", className }) {
       {/* Safe: themeToCss validates every value (hex colours, whitelisted fonts, clamped numbers). */}
       <style dangerouslySetInnerHTML={{ __html: css }} />
       <div
-        className={`${scope} overflow-hidden rounded-card border border-line bg-bg font-body text-ink`}
+        className={`${scope} overflow-hidden surface-card bg-bg font-body text-ink`}
         data-theme={mode}
         style={{ fontSize: 15 }}
       >

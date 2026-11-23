@@ -73,7 +73,7 @@ export function EmailPreview({ templates, canSend }) {
             title={`Preview: ${mail.subject}`}
             sandbox=""
             srcDoc={mail.html}
-            className="h-[640px] w-full rounded-card border border-line bg-white"
+            className="h-[640px] w-full surface-card bg-white"
           />
         </div>
       ) : (

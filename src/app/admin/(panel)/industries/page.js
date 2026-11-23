@@ -38,7 +38,7 @@ async function Content() {
           ) : null
         }
       />
-      <ul className="flex flex-col divide-y divide-line rounded-card border border-line bg-card">
+      <ul className="flex flex-col divide-y divide-line surface-card">
         {rows.map((r) => (
           <li key={r.id}>
             <Link

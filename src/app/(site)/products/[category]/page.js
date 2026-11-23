@@ -130,7 +130,7 @@ export default async function CategoryPage({ params }) {
               aspect="4:3"
               priority
               sizes="(min-width: 1024px) 480px, 100vw"
-              className="w-full rounded-card border border-line"
+              className="w-full surface-card"
             />
           ) : null}
         </Container>
@@ -201,7 +201,7 @@ export default async function CategoryPage({ params }) {
                 <li key={r.slug}>
                   <Link
                     href={`/products/${r.slug}`}
-                    className="flex items-center justify-between gap-3 rounded-card border border-line bg-card px-5 py-4 transition-colors hover:border-primary"
+                    className="lift flex items-center justify-between gap-3 surface-card px-5 py-4 transition-colors "
                   >
                     <span className="flex flex-col">
                       <span className="font-semibold text-primary">{r.name}</span>

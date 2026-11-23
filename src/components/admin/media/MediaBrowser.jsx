@@ -153,7 +153,7 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
           ))}
         </div>
       ) : rows.length === 0 ? (
-        <div className="rounded-card border border-line bg-card">
+        <div className="surface-card">
           <EmptyState
             title="No files here"
             text={

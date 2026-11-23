@@ -47,7 +47,7 @@ function DropdownPanel({ item, id, onNavigate }) {
   return (
     <div
       id={id}
-      className="absolute top-full left-0 z-40 mt-2 w-64 rounded-card border border-line bg-card p-2 shadow-[0_18px_40px_-24px_rgb(0_0_0/0.35)]"
+      className="absolute top-full left-0 z-40 mt-2 w-64 surface-card p-2 shadow-[0_18px_40px_-24px_rgb(0_0_0/0.35)]"
     >
       <ul className="flex flex-col">
         {links.map((c) => (
@@ -100,7 +100,7 @@ function MegaPanel({ families, id, onNavigate, contact, header }) {
         </ul>
         <div className="flex flex-col gap-3 rounded-card bg-band p-6 text-band-ink">
           <p className="text-eyebrow text-band-ink/80">
-            <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
+            <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
             Not sure of the grade?
           </p>
           <p className="font-display text-xl leading-snug">

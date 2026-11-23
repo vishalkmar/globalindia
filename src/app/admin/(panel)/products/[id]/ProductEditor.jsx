@@ -438,7 +438,7 @@ function Form({ productId, initial, initialPath, categories, perms }) {
           <section
             key={g.id}
             aria-labelledby={`sec-${g.id}`}
-            className="flex flex-col gap-4 rounded-card border border-line bg-card p-5 md:p-6"
+            className="flex flex-col gap-4 surface-card p-5 md:p-6"
           >
             <h2 id={`sec-${g.id}`} className="font-display text-lg text-primary">
               {g.title}

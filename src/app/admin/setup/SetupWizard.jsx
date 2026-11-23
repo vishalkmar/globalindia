@@ -90,7 +90,7 @@ export function SetupWizard({ mustChangePassword, mfaSetupDone }) {
         })}
       </ol>
 
-      <div className="rounded-card border border-line bg-card p-6 sm:p-8">
+      <div className="surface-card p-6 sm:p-8">
         {step === "password" ? (
           <form onSubmit={savePassword} noValidate className="flex flex-col gap-5">
             <div className="flex flex-col gap-1">

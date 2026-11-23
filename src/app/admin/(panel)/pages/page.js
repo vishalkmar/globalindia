@@ -49,7 +49,7 @@ async function List() {
         <li key={p.id}>
           <Link
             href={`/admin/pages/${p.id}`}
-            className="flex items-center gap-4 rounded-card border border-line bg-card p-4 transition-colors hover:border-primary"
+            className="lift flex items-center gap-4 surface-card p-4 transition-colors "
           >
             <IconBox icon={FileText} />
             <div className="min-w-0 flex-1">

@@ -17,7 +17,7 @@ export function MapEmbed({ embedUrl, openUrl, address }) {
       <iframe
         src={embedUrl}
         title={`Map: ${address}`}
-        className="aspect-[4/3] w-full rounded-card border border-line md:aspect-[16/10]"
+        className="aspect-[4/3] w-full surface-card md:aspect-[16/10]"
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
         allowFullScreen
@@ -25,7 +25,7 @@ export function MapEmbed({ embedUrl, openUrl, address }) {
     );
   }
   return (
-    <div className="flex aspect-[4/3] w-full flex-col items-start justify-end gap-4 rounded-card border border-line bg-surface p-6 md:aspect-[16/10]">
+    <div className="flex aspect-[4/3] w-full flex-col items-start justify-end gap-4 surface-card bg-surface p-6 md:aspect-[16/10]">
       <MapPin aria-hidden="true" className="size-8 text-primary" strokeWidth={1.5} />
       <p className="max-w-sm text-ink">{address}</p>
       <div className="flex flex-wrap gap-3">

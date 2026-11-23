@@ -106,7 +106,7 @@ function QuoteForm({ products, initialItems, initialMessage }) {
             return (
               <div
                 key={i}
-                className="grid gap-3 rounded-card border border-line bg-surface p-4 md:grid-cols-[1.6fr_1fr_1fr_auto] md:items-start"
+                className="grid gap-3 surface-card bg-surface p-4 md:grid-cols-[1.6fr_1fr_1fr_auto] md:items-start"
                 data-testid="quote-item"
               >
                 <ProductSelect
@@ -316,7 +316,7 @@ export function EnquiryForms({ products }) {
         role="tabpanel"
         id={`${tabsId}-${tab}-panel`}
         aria-labelledby={`${tabsId}-${tab}`}
-        className="rounded-card border border-line bg-card p-5 md:p-8"
+        className="surface-card p-5 md:p-8"
       >
         {tab === "quote" ? (
           basket === null ? (

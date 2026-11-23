@@ -20,7 +20,7 @@ export function CachePurge() {
   }
   return (
     <section
-      className="flex flex-col items-start gap-3 rounded-card border border-line bg-card p-5"
+      className="flex flex-col items-start gap-3 surface-card p-5"
       aria-labelledby="cache-title"
     >
       <h2 id="cache-title" className="font-semibold text-ink">

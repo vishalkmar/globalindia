@@ -225,7 +225,7 @@ function Form({ categoryId, initial, productCount, perms, router, toast }) {
           {error}
         </Alert>
       ) : null}
-      <fieldset disabled={!perms.update} className="rounded-card border border-line bg-card p-5 md:p-6">
+      <fieldset disabled={!perms.update} className="surface-card p-5 md:p-6">
         <legend className="sr-only">Category details</legend>
         <FormBuilder form={form} fields={fields(isNew, perms.publish)} />
       </fieldset>

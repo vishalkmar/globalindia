@@ -92,7 +92,7 @@ export function SearchDialog({ open, onClose }) {
         onClose();
       }}
       onClick={(e) => e.target === ref.current && onClose()}
-      className="mx-auto mt-[10vh] w-[calc(100%-24px)] max-w-2xl rounded-card border border-line bg-card p-0 text-ink"
+      className="mx-auto mt-[10vh] w-[calc(100%-24px)] max-w-2xl surface-card p-0 text-ink"
     >
       <div className="flex items-center gap-3 border-b border-line px-4">
         <Search aria-hidden="true" className="size-5 text-muted" />

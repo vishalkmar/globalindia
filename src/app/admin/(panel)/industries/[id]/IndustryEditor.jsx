@@ -201,7 +201,7 @@ function Form({ industryId, initial, products, perms }) {
       ) : null}
       <fieldset
         disabled={!perms.update}
-        className="flex flex-col gap-5 rounded-card border border-line bg-card p-5 md:p-6"
+        className="flex flex-col gap-5 surface-card p-5 md:p-6"
       >
         <legend className="sr-only">Industry page</legend>
         <FormBuilder form={form} fields={fields(perms.publish)} />

@@ -69,7 +69,7 @@ function Form({ endpoint, schema, field, canEdit, savedText, initial }) {
   return (
     <div className="flex flex-col gap-5">
       {error ? <Alert tone="error">{error}</Alert> : null}
-      <fieldset disabled={!canEdit} className="rounded-card border border-line bg-card p-5">
+      <fieldset disabled={!canEdit} className="surface-card p-5">
         <legend className="sr-only">{field.label}</legend>
         <FormBuilder form={form} fields={[{ ...field, name: "items", sortable: true }]} columns={1} />
       </fieldset>

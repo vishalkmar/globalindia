@@ -6,12 +6,15 @@ import { cloneElement, isValidElement, useId, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const control =
-  "w-full rounded-btn border border-line bg-card text-ink placeholder:text-muted/80 " +
-  "transition-[border-color,box-shadow] duration-150 " +
-  "hover:border-[color-mix(in_oklab,var(--c-line)_50%,var(--c-ink))] " +
-  "focus:border-primary focus:outline-none focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-accent " +
+  "w-full rounded-btn border border-[color-mix(in_oklab,var(--c-ink)_12%,transparent)] " +
+  "bg-[color-mix(in_oklab,var(--c-surface)_45%,var(--c-card))] text-ink placeholder:text-muted/75 " +
+  "shadow-[inset_0_1px_2px_color-mix(in_oklab,var(--c-ink)_5%,transparent)] " +
+  "transition-[border-color,box-shadow,background-color] duration-200 " +
+  "hover:border-[color-mix(in_oklab,var(--c-ink)_24%,transparent)] " +
+  "focus:border-primary focus:bg-card focus:outline-none " +
+  "focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--c-primary)_14%,transparent)] " +
   "disabled:cursor-not-allowed disabled:bg-surface disabled:opacity-70 " +
-  "aria-invalid:border-error aria-invalid:focus-visible:outline-error";
+  "aria-invalid:border-error aria-invalid:focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--c-error)_14%,transparent)]";
 
 /**
  * Field: label + control + hint + error, wired with ids for screen readers.
@@ -68,7 +71,7 @@ export function Field({ label, hint, error, required, className, children, id: i
 export function Input({ className, size = "md", ...props }) {
   return (
     <input
-      className={cn(control, size === "sm" ? "h-9 px-3 text-sm" : "h-11 px-3.5 text-[0.9375rem]", className)}
+      className={cn(control, size === "sm" ? "h-9 px-3 text-sm" : "h-12 px-4 text-[0.9375rem]", className)}
       {...props}
     />
   );
@@ -109,7 +112,7 @@ export function Textarea({ className, rows = 4, ...props }) {
   return (
     <textarea
       rows={rows}
-      className={cn(control, "min-h-24 px-3.5 py-2.5 text-[0.9375rem] leading-relaxed", className)}
+      className={cn(control, "min-h-28 px-4 py-3 text-[0.9375rem] leading-relaxed", className)}
       {...props}
     />
   );
@@ -119,7 +122,7 @@ export function Select({ className, children, placeholder, ...props }) {
   return (
     <div className="relative">
       <select
-        className={cn(control, "h-11 appearance-none pr-10 pl-3.5 text-[0.9375rem]", className)}
+        className={cn(control, "h-12 appearance-none pr-10 pl-4 text-[0.9375rem]", className)}
         {...props}
       >
         {placeholder ? (

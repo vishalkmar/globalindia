@@ -34,7 +34,7 @@ function FamilyGroup({ family, rows, canEdit, onSaved }) {
   return (
     <section
       aria-labelledby={`fam-${family.key}`}
-      className="flex flex-col gap-3 rounded-card border border-line bg-card p-5"
+      className="flex flex-col gap-3 surface-card p-5"
     >
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 id={`fam-${family.key}`} className="font-display text-lg text-primary">

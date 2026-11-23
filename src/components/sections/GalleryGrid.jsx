@@ -56,7 +56,7 @@ export function GalleryGrid({ items, showFilters }) {
             <button
               type="button"
               onClick={() => setOpen(i)}
-              className="group block w-full overflow-hidden rounded-card border border-line bg-card text-left"
+              className="group block w-full overflow-hidden surface-card text-left"
             >
               <MediaImage
                 asset={item.media}
@@ -83,7 +83,7 @@ export function GalleryGrid({ items, showFilters }) {
           if (e.key === "ArrowLeft") move(-1);
         }}
         onClick={(e) => e.target === dialogRef.current && setOpen(-1)}
-        className="m-auto w-[min(1100px,calc(100%-24px))] rounded-card border border-line bg-card p-0"
+        className="m-auto w-[min(1100px,calc(100%-24px))] surface-card p-0"
       >
         {current ? (
           <figure className="flex flex-col">

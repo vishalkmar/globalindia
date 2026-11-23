@@ -207,7 +207,7 @@ export function MediaUploader({
         <form
           onSubmit={submitUrl}
           noValidate
-          className="flex flex-col gap-3 rounded-card border border-line bg-surface p-4"
+          className="flex flex-col gap-3 surface-card bg-surface p-4"
         >
           <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
             <Field
@@ -247,7 +247,7 @@ export function MediaUploader({
 
       {queue.length ? (
         <ul
-          className="flex flex-col divide-y divide-line rounded-card border border-line bg-card"
+          className="flex flex-col divide-y divide-line surface-card"
           aria-label="Uploads"
           aria-live="polite"
         >

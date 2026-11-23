@@ -89,7 +89,7 @@ export function AuthenticatorEnroll({ onEnabled, onCancel }) {
             <li>Add an account and scan this QR code.</li>
             <li>Then ask for the approval code below.</li>
           </ol>
-          <div className="flex justify-center rounded-card border border-line bg-white p-4">
+          <div className="flex justify-center surface-card bg-white p-4">
             {/* eslint-disable-next-line @next/next/no-img-element -- server-generated SVG as data URL; an <img> cannot run scripts */}
             <img
               src={`data:image/svg+xml;base64,${typeof window !== "undefined" ? window.btoa(setup.qrSvg) : ""}`}

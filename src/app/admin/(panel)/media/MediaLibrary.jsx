@@ -25,7 +25,7 @@ export function MediaLibrary({ canUpload, driver }) {
         </Alert>
       ) : null}
       {canUpload ? (
-        <section className="rounded-card border border-line bg-card p-5">
+        <section className="surface-card p-5">
           <MediaUploader
             onUploaded={(assets) => {
               setReloadKey((k) => k + 1);

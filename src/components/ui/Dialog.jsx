@@ -81,7 +81,7 @@ export function Dialog({ open, onClose, title, description, children, footer, si
       aria-describedby={description ? descId : undefined}
       onClick={onBackdropClick}
       className={cn(
-        "m-auto w-[calc(100%-32px)] rounded-card border border-line bg-card p-0 text-ink",
+        "m-auto w-[calc(100%-32px)] surface-card p-0 text-ink",
         "open:animate-[toast-in_180ms_var(--ease-standard)]",
         width,
         className,

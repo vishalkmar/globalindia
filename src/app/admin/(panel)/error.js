@@ -16,7 +16,7 @@ export default function AdminError({ error, reset }) {
   }, [error]);
 
   return (
-    <div className="mx-auto flex max-w-lg flex-col items-start gap-4 rounded-card border border-line bg-card p-8">
+    <div className="mx-auto flex max-w-lg flex-col items-start gap-4 surface-card p-8">
       <IconBox icon={TriangleAlert} />
       <h1 className="text-h3">This screen could not be loaded</h1>
       <p className="text-muted">

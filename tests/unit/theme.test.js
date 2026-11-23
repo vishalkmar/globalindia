@@ -49,7 +49,7 @@ describe("themeToCss", () => {
     expect(css).not.toMatch(/script|javascript|<|display:none/);
     expect(css).toContain("--c-primary:#0F3B3A;");
     expect(css).toContain("--r-btn:24px;");
-    expect(css).toContain("--r-card:10px;");
+    expect(css).toContain("--r-card:16px;"); // fallback card radius (UI phase)
   });
 
   it("maps mode", () => {

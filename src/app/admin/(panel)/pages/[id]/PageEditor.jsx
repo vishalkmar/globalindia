@@ -145,7 +145,7 @@ export function PageEditor({ pageId, perms }) {
       {error ? <Alert tone="error">{error}</Alert> : null}
       {!canEdit ? <Alert tone="info">Your role can view this page but not change it.</Alert> : null}
 
-      <section className="flex flex-col gap-4 rounded-card border border-line bg-card p-5">
+      <section className="flex flex-col gap-4 surface-card p-5">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-h4 text-primary">Sections</h2>
           {canEdit ? (
@@ -241,7 +241,7 @@ export function PageEditor({ pageId, perms }) {
         ) : null}
       </section>
 
-      <section className="grid gap-4 rounded-card border border-line bg-card p-5 md:grid-cols-2">
+      <section className="grid gap-4 surface-card p-5 md:grid-cols-2">
         <h2 className="text-h4 text-primary md:col-span-2">Page details and search engines</h2>
         <fieldset disabled={!canEdit} className="contents">
           <Field label="Page name (admin)">
@@ -325,7 +325,7 @@ export function PageEditor({ pageId, perms }) {
                   ]);
                   setAdding(false);
                 }}
-                className="flex h-full w-full flex-col items-start gap-1 rounded-card border border-line bg-card p-4 text-left transition-colors hover:border-primary"
+                className="lift flex h-full w-full flex-col items-start gap-1 surface-card p-4 text-left"
               >
                 <span className="font-semibold text-ink">{def.label}</span>
                 <span className="text-sm text-muted">{def.description}</span>

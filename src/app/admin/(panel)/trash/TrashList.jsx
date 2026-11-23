@@ -71,7 +71,7 @@ export function TrashList({ canDestroy }) {
   return (
     <>
       <ul
-        className="flex flex-col divide-y divide-line rounded-card border border-line bg-card"
+        className="flex flex-col divide-y divide-line surface-card"
         data-testid="trash"
       >
         {items.map((item) => (

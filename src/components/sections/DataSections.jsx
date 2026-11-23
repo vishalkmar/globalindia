@@ -64,7 +64,7 @@ export async function ClientLogos({ data, tone }) {
             return (
               <li
                 key={l.id}
-                className="flex h-20 items-center justify-center rounded-card border border-line bg-card px-4"
+                className="flex h-20 items-center justify-center surface-card px-4"
               >
                 {l.url ? (
                   <a href={l.url} target="_blank" rel="noopener noreferrer nofollow" aria-label={l.name}>
@@ -93,7 +93,7 @@ export async function Testimonials({ data, tone }) {
         <ul className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {items.map((t, i) => (
             <li data-reveal key={t.id}>
-              <figure className="flex h-full flex-col gap-5 rounded-card border border-line bg-card p-6">
+              <figure className="flex h-full flex-col gap-5 surface-card p-6">
                 <Quote aria-hidden="true" className="size-5 text-accent" strokeWidth={1.5} />
                 <blockquote className="flex-1 text-ink">{t.quote}</blockquote>
                 <figcaption className="border-t border-line pt-4 text-sm">
@@ -124,7 +124,7 @@ export async function Insights({ data, tone }) {
         <ul className="grid gap-6 md:grid-cols-3">
           {posts.map((p) => (
             <li key={p.id}>
-              <article className="group relative flex h-full flex-col overflow-hidden rounded-card border border-line bg-card transition-colors hover:border-primary">
+              <article className="lift group relative flex h-full flex-col overflow-hidden surface-card">
                 {p.cover ? (
                   <MediaImage
                     asset={p.cover}

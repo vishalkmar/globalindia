@@ -61,7 +61,7 @@ export function ComponentsDemo() {
 
   return (
     <div className="flex flex-col gap-8">
-      <section className="rounded-card border border-line bg-card p-6">
+      <section className="surface-card p-6">
         <h2 className="mb-5 text-h4 text-primary">FormBuilder (Zod validated)</h2>
         <FormBuilder
           form={form}
@@ -91,7 +91,7 @@ export function ComponentsDemo() {
         />
       </section>
 
-      <section className="rounded-card border border-line bg-card p-6">
+      <section className="surface-card p-6">
         <h2 className="mb-1 text-h4 text-primary">Drag to reorder</h2>
         <p className="mb-5 text-sm text-muted">
           Mouse, touch, or keyboard: focus a handle, press space, use arrow keys, press space.

@@ -89,7 +89,7 @@ export function ThemeList({ perms }) {
         {themes.map((t) => (
           <li
             key={t.id}
-            className="flex flex-col gap-4 rounded-card border border-line bg-card p-5"
+            className="flex flex-col gap-4 surface-card p-5"
             data-active={t.isActive || undefined}
           >
             <div className="flex items-start justify-between gap-2">

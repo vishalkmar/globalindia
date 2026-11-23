@@ -8,7 +8,7 @@ function Notice({ maintenance, business }) {
   const phone = business.phones?.[0]?.number;
   return (
     <main id="main" className="flex min-h-dvh items-center justify-center bg-surface px-4 py-16">
-      <div className="flex max-w-lg flex-col items-start gap-5 rounded-card border border-line bg-card p-8 md:p-10">
+      <div className="flex max-w-lg flex-col items-start gap-5 surface-card p-8 md:p-10">
         <span className="inline-flex size-11 items-center justify-center rounded-btn border border-line text-primary">
           <Wrench aria-hidden="true" className="size-5" strokeWidth={1.5} />
         </span>

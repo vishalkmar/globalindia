@@ -18,7 +18,7 @@ export default function SetupPage() {
       <div className="mx-auto flex w-full max-w-xl flex-col gap-8">
         <div className="flex flex-col gap-2">
           <p className="text-eyebrow">
-            <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
+            <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
             First sign-in
           </p>
           <h1 className="text-h2">Secure your admin account</h1>

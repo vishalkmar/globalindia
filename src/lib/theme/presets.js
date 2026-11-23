@@ -158,7 +158,7 @@ const graphiteSaffron = {
 
 const baseTokens = {
   fonts: { display: "fraunces", body: "manrope", data: "jetbrains-mono" },
-  radius: { button: 6, card: 10 },
+  radius: { button: 10, card: 16 },
   density: "comfortable", // comfortable | compact
   buttonStyle: "solid", // solid | outline
 };

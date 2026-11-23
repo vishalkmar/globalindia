@@ -17,7 +17,7 @@ import { adminJson } from "@/lib/client/adminFetch";
 
 function Panel({ title, description, children }) {
   return (
-    <section className="rounded-card border border-line bg-card">
+    <section className="surface-card">
       <header className="flex flex-col gap-1 border-b border-line px-6 py-5">
         <h2 className="text-h4 text-primary">{title}</h2>
         {description ? <p className="text-sm text-muted">{description}</p> : null}

@@ -39,6 +39,7 @@ export function Section({
 export function SectionHeading({ eyebrow, title, intro, align = "left", as: H = "h2", className, children }) {
   return (
     <div
+      data-reveal
       className={cn(
         "flex flex-col gap-4",
         align === "center" ? "mx-auto items-center text-center" : "",
@@ -48,7 +49,7 @@ export function SectionHeading({ eyebrow, title, intro, align = "left", as: H = 
     >
       {eyebrow ? (
         <p className="text-eyebrow">
-          <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
+          <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
           {eyebrow}
         </p>
       ) : null}

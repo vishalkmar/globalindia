@@ -248,7 +248,7 @@ export function MediaDetail({ assetId, open, onClose, onChanged, onDeleted }) {
             />
           </div>
 
-          <dl className="grid grid-cols-2 gap-x-4 gap-y-2 rounded-card border border-line bg-surface p-4 text-sm">
+          <dl className="grid grid-cols-2 gap-x-4 gap-y-2 surface-card bg-surface p-4 text-sm">
             <dt className="text-muted">File</dt>
             <dd className="truncate">{asset.originalName || "—"}</dd>
             <dt className="text-muted">Type</dt>

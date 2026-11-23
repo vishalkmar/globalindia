@@ -35,7 +35,7 @@ export default async function IndustriesPage() {
               <li key={ind.slug}>
                 <Link
                   href={`/industries/${ind.slug}`}
-                  className="group flex h-full flex-col gap-4 rounded-card border border-line bg-card p-6 transition-colors hover:border-primary"
+                  className="lift group flex h-full flex-col gap-4 surface-card p-6 transition-colors "
                 >
                   <IconBox icon={iconFor(ind.icon)} />
                   <span className="text-h3 group-hover:underline group-hover:underline-offset-4">

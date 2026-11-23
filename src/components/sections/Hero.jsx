@@ -18,7 +18,7 @@ export async function Hero({ data, ctx }) {
         <div className="flex flex-col items-start gap-6">
           {data.eyebrow ? (
             <p className="text-eyebrow">
-              <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
+              <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
               {data.eyebrow}
             </p>
           ) : null}
@@ -55,7 +55,7 @@ export async function Hero({ data, ctx }) {
         </div>
 
         {image ? (
-          <div className="relative overflow-hidden rounded-card border border-line">
+          <div className="relative overflow-hidden surface-card">
             <MediaImage
               asset={image}
               aspect="4:5"
@@ -65,7 +65,7 @@ export async function Hero({ data, ctx }) {
             />
           </div>
         ) : data.highlights.length ? (
-          <aside aria-label="In stock now" className="rounded-card border border-line bg-card">
+          <aside aria-label="In stock now" className="surface-card">
             <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
               <p className="flex items-center gap-2 text-sm font-semibold text-primary">
                 <PackageCheck aria-hidden="true" className="size-4" strokeWidth={1.75} /> In stock now

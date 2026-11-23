@@ -75,7 +75,7 @@ export default async function IndustryPage({ params }) {
             </div>
             <ul className="grid gap-4 sm:grid-cols-2">
               {ind.content.needs.map((n) => (
-                <li key={n.title} className="flex gap-3 rounded-card border border-line bg-card p-5">
+                <li key={n.title} className="flex gap-3 surface-card p-5">
                   <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-primary" />
                   <span className="flex flex-col gap-1">
                     <strong className="font-semibold text-ink">{n.title}</strong>

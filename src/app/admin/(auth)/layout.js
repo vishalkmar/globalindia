@@ -20,7 +20,7 @@ export default function AuthLayout({ children }) {
 
         <div className="flex max-w-md flex-col gap-6">
           <p className="text-eyebrow text-band-ink/80">
-            <span aria-hidden="true" className="inline-block h-px w-6 bg-accent" />
+            <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
             Admin panel
           </p>
           <p className="font-display text-[2.25rem] leading-[1.12] text-band-ink">

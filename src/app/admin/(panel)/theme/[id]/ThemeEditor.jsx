@@ -189,7 +189,7 @@ export function ThemeEditor({ themeId, perms }) {
         {error ? <Alert tone="error">{error}</Alert> : null}
 
         <fieldset disabled={!canEdit} className="flex flex-col gap-6">
-          <section className="flex flex-col gap-4 rounded-card border border-line bg-card p-5">
+          <section className="flex flex-col gap-4 surface-card p-5">
             <div className="flex items-center gap-2">
               <h2 className="text-h4 text-primary">Basics</h2>
               {loaded.isActive ? <Badge tone="success">Live</Badge> : null}
@@ -233,7 +233,7 @@ export function ThemeEditor({ themeId, perms }) {
             </Field>
           </section>
 
-          <section className="flex flex-col gap-3 rounded-card border border-line bg-card p-5">
+          <section className="flex flex-col gap-3 surface-card p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-h4 text-primary">Colours</h2>
               <div
@@ -278,7 +278,7 @@ export function ThemeEditor({ themeId, perms }) {
             <ContrastReport colors={t.colors[palette]} />
           </section>
 
-          <section className="grid gap-4 rounded-card border border-line bg-card p-5 md:grid-cols-3">
+          <section className="grid gap-4 surface-card p-5 md:grid-cols-3">
             <h2 className="text-h4 text-primary md:col-span-3">Fonts</h2>
             {[
               ["display", "Headings"],
@@ -302,7 +302,7 @@ export function ThemeEditor({ themeId, perms }) {
             ))}
           </section>
 
-          <section className="grid gap-5 rounded-card border border-line bg-card p-5 md:grid-cols-2">
+          <section className="grid gap-5 surface-card p-5 md:grid-cols-2">
             <h2 className="text-h4 text-primary md:col-span-2">Shape and spacing</h2>
             <Field label={`Button corners: ${t.radius.button} px`}>
               <input

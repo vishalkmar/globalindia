@@ -46,7 +46,7 @@ export function FeatureTriad({ data, tone, ctx }) {
             <div
               data-reveal
               key={item.title}
-              className="flex flex-col gap-4 rounded-card border border-line bg-card p-6 md:p-8"
+              className="flex flex-col gap-4 surface-card p-6 md:p-8"
             >
               <IconBox icon={iconFor(item.icon)} />
               <h3 className="text-h3">{item.title}</h3>
@@ -77,7 +77,7 @@ export async function AboutTeaser({ data, tone }) {
               asset={image}
               aspect="4:3"
               sizes="(min-width: 1024px) 480px, 100vw"
-              className="w-full rounded-card border border-line"
+              className="w-full surface-card"
             />
           ) : null}
           {data.quote ? (
@@ -116,7 +116,7 @@ export async function ProductFamilies({ data, tone }) {
               <li data-reveal key={item.family}>
                 <Link
                   href={`/products?family=${fam.slug}`}
-                  className="group flex h-full flex-col gap-4 rounded-card border border-line bg-card p-6 transition-[border-color,transform] duration-150 hover:-translate-y-0.5 hover:border-primary motion-reduce:hover:translate-y-0"
+                  className="lift group flex h-full flex-col gap-4 surface-card p-6 duration-150 motion-reduce:hover:translate-y-0"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <IconBox icon={iconFor(fam.icon)} />
@@ -158,7 +158,7 @@ export function Industries({ data, tone }) {
                 {item.text ? <p className="text-[0.875rem] leading-relaxed text-muted">{item.text}</p> : null}
               </>
             );
-            const cls = "flex h-full flex-col gap-3 rounded-card border border-line bg-card p-5";
+            const cls = "flex h-full flex-col gap-3 surface-card p-5";
             return (
               <li data-reveal key={item.title}>
                 {item.href ? (

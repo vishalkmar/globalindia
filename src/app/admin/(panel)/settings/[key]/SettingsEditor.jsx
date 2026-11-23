@@ -46,7 +46,7 @@ function Editor({ settingKey, initial, media, updatedAt, canEdit }) {
       {error ? <Alert tone="error">{error}</Alert> : null}
       <fieldset
         disabled={!canEdit}
-        className="rounded-card border border-line bg-card p-6 disabled:opacity-80"
+        className="surface-card p-6 disabled:opacity-80"
       >
         <FormBuilder form={form} fields={cfg.fields} mediaCache={media} />
       </fieldset>

@@ -50,7 +50,7 @@ export async function PageHero({ data, ctx }) {
             aspect="4:3"
             priority
             sizes="(min-width: 1024px) 480px, 100vw"
-            className="w-full rounded-card border border-line"
+            className="w-full surface-card"
           />
         ) : null}
       </Container>
@@ -129,7 +129,7 @@ export function FactsTable({ data, tone, ctx }) {
       <Container className="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
         <Heading d={data} />
         <div className="flex flex-col gap-3">
-          <dl className="divide-y divide-line overflow-hidden rounded-card border border-line bg-card">
+          <dl className="divide-y divide-line overflow-hidden surface-card">
             {rows.map(([k, v]) => (
               <div key={k} className="grid gap-1 px-5 py-3.5 sm:grid-cols-[200px_1fr] sm:gap-6">
                 <dt className="text-small text-muted">{k}</dt>
@@ -156,7 +156,7 @@ export function VisionMission({ data, tone }) {
           <div
             key={label}
             data-reveal
-            className="flex flex-col gap-4 rounded-card border border-line bg-card p-8 md:p-10"
+            className="flex flex-col gap-4 surface-card p-8 md:p-10"
           >
             <Eyebrow as="h2">{label}</Eyebrow>
             <p className="font-display text-[1.625rem] leading-snug text-primary">{text}</p>
@@ -201,7 +201,7 @@ export async function ProprietorMessage({ data, tone }) {
             asset={image}
             aspect="4:5"
             sizes="(min-width: 1024px) 380px, 100vw"
-            className="w-full rounded-card border border-line"
+            className="w-full surface-card"
           />
         ) : null}
         <figure className="flex flex-col gap-6">
@@ -252,10 +252,10 @@ export async function SplitFeature({ data, tone }) {
             asset={image}
             aspect="4:3"
             sizes="(min-width: 1024px) 560px, 100vw"
-            className="w-full rounded-card border border-line"
+            className="w-full surface-card"
           />
         ) : data.bullets.length ? (
-          <ul className="divide-y divide-line rounded-card border border-line bg-card">
+          <ul className="divide-y divide-line surface-card">
             {data.bullets.map((b) => (
               <li key={b} className="flex gap-3 px-5 py-4 text-ink">
                 <Check aria-hidden="true" className="mt-1 size-4 shrink-0 text-accent" strokeWidth={2} /> {b}
@@ -282,7 +282,7 @@ export function BrandList({ data, tone }) {
           {data.brands.map((b) => (
             <li
               key={b.name}
-              className="flex flex-col gap-1 rounded-card border border-line bg-card px-5 py-4"
+              className="flex flex-col gap-1 surface-card px-5 py-4"
             >
               <span className="font-semibold text-primary">{b.name}</span>
               {b.note ? <span className="text-sm text-muted">We supply: {b.note}</span> : null}
@@ -306,7 +306,7 @@ export function Packaging({ data, tone }) {
             <li
               key={p.name}
               data-reveal
-              className="flex flex-col gap-2 rounded-card border border-line bg-card p-5"
+              className="flex flex-col gap-2 surface-card p-5"
             >
               <span className="font-display text-[1.5rem] leading-tight text-primary">{p.name}</span>
               {p.spec ? <span className="font-data text-[0.8125rem] text-muted">{p.spec}</span> : null}
@@ -335,7 +335,7 @@ export function IconCards({ data, tone }) {
             <li
               key={c.title}
               data-reveal
-              className="flex flex-col gap-3 rounded-card border border-line bg-card p-6"
+              className="flex flex-col gap-3 surface-card p-6"
             >
               <IconBox icon={iconFor(c.icon)} />
               <h3 className="text-h3">{c.title}</h3>
@@ -353,7 +353,7 @@ export function ContactBlock({ data, tone, ctx }) {
   const a = ctx.business.address;
   return (
     <Section tone={tone}>
-      <Container className="grid gap-10 rounded-card border border-line bg-card p-8 md:p-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
+      <Container className="grid gap-10 surface-card p-8 md:p-12 lg:grid-cols-[minmax(0,6fr)_minmax(0,5fr)]">
         <div className="flex flex-col items-start gap-4">
           {data.eyebrow ? <Eyebrow>{data.eyebrow}</Eyebrow> : null}
           <h2 className="text-h2">{data.title}</h2>
@@ -420,7 +420,7 @@ export function Openings({ data, tone, ctx }) {
         {data.jobs.length ? (
           <ul className="flex flex-col gap-4">
             {data.jobs.map((j) => (
-              <li key={j.title} className="flex flex-col gap-2 rounded-card border border-line bg-card p-6">
+              <li key={j.title} className="flex flex-col gap-2 surface-card p-6">
                 <h3 className="text-h3">{j.title}</h3>
                 <p className="text-small text-muted">{[j.location, j.type].filter(Boolean).join(" · ")}</p>
                 {j.text ? <p className="measure text-ink">{j.text}</p> : null}
@@ -428,7 +428,7 @@ export function Openings({ data, tone, ctx }) {
             ))}
           </ul>
         ) : data.emptyText ? (
-          <p className="rounded-card border border-line bg-card p-6 text-ink">{data.emptyText}</p>
+          <p className="surface-card p-6 text-ink">{data.emptyText}</p>
         ) : null}
         {data.applyText ? (
           <p className="measure text-ink">
@@ -465,7 +465,7 @@ export async function Downloads({ data, tone }) {
                 <a
                   href={`/d/${f.mediaId}`}
                   rel="nofollow"
-                  className="flex items-start gap-4 rounded-card border border-line bg-card px-5 py-4 transition-colors hover:border-primary"
+                  className="lift flex items-start gap-4 surface-card px-5 py-4"
                 >
                   <FileDown aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" />
                   <span className="flex flex-col gap-0.5">

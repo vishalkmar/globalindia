@@ -18,7 +18,7 @@ export const metadata = {
 
 function Tile({ icon: Icon, title, children }) {
   return (
-    <div className="flex gap-4 rounded-card border border-line bg-card p-5">
+    <div className="flex gap-4 surface-card p-5">
       <Icon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" strokeWidth={1.75} />
       <div className="flex flex-col gap-1">
         <h2 className="text-sm font-bold tracking-wide text-muted uppercase">{title}</h2>
