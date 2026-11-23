@@ -72,8 +72,14 @@ export function RichText({ data, tone }) {
           <div className="prose-site measure text-body" dangerouslySetInnerHTML={{ __html: html }} />
         </div>
         {data.aside ? (
-          <aside className="self-start border-l-2 border-accent bg-card p-6 text-ink">
-            <p className="font-display text-xl leading-snug text-primary">{data.aside}</p>
+          <aside
+            data-reveal
+            className="relative self-start overflow-hidden rounded-card bg-band bg-[radial-gradient(80%_100%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_30%,transparent),transparent_65%)] p-7 text-band-ink shadow-lg md:p-8"
+          >
+            <span aria-hidden="true" className="absolute -top-4 right-5 font-display text-[7rem] leading-none text-band-ink/10">
+              &ldquo;
+            </span>
+            <p className="relative font-display text-xl leading-snug md:text-2xl">{data.aside}</p>
           </aside>
         ) : null}
       </Container>
@@ -87,16 +93,20 @@ export function Timeline({ data, tone }) {
     <Section tone={tone}>
       <Container className="flex flex-col gap-10">
         <Heading d={data} />
-        <ol className="relative flex flex-col gap-8 border-l border-line pl-8 md:pl-10">
+        <ol className="relative grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {data.items.map((m) => (
-            <li key={`${m.year}-${m.title}`} data-reveal className="relative">
+            <li
+              key={`${m.year}-${m.title}`}
+              data-reveal
+              className="lift relative flex flex-col gap-2 surface-card p-6 pt-7"
+            >
               <span
                 aria-hidden="true"
-                className="absolute top-1.5 -left-[37px] size-3 rounded-full border-2 border-accent bg-bg md:-left-[45px]"
+                className="absolute inset-x-6 top-0 h-1 rounded-b-pill bg-[linear-gradient(90deg,var(--c-accent),color-mix(in_oklab,var(--c-primary)_70%,var(--c-accent)))]"
               />
-              <p className="font-data text-sm font-semibold text-accent-text">{m.year}</p>
-              <h3 className="mt-1 text-h3">{m.title}</h3>
-              {m.text ? <p className="mt-1.5 measure text-muted">{m.text}</p> : null}
+              <span className="font-display text-[2rem] leading-none text-primary">{m.year}</span>
+              <h3 className="text-h3">{m.title}</h3>
+              {m.text ? <p className="text-muted">{m.text}</p> : null}
             </li>
           ))}
         </ol>
@@ -129,9 +139,9 @@ export function FactsTable({ data, tone, ctx }) {
       <Container className="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
         <Heading d={data} />
         <div className="flex flex-col gap-3">
-          <dl className="divide-y divide-line overflow-hidden surface-card">
+          <dl className="divide-y divide-hairline overflow-hidden surface-card shadow-[0_0_0_1px_var(--hairline),var(--sh-md)]">
             {rows.map(([k, v]) => (
-              <div key={k} className="grid gap-1 px-5 py-3.5 sm:grid-cols-[200px_1fr] sm:gap-6">
+              <div key={k} className="grid gap-1 px-6 py-4 transition-colors hover:bg-[color-mix(in_oklab,var(--c-primary)_3%,transparent)] sm:grid-cols-[200px_1fr] sm:gap-6">
                 <dt className="text-small text-muted">{k}</dt>
                 <dd className={cn("text-ink", k === "GSTIN" && "font-data")}>{v}</dd>
               </div>

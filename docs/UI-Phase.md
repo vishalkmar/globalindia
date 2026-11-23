@@ -40,14 +40,14 @@ Status: [ ] to do, [x] done, [~] partly.
 - [x] 05 Packaging/MOQ cards  - [x] 06 Documents  - [x] 07 FAQ  - [x] 08 Quote CTA / add to quote
 
 ## UI-06 Company pages
-- [ ] 01 About (timeline, facts, proprietor)  - [ ] 02 Why us  - [ ] 03 Quality  - [ ] 04 Gallery
-- [ ] 05 Careers  - [ ] 06 Downloads  - [ ] 07 Delhi / Delhi NCR pages
+- [x] 01 About (timeline, facts, proprietor)  - [x] 02 Why us  - [x] 03 Quality  - [x] 04 Gallery
+- [x] 05 Careers  - [x] 06 Downloads  - [x] 07 Delhi / Delhi NCR pages
 
-## UI-07 Industries  - [ ] 01 List  - [ ] 02 Detail
-## UI-08 Insights  - [ ] 01 List + topics + pagination  - [ ] 02 Article (TOC, reading width)
+## UI-07 Industries  - [x] 01 List  - [x] 02 Detail
+## UI-08 Insights  - [x] 01 List + topics + pagination  - [x] 02 Article (TOC, reading width)
 ## UI-09 Contact and utility pages
-- [ ] 01 Contact (tiles, tabs, forms, map)  - [ ] 02 Thank you  - [ ] 03 FAQ page  - [ ] 04 Legal
-- [ ] 05 Newsletter confirm/confirmed  - [ ] 06 404  - [ ] 07 Maintenance
+- [x] 01 Contact (tiles, tabs, forms, map)  - [x] 02 Thank you  - [x] 03 FAQ page  - [x] 04 Legal
+- [x] 05 Newsletter confirm/confirmed  - [x] 06 404  - [x] 07 Maintenance
 
 ## UI-10 Admin sign-in  - [ ] 01 Login  - [ ] 02 Verify  - [ ] 03 Forgot/reset  - [ ] 04 Setup wizard
 ## UI-11 Admin shell and dashboard

@@ -119,7 +119,10 @@ export default async function PostPage({ params }) {
           </article>
           {toc.length > 1 ? (
             <aside className="hidden lg:block">
-              <nav aria-label="In this article (sidebar)" className="sticky top-24 flex flex-col gap-2">
+              <nav
+                aria-label="In this article (sidebar)"
+                className="sticky top-24 flex flex-col gap-2 surface-card p-5 shadow-[0_0_0_1px_var(--hairline),var(--sh-md)]"
+              >
                 <p className="text-sm font-bold tracking-wide text-muted uppercase">In this article</p>
                 <TocList toc={toc} />
               </nav>

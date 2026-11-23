@@ -10,17 +10,21 @@ const fmt = (d) =>
 export function PostCard({ post }) {
   return (
     <article className="lift group relative flex h-full flex-col overflow-hidden surface-card">
-      <div className="aspect-[16/9] overflow-hidden border-b border-line bg-surface">
+      <div className="relative aspect-[16/9] overflow-hidden bg-surface">
         {post.cover ? (
           <MediaImage
             asset={post.cover}
             aspect="16:9"
             sizes="(min-width: 1024px) 380px, 100vw"
-            className="h-full w-full"
+            className="h-full w-full transition-transform duration-500 motion-safe:group-hover:scale-[1.03]"
           />
         ) : (
-          <div className="flex h-full items-end p-5">
-            <Newspaper aria-hidden="true" className="size-7 text-primary/40" strokeWidth={1.25} />
+          <div className="relative h-full bg-[radial-gradient(90%_120%_at_0%_100%,color-mix(in_oklab,var(--c-accent)_24%,transparent),transparent_60%),linear-gradient(160deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-surface)),var(--c-surface))]">
+            <Newspaper
+              aria-hidden="true"
+              className="absolute top-1/2 right-6 size-20 -translate-y-1/2 rotate-6 text-primary/12"
+              strokeWidth={1}
+            />
           </div>
         )}
       </div>

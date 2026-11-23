@@ -25,8 +25,13 @@ export function MapEmbed({ embedUrl, openUrl, address }) {
     );
   }
   return (
-    <div className="flex aspect-[4/3] w-full flex-col items-start justify-end gap-4 surface-card bg-surface p-6 md:aspect-[16/10]">
-      <MapPin aria-hidden="true" className="size-8 text-primary" strokeWidth={1.5} />
+    <div className="map-placeholder relative flex aspect-[4/3] w-full flex-col items-start justify-end gap-4 overflow-hidden surface-card p-6 md:aspect-[16/10] md:p-8">
+      <span
+        aria-hidden="true"
+        className="absolute top-[38%] left-1/2 flex size-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-primary text-primary-ink shadow-primary ring-8 ring-[color-mix(in_oklab,var(--c-primary)_14%,transparent)]"
+      >
+        <MapPin className="size-6" strokeWidth={1.75} />
+      </span>
       <p className="max-w-sm text-ink">{address}</p>
       <div className="flex flex-wrap gap-3">
         <Button variant="secondary" size="sm" onClick={() => setShow(true)}>

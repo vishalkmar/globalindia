@@ -272,6 +272,16 @@
   opacity: 0.55;
 }
 
+/* Map placeholder: a light street-grid drawn in CSS until the visitor loads the real map. */
+.map-placeholder {
+  background-color: color-mix(in oklab, var(--c-surface) 70%, var(--c-card));
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--c-ink) 6%, transparent) 2px, transparent 2px),
+    linear-gradient(90deg, color-mix(in oklab, var(--c-ink) 6%, transparent) 2px, transparent 2px),
+    linear-gradient(35deg, transparent 48%, color-mix(in oklab, var(--c-accent) 22%, transparent) 49%, color-mix(in oklab, var(--c-accent) 22%, transparent) 51%, transparent 52%);
+  background-size: 64px 64px, 64px 64px, 100% 100%;
+}
+
 /* Eyebrow pills on dark bands: translucent light pill instead of the accent tint. */
 .bg-band .text-eyebrow,
 .text-band-ink .text-eyebrow {

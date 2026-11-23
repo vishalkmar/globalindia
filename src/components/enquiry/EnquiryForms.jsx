@@ -82,12 +82,12 @@ function QuoteForm({ products, initialItems, initialMessage }) {
             key={s.title}
             aria-current={i === step ? "step" : undefined}
             className={cn(
-              "inline-flex items-center gap-2 rounded-btn border px-3 py-1.5",
+              "inline-flex items-center gap-2 rounded-pill px-3.5 py-1.5 font-semibold transition-colors",
               i === step
-                ? "border-primary bg-primary text-primary-ink"
+                ? "bg-primary text-primary-ink shadow-primary"
                 : i < step
-                  ? "border-primary text-primary"
-                  : "border-line text-muted",
+                  ? "bg-[color-mix(in_oklab,var(--c-success)_12%,transparent)] text-success"
+                  : "bg-surface text-muted",
             )}
           >
             <span className="font-data">{i + 1}</span> {s.title}
@@ -290,7 +290,12 @@ export function EnquiryForms({ products }) {
 
   return (
     <div className="flex flex-col gap-6" id="quote-forms">
-      <div role="tablist" aria-label="Type of enquiry" className="flex flex-wrap gap-2" onKeyDown={onKeyDown}>
+      <div
+        role="tablist"
+        aria-label="Type of enquiry"
+        className="flex flex-wrap gap-1 self-start rounded-[calc(var(--r-btn)+6px)] bg-surface p-1.5 shadow-[inset_0_0_0_1px_var(--hairline)]"
+        onKeyDown={onKeyDown}
+      >
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -302,10 +307,10 @@ export function EnquiryForms({ products }) {
             tabIndex={tab === t.id ? 0 : -1}
             onClick={() => select(t.id)}
             className={cn(
-              "h-10 rounded-btn border px-4 text-sm font-semibold transition-colors",
+              "h-10 rounded-btn px-4 text-sm font-semibold transition-[background-color,box-shadow,color] duration-200",
               tab === t.id
-                ? "border-primary bg-primary text-primary-ink"
-                : "border-line bg-card text-ink hover:border-primary",
+                ? "bg-card text-primary shadow-[0_0_0_1px_var(--hairline),var(--sh-sm)]"
+                : "text-muted hover:text-ink",
             )}
           >
             {t.label}
