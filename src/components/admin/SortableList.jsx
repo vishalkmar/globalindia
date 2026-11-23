@@ -28,7 +28,7 @@ function Row({ id, label, children, disabled }) {
       ref={setNodeRef}
       style={{ transform: CSS.Transform.toString(transform), transition }}
       className={cn(
-        "flex items-center gap-2 rounded-btn border border-line bg-card",
+        "flex items-center gap-2 rounded-btn bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)]",
         isDragging && "relative z-10 border-primary shadow-[0_8px_24px_-12px_rgb(0_0_0/0.35)]",
       )}
     >

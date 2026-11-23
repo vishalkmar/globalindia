@@ -52,7 +52,7 @@ function FocalPicker({ asset, value, onChange }) {
         }
         onClick={pick}
         onKeyDown={key}
-        className="relative min-h-32 cursor-crosshair overflow-hidden rounded-btn border border-line bg-surface"
+        className="relative min-h-32 cursor-crosshair overflow-hidden rounded-btn bg-surface shadow-[inset_0_0_0_1px_var(--hairline)]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element -- admin preview of any driver */}
         <img src={asset.url} alt={asset.alt || ""} className="block max-h-72 w-full object-contain" />

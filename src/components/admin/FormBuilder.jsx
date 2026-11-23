@@ -88,7 +88,7 @@ function TagsInput({ value = [], onChange, placeholder, ...props }) {
           {value.map((t) => (
             <li
               key={t}
-              className="inline-flex h-7 items-center gap-1 rounded-btn border border-line bg-surface pr-1 pl-2.5 text-sm"
+              className="inline-flex h-7 items-center gap-1 rounded-btn bg-surface shadow-[inset_0_0_0_1px_var(--hairline)] pr-1 pl-2.5 text-sm"
             >
               {t}
               <button
@@ -257,7 +257,7 @@ function FieldControl({ def, value, onChange, errors, path, mediaCache }) {
         {def.hint ? <p className="-mt-1 text-[0.8125rem] text-muted">{def.hint}</p> : null}
         {list.length === 0 ? <p className="text-sm text-muted">None added.</p> : null}
         {list.map((item, i) => (
-          <div key={i} className="flex items-start gap-3 rounded-btn border border-line bg-surface p-3">
+          <div key={i} className="flex items-start gap-3 rounded-btn bg-surface shadow-[inset_0_0_0_1px_var(--hairline)] p-3">
             <div className="grid flex-1 gap-3 md:grid-cols-2">
               {def.fields.map((sub) => (
                 <FieldControl

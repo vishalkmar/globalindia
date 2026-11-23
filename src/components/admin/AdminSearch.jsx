@@ -67,7 +67,7 @@ export function AdminSearch() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex h-9 items-center gap-2 rounded-btn border border-line px-3 text-sm text-muted hover:border-primary hover:text-ink"
+        className="inline-flex h-9 items-center gap-2 rounded-pill bg-surface px-3.5 text-sm text-muted shadow-[inset_0_0_0_1px_var(--hairline)] transition-colors hover:bg-card hover:text-ink"
         aria-label="Search the admin (Ctrl+K)"
       >
         <Search aria-hidden="true" className="size-4" />
@@ -96,7 +96,7 @@ export function AdminSearch() {
               if (e.key === "ArrowUp") (e.preventDefault(), setActive((a) => Math.max(a - 1, 0)));
               if (e.key === "Enter" && flat[active]) (e.preventDefault(), go(flat[active]));
             }}
-            className="h-12 w-full rounded-btn border border-line bg-card px-4 text-[0.9375rem] text-ink focus-visible:border-primary"
+            className="h-12 w-full rounded-btn bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] px-4 text-[0.9375rem] text-ink focus-visible:border-primary"
           />
           <div
             id={listId}

@@ -106,7 +106,7 @@ export function ThemePreview({ tokens, mode = "light", className }) {
 export function ThemeSwatch({ tokens, mode = "light" }) {
   const c = tokens?.colors?.[mode] ?? {};
   return (
-    <span className="flex overflow-hidden rounded-btn border border-line" aria-hidden="true">
+    <span className="flex overflow-hidden rounded-btn shadow-[inset_0_0_0_1px_var(--hairline)]" aria-hidden="true">
       {[c.primary, c.accent, c.surface, c.ink].map((hex, i) => (
         <span
           key={i}

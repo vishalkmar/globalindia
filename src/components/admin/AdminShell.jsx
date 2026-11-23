@@ -62,8 +62,8 @@ function NavList({ user, pathname, onNavigate }) {
                       className={cn(
                         "relative flex items-center gap-3 rounded-btn px-3 py-2 text-[0.875rem] font-medium transition-colors",
                         active
-                          ? "bg-[color-mix(in_oklab,var(--c-primary)_8%,var(--c-card))] text-primary"
-                          : "text-ink hover:bg-surface",
+                          ? "bg-[color-mix(in_oklab,var(--c-primary)_9%,var(--c-card))] font-semibold text-primary shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--c-primary)_10%,transparent)]"
+                          : "text-ink hover:bg-[color-mix(in_oklab,var(--c-ink)_4%,transparent)]",
                       )}
                     >
                       {active ? (
@@ -216,7 +216,7 @@ function Brand() {
     <Link href="/admin" className="flex items-center gap-2.5 px-3">
       <span
         aria-hidden="true"
-        className="inline-flex size-8 items-center justify-center rounded-btn border border-line bg-card font-display text-primary"
+        className="inline-flex size-9 items-center justify-center rounded-[calc(var(--r-btn)+2px)] bg-[linear-gradient(150deg,color-mix(in_oklab,var(--c-primary)_80%,white),var(--c-primary)_55%)] font-display text-lg text-primary-ink shadow-primary ring-1 ring-inset ring-[color-mix(in_oklab,var(--c-accent)_45%,transparent)]"
       >
         G
       </span>
@@ -245,7 +245,7 @@ export function AdminShell({ user, children }) {
         Skip to content
       </a>
 
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col border-r border-line bg-card lg:flex">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-[248px] flex-col border-r border-hairline bg-card lg:flex">
         <div className="flex h-16 items-center border-b border-line px-2">
           <Brand />
         </div>
@@ -262,7 +262,7 @@ export function AdminShell({ user, children }) {
       </Drawer>
 
       <div className="lg:pl-[248px]">
-        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-line bg-card/95 px-4 backdrop-blur-sm sm:px-6">
+        <header className="sticky top-0 z-20 flex h-16 items-center gap-3 border-b border-hairline bg-[color-mix(in_oklab,var(--c-card)_85%,transparent)] px-4 backdrop-blur-xl sm:px-6">
           <button
             type="button"
             onClick={() => setDrawer(true)}

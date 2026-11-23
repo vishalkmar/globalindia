@@ -90,7 +90,7 @@ export function AuditLogView() {
         description={detail ? when(detail.at) : ""}
       >
         {detail ? (
-          <pre className="overflow-x-auto rounded-btn border border-line bg-surface p-4 font-data text-[0.8125rem] leading-relaxed whitespace-pre-wrap">
+          <pre className="overflow-x-auto rounded-btn bg-surface shadow-[inset_0_0_0_1px_var(--hairline)] p-4 font-data text-[0.8125rem] leading-relaxed whitespace-pre-wrap">
             {JSON.stringify(detail.diff, null, 2)}
           </pre>
         ) : null}

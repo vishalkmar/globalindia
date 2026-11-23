@@ -116,7 +116,7 @@ export function RichTextEditor({ value, onChange, label, hint, minHeight = 200, 
       <span id={labelId} className="text-label text-ink">
         {label}
       </span>
-      <div className="overflow-hidden rounded-btn border border-line bg-card focus-within:border-primary">
+      <div className="overflow-hidden rounded-card bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] transition-shadow focus-within:shadow-[0_0_0_1px_var(--c-primary),0_0_0_4px_color-mix(in_oklab,var(--c-primary)_14%,transparent)]">
         <div
           role="toolbar"
           aria-label={`${label} formatting`}

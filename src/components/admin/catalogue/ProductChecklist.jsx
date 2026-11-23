@@ -48,7 +48,7 @@ export function ProductChecklist({ products, value, onChange, error, disabled })
       </div>
       <ul
         id={id}
-        className="grid max-h-80 gap-1 overflow-auto rounded-btn border border-line p-2 sm:grid-cols-2"
+        className="grid max-h-80 gap-1 overflow-auto rounded-btn bg-surface p-2 shadow-[inset_0_0_0_1px_var(--hairline)] sm:grid-cols-2"
         aria-label="Products"
       >
         {shown.map((p) => (

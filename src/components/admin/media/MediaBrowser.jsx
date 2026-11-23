@@ -208,7 +208,7 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
             aria-label="Previous page"
             disabled={page <= 1}
             onClick={() => setPage((p) => p - 1)}
-            className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card disabled:opacity-40"
+            className="inline-flex size-9 items-center justify-center rounded-btn bg-card text-ink shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] transition-[color,box-shadow] hover:text-primary hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_35%,transparent),var(--sh-sm)] disabled:opacity-40"
           >
             <ChevronLeft aria-hidden="true" className="size-4" />
           </button>
@@ -220,7 +220,7 @@ export function MediaBrowser({ accept = "any", onOpen, selectedId, reloadKey = 0
             aria-label="Next page"
             disabled={page >= state.data.pages}
             onClick={() => setPage((p) => p + 1)}
-            className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card disabled:opacity-40"
+            className="inline-flex size-9 items-center justify-center rounded-btn bg-card text-ink shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] transition-[color,box-shadow] hover:text-primary hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_35%,transparent),var(--sh-sm)] disabled:opacity-40"
           >
             <ChevronRight aria-hidden="true" className="size-4" />
           </button>

@@ -68,7 +68,7 @@ function FamilyGroup({ family, rows, canEdit, onSaved }) {
               <StatusBadge status={row.status} />
               <Link
                 href={`/admin/categories/${row.id}`}
-                className="inline-flex size-9 items-center justify-center rounded-btn border border-line text-ink hover:border-primary"
+                className="inline-flex size-9 items-center justify-center rounded-btn bg-card text-ink shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] transition-[color,box-shadow] hover:text-primary hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_35%,transparent),var(--sh-sm)]"
                 aria-label={`Edit ${row.name}`}
               >
                 <Pencil aria-hidden="true" className="size-4" />

@@ -101,7 +101,7 @@ export function AuthenticatorEnroll({ onEnabled, onCancel }) {
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-label text-muted">Cannot scan? Enter this key in the app</span>
-            <code className="rounded-btn border border-line bg-surface px-3 py-2 text-center font-data text-[0.9375rem] tracking-wider select-all">
+            <code className="rounded-btn bg-surface shadow-[inset_0_0_0_1px_var(--hairline)] px-3 py-2 text-center font-data text-[0.9375rem] tracking-wider select-all">
               {setup.manualKey}
             </code>
           </div>

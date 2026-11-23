@@ -7,11 +7,11 @@ import { KeyRound, ShieldCheck, Smartphone } from "lucide-react";
 export default function AuthLayout({ children }) {
   return (
     <div className="grid min-h-dvh bg-surface lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-      <aside className="relative hidden flex-col justify-between bg-band p-12 text-band-ink lg:flex">
+      <aside className="relative hidden flex-col justify-between overflow-hidden bg-band bg-[radial-gradient(70%_60%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_28%,transparent),transparent_65%),radial-gradient(60%_50%_at_0%_100%,color-mix(in_oklab,var(--c-band-ink)_7%,transparent),transparent_70%)] p-12 text-band-ink lg:flex">
         <div className="flex items-center gap-3">
           <span
             aria-hidden="true"
-            className="inline-flex size-10 items-center justify-center rounded-btn border border-[color-mix(in_oklab,var(--c-band-ink)_35%,transparent)] font-display text-lg"
+            className="inline-flex size-10 items-center justify-center rounded-[calc(var(--r-btn)+2px)] bg-band-ink font-display text-xl text-band shadow-[0_6px_16px_-6px_rgb(0_0_0/0.5)]"
           >
             G
           </span>
@@ -50,7 +50,7 @@ export default function AuthLayout({ children }) {
           <div className="mb-8 flex items-center gap-3 lg:hidden">
             <span
               aria-hidden="true"
-              className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card font-display text-primary"
+              className="inline-flex size-9 items-center justify-center rounded-btn bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] font-display text-primary"
             >
               G
             </span>

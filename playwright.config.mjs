@@ -13,6 +13,19 @@ if (!/@(127\.0\.0\.1|localhost):\d+\//.test(LOCAL_DB)) throw new Error("E2E_DATA
 process.env.DATABASE_URL = LOCAL_DB;
 process.env.DIRECT_URL = LOCAL_DB;
 
+// Never touch the owner's real services from tests: no real emails (dev outbox instead), no uploads to
+// the real Cloudinary account (local storage instead), no shared rate-limit store, no captcha, and no
+// password-only sign-in switch. Empty values win over .env.local in the dev server.
+const OFFLINE = Object.fromEntries(
+  [
+    "BREVO_API_KEY", "BREVO_SENDER_EMAIL", "BREVO_LIST_ID",
+    "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "CLOUDINARY_API_SECRET",
+    "UPSTASH_REDIS_REST_URL", "UPSTASH_REDIS_REST_TOKEN",
+    "TURNSTILE_SECRET", "NEXT_PUBLIC_TURNSTILE_SITE_KEY", "ADMIN_PASSWORD_ONLY",
+  ].map((k) => [k, ""]),
+);
+Object.assign(process.env, OFFLINE);
+
 /**
  * End-to-end tests against the dev server and the local database (npm run db:local).
  * Emails are read from the .dev-mail outbox, so no real inbox is needed.
@@ -39,6 +52,6 @@ export default defineConfig({
     reuseExistingServer: false,
     timeout: 180_000,
     // The dev server compiles every route the suite visits; give it room (it ran out of the default heap).
-    env: { DATABASE_URL: LOCAL_DB, DIRECT_URL: LOCAL_DB, E2E_RELAXED_LIMITS: "1", NEXT_PUBLIC_SITE_URL: "http://localhost:3100", NODE_OPTIONS: "--max-old-space-size=6144" },
+    env: { ...OFFLINE, DATABASE_URL: LOCAL_DB, DIRECT_URL: LOCAL_DB, E2E_RELAXED_LIMITS: "1", NEXT_PUBLIC_SITE_URL: "http://localhost:3100", NODE_OPTIONS: "--max-old-space-size=6144" },
   },
 });

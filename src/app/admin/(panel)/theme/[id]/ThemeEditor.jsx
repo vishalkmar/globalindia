@@ -27,7 +27,7 @@ function ColorRow({ token, value, onChange, disabled }) {
         value={isHexColor(value) ? value : "#000000"}
         disabled={disabled}
         onChange={(e) => onChange(e.target.value.toUpperCase())}
-        className="size-11 cursor-pointer rounded-btn border border-line bg-card p-1 disabled:cursor-not-allowed"
+        className="size-11 cursor-pointer rounded-btn bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] p-1 disabled:cursor-not-allowed"
       />
       <div className="min-w-0">
         <p className="text-sm font-semibold">{token.label}</p>
@@ -69,7 +69,7 @@ function ContrastReport({ colors }) {
           <CircleCheck aria-hidden="true" className="size-4" /> All text meets the WCAG AA contrast minimum.
         </p>
       )}
-      <ul className="divide-y divide-line rounded-btn border border-line text-[0.8125rem]">
+      <ul className="divide-y divide-line overflow-hidden rounded-btn shadow-[inset_0_0_0_1px_var(--hairline)] text-[0.8125rem]">
         {results.map((r) => (
           <li
             key={`${r.fg}-${r.bg}`}
@@ -239,7 +239,7 @@ export function ThemeEditor({ themeId, perms }) {
               <div
                 role="tablist"
                 aria-label="Palette"
-                className="inline-flex rounded-btn border border-line bg-surface p-1"
+                className="inline-flex rounded-pill bg-surface p-1 shadow-[inset_0_0_0_1px_var(--hairline)]"
               >
                 {["light", "dark"].map((m) => (
                   <button
@@ -252,8 +252,8 @@ export function ThemeEditor({ themeId, perms }) {
                       setPreviewMode(m);
                     }}
                     className={cn(
-                      "rounded-[4px] px-3 py-1 text-sm font-semibold capitalize",
-                      palette === m ? "bg-card text-primary" : "text-muted",
+                      "rounded-pill px-3.5 py-1 text-sm font-semibold capitalize transition-[color,background-color,box-shadow]",
+                      palette === m ? "bg-card text-primary shadow-sm" : "text-muted hover:text-ink",
                     )}
                   >
                     {m} mode
@@ -367,7 +367,7 @@ export function ThemeEditor({ themeId, perms }) {
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-h4 text-primary">Live preview</h2>
           <div
-            className="inline-flex rounded-btn border border-line bg-surface p-1"
+            className="inline-flex rounded-pill bg-surface p-1 shadow-[inset_0_0_0_1px_var(--hairline)]"
             role="group"
             aria-label="Preview mode"
           >
@@ -378,8 +378,8 @@ export function ThemeEditor({ themeId, perms }) {
                 aria-pressed={previewMode === m}
                 onClick={() => setPreviewMode(m)}
                 className={cn(
-                  "rounded-[4px] px-3 py-1 text-sm font-semibold capitalize",
-                  previewMode === m ? "bg-card text-primary" : "text-muted",
+                  "rounded-pill px-3.5 py-1 text-sm font-semibold capitalize transition-[color,background-color,box-shadow]",
+                  previewMode === m ? "bg-card text-primary shadow-sm" : "text-muted hover:text-ink",
                 )}
               >
                 {m}

@@ -259,7 +259,7 @@ export function DataTable({
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={data.page <= 1}
               aria-label="Previous page"
-              className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card text-ink disabled:opacity-40"
+              className="inline-flex size-9 items-center justify-center rounded-btn bg-card text-ink shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] transition-[color,box-shadow] hover:text-primary hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_35%,transparent),var(--sh-sm)] disabled:opacity-40"
             >
               <ChevronLeft aria-hidden="true" className="size-4" />
             </button>
@@ -271,7 +271,7 @@ export function DataTable({
               onClick={() => setPage((p) => Math.min(data.pages, p + 1))}
               disabled={data.page >= data.pages}
               aria-label="Next page"
-              className="inline-flex size-9 items-center justify-center rounded-btn border border-line bg-card text-ink disabled:opacity-40"
+              className="inline-flex size-9 items-center justify-center rounded-btn bg-card text-ink shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] transition-[color,box-shadow] hover:text-primary hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_35%,transparent),var(--sh-sm)] disabled:opacity-40"
             >
               <ChevronRight aria-hidden="true" className="size-4" />
             </button>

@@ -109,7 +109,7 @@ export function MediaUploader({
         <div
           role="tablist"
           aria-label="Upload method"
-          className="inline-flex rounded-btn border border-line bg-surface p-1"
+          className="inline-flex rounded-pill bg-surface p-1 shadow-[inset_0_0_0_1px_var(--hairline)]"
         >
           {[
             { id: "computer", label: "From computer", icon: Upload },
@@ -122,9 +122,9 @@ export function MediaUploader({
               aria-selected={tab === t.id}
               onClick={() => setTab(t.id)}
               className={cn(
-                "inline-flex items-center gap-2 rounded-[4px] px-3 py-1.5 text-sm font-semibold",
+                "inline-flex items-center gap-2 rounded-pill px-3.5 py-1.5 text-sm font-semibold transition-[color,background-color,box-shadow]",
                 tab === t.id
-                  ? "bg-card text-primary shadow-[0_1px_2px_rgb(0_0_0/0.08)]"
+                  ? "bg-card text-primary shadow-sm"
                   : "text-muted hover:text-ink",
               )}
             >
@@ -174,13 +174,13 @@ export function MediaUploader({
             handleFiles(e.dataTransfer.files);
           }}
           className={cn(
-            "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-card border border-dashed text-center transition-colors",
+            "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-card border border-dashed text-center transition-[border-color,background-color]",
             compact ? "px-4 py-6" : "px-6 py-10",
-            "border-[color-mix(in_oklab,var(--c-line)_30%,var(--c-muted))] bg-surface hover:border-primary",
+            "border-[color-mix(in_oklab,var(--c-line)_30%,var(--c-muted))] bg-surface hover:border-primary hover:bg-[color-mix(in_oklab,var(--c-primary)_4%,var(--c-surface))]",
             dragging && "border-primary bg-[color-mix(in_oklab,var(--c-primary)_6%,var(--c-surface))]",
           )}
         >
-          <span className="inline-flex size-11 items-center justify-center rounded-btn border border-line bg-card text-primary">
+          <span className="inline-flex size-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_20%,var(--c-card)))] text-primary shadow-sm">
             <Upload aria-hidden="true" className="size-5" strokeWidth={1.5} />
           </span>
           <span className="text-[0.9375rem] font-semibold">

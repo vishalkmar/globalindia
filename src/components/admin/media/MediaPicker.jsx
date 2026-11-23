@@ -53,7 +53,7 @@ export function MediaPicker({ label, value, onChange, accept = "image", folder =
 
   return (
     <Field label={label} hint={hint} error={error}>
-      <div className="flex items-center gap-3 rounded-btn border border-line bg-card p-2.5">
+      <div className="flex items-center gap-3 rounded-btn bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] p-2.5">
         {value ? (
           <>
             <AssetThumb asset={value} className="size-16 shrink-0 rounded" />

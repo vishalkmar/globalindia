@@ -119,7 +119,7 @@ export function ProductDocumentsField({ value, onChange, errors, disabled }) {
         return (
           <div
             key={d.mediaId}
-            className="flex flex-col gap-2 rounded-btn border border-line bg-surface p-3"
+            className="flex flex-col gap-2 rounded-btn bg-surface shadow-[inset_0_0_0_1px_var(--hairline)] p-3"
             data-testid="document-row"
           >
             <div className="flex items-center gap-3">

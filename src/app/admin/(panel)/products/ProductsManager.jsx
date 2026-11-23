@@ -104,7 +104,7 @@ function ImportDialog({ open, onClose, onDone }) {
             accept=".csv,text/csv"
             data-testid="csv-input"
             onChange={(e) => pick(Array.from(e.target.files ?? []))}
-            className="rounded-btn border border-line bg-card p-2 text-sm file:mr-3 file:rounded-btn file:border-0 file:bg-surface file:px-3 file:py-1.5 file:font-semibold"
+            className="rounded-btn bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] p-2 text-sm file:mr-3 file:rounded-btn file:border-0 file:bg-surface file:px-3 file:py-1.5 file:font-semibold"
           />
           <span className="text-[0.8125rem] text-muted">
             {fileName ? `Selected: ${fileName}` : "Up to 1,000 rows, 2 MB."}
