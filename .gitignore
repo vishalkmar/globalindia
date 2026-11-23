@@ -44,3 +44,6 @@ next-env.d.ts
 # visual QA output
 /screenshots/
 coverage/
+
+# Markdown/docs stay local only: this is a private project, never push .md files
+*.md
