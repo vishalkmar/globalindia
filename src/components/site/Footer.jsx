@@ -12,7 +12,7 @@ function FooterLinks({ title, items }) {
   if (!items.length) return null;
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-eyebrow text-band-ink/70">{title}</h2>
+      <h2 className="text-[0.75rem] font-bold tracking-[0.14em] text-band-ink/60 uppercase">{title}</h2>
       <ul className="flex flex-col gap-2.5">
         {items.map((i) => {
           const ext = i.newTab || /^https?:\/\//.test(i.href);
@@ -53,7 +53,10 @@ export async function Footer({ chrome }) {
     "inline-flex size-10 items-center justify-center rounded-btn border border-[color-mix(in_oklab,var(--c-band-ink)_25%,transparent)] text-band-ink/90 hover:border-band-ink hover:text-band-ink";
 
   return (
-    <footer className="bg-band text-band-ink" data-testid="site-footer">
+    <footer
+      className="relative overflow-hidden bg-band bg-[radial-gradient(60%_80%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_16%,transparent),transparent_70%),radial-gradient(50%_60%_at_0%_100%,color-mix(in_oklab,var(--c-band-ink)_6%,transparent),transparent_70%)] text-band-ink"
+      data-testid="site-footer"
+    >
       <div className="container-site grid gap-10 py-16 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.3fr] lg:gap-12">
         <div className="flex flex-col gap-5">
           <Logo chrome={chrome} onDark />
@@ -86,7 +89,7 @@ export async function Footer({ chrome }) {
         <FooterLinks title="Products" items={menus.products} />
 
         <div className="flex flex-col gap-4">
-          <h2 className="text-eyebrow text-band-ink/70">Contact</h2>
+          <h2 className="text-[0.75rem] font-bold tracking-[0.14em] text-band-ink/60 uppercase">Contact</h2>
           <address className="flex flex-col gap-3 text-[0.9375rem] text-band-ink/90 not-italic">
             <p className="flex gap-2.5">
               <MapPin aria-hidden="true" className="mt-1 size-4 shrink-0" strokeWidth={1.5} />

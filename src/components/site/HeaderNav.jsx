@@ -68,13 +68,13 @@ function MegaPanel({ families, id, onNavigate, contact, header }) {
   return (
     <div
       id={id}
-      className="absolute inset-x-0 top-full z-40 border-y border-line bg-card shadow-[0_24px_48px_-32px_rgb(0_0_0/0.4)]"
+      className="absolute inset-x-0 top-full z-40 border-t border-hairline bg-card shadow-[0_40px_60px_-40px_rgb(0_0_0/0.45)]"
       data-testid="mega-menu"
     >
       <div className="container-site grid gap-8 py-8 lg:grid-cols-[1fr_300px]">
         <ul className="grid gap-x-8 gap-y-6 sm:grid-cols-2 xl:grid-cols-3">
           {families.map((f) => (
-            <li key={f.id} className="flex flex-col gap-2">
+            <li key={f.id} className="flex flex-col gap-2 rounded-card p-3 transition-colors duration-200 hover:bg-surface">
               <NavLink item={f} onClick={onNavigate} className="font-semibold text-primary hover:underline" />
               {f.children.length ? (
                 <ul className="flex flex-col gap-1">
@@ -98,7 +98,7 @@ function MegaPanel({ families, id, onNavigate, contact, header }) {
             </li>
           ))}
         </ul>
-        <div className="flex flex-col gap-3 rounded-card bg-band p-6 text-band-ink">
+        <div className="flex flex-col gap-3 rounded-card bg-band bg-[radial-gradient(120%_80%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_28%,transparent),transparent_60%)] p-6 text-band-ink shadow-lg">
           <p className="text-eyebrow text-band-ink/80">
             <span aria-hidden="true" className="inline-block size-1.5 rounded-full bg-accent" />
             Not sure of the grade?
@@ -271,9 +271,11 @@ export function HeaderNav({ items, families, header, contact, logo }) {
       <header
         data-scrolled={scrolled || undefined}
         className={cn(
-          "z-50 border-b bg-bg transition-[border-color,box-shadow] duration-200",
+          "z-50 border-b transition-[background-color,border-color,box-shadow] duration-300",
           header.sticky ? "sticky top-0" : "relative",
-          scrolled ? "border-line shadow-[0_8px_24px_-20px_rgb(0_0_0/0.35)]" : "border-transparent",
+          scrolled
+            ? "border-hairline bg-[color-mix(in_oklab,var(--c-bg)_82%,transparent)] shadow-[0_10px_30px_-24px_rgb(0_0_0/0.45)] backdrop-blur-xl backdrop-saturate-150"
+            : "border-transparent bg-bg",
         )}
         data-testid="site-header"
       >
@@ -298,9 +300,8 @@ export function HeaderNav({ items, families, header, contact, logo }) {
                         <NavLink
                           item={item}
                           className={cn(
-                            "relative inline-flex h-10 items-center px-3 text-[0.9375rem] font-semibold text-ink hover:text-primary",
-                            active &&
-                              "text-primary after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:bg-accent",
+                            "relative inline-flex h-10 items-center rounded-pill px-3.5 text-[0.9375rem] font-semibold text-ink transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--c-ink)_5%,transparent)] hover:text-primary",
+                            active && "bg-[color-mix(in_oklab,var(--c-primary)_8%,transparent)] text-primary",
                           )}
                         />
                       </li>
@@ -320,10 +321,8 @@ export function HeaderNav({ items, families, header, contact, logo }) {
                         aria-controls={panelId}
                         onClick={() => setOpenKey(open ? null : key)}
                         className={cn(
-                          "relative inline-flex h-10 items-center gap-1 px-3 text-[0.9375rem] font-semibold text-ink hover:text-primary",
-                          (active || open) && "text-primary",
-                          active &&
-                            "after:absolute after:inset-x-3 after:bottom-1 after:h-0.5 after:bg-accent",
+                          "relative inline-flex h-10 items-center gap-1 rounded-pill px-3.5 text-[0.9375rem] font-semibold text-ink transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--c-ink)_5%,transparent)] hover:text-primary",
+                          (active || open) && "bg-[color-mix(in_oklab,var(--c-primary)_8%,transparent)] text-primary",
                         )}
                       >
                         {item.label}
@@ -347,7 +346,7 @@ export function HeaderNav({ items, families, header, contact, logo }) {
                   onClick={() => setSearch(true)}
                   aria-label="Search products"
                   aria-keyshortcuts="Control+K"
-                  className="inline-flex size-10 items-center justify-center rounded-btn text-ink hover:bg-surface"
+                  className="inline-flex size-10 items-center justify-center rounded-pill text-ink transition-colors hover:bg-[color-mix(in_oklab,var(--c-ink)_6%,transparent)]"
                 >
                   <Search aria-hidden="true" className="size-5" strokeWidth={1.75} />
                 </button>

@@ -29,10 +29,11 @@ export function Logo({ chrome, onDark = false, className, priority = false }) {
             aria-hidden="true"
             data-mark={text.charAt(0)}
             className={cn(
-              "inline-flex size-9 items-center justify-center rounded-btn border font-display text-lg before:content-[attr(data-mark)]",
+              "inline-flex size-10 items-center justify-center rounded-[calc(var(--r-btn)+2px)] font-display text-xl leading-none before:content-[attr(data-mark)]",
               onDark
-                ? "border-[color-mix(in_oklab,var(--c-band-ink)_35%,transparent)] text-band-ink"
-                : "border-line text-primary",
+                ? "bg-band-ink text-band shadow-[0_6px_16px_-6px_rgb(0_0_0/0.5)]"
+                : "bg-[linear-gradient(150deg,color-mix(in_oklab,var(--c-primary)_80%,white),var(--c-primary)_55%)] text-primary-ink shadow-primary " +
+                    "ring-1 ring-inset ring-[color-mix(in_oklab,var(--c-accent)_45%,transparent)]",
             )}
           />
           <span

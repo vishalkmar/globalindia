@@ -220,22 +220,36 @@ export async function Stats({ data, ctx }) {
     team: ctx.business.teamSize,
   };
   return (
-    <section className="border-y border-line bg-bg" aria-label="Global India in numbers">
-      <Container className="grid grid-cols-2 gap-x-6 gap-y-8 py-12 md:grid-cols-4 md:py-14">
-        {data.items.map((s) => {
-          const live = s.source !== "manual" && auto[s.source] > 0 ? auto[s.source] : s.value;
-          return (
-            <div key={s.label} className="flex flex-col gap-1.5 border-l border-accent pl-4">
-              <CountUp
-                value={live}
-                suffix={s.suffix}
-                group={s.source !== "years"}
-                className="font-display text-[2.25rem] leading-none text-accent-text md:text-[2.75rem]"
-              />
-              <span className="text-small text-muted">{s.label}</span>
-            </div>
-          );
-        })}
+    <section className="bg-bg py-12 md:py-16" aria-label="Global India in numbers">
+      <Container>
+        <div
+          data-reveal
+          className="grid grid-cols-2 overflow-hidden rounded-card bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-md)] md:grid-cols-4"
+        >
+          {data.items.map((s, i) => {
+            const live = s.source !== "manual" && auto[s.source] > 0 ? auto[s.source] : s.value;
+            return (
+              <div
+                key={s.label}
+                className={cn(
+                  "relative flex flex-col gap-2 p-6 md:p-8",
+                  i % 2 === 1 && "border-l border-hairline",
+                  i >= 2 && "border-t border-hairline md:border-t-0",
+                  i === 2 && "md:border-l",
+                )}
+              >
+                <span aria-hidden="true" className="h-1 w-8 rounded-pill bg-accent" />
+                <CountUp
+                  value={live}
+                  suffix={s.suffix}
+                  group={s.source !== "years"}
+                  className="font-display text-[2.5rem] leading-none text-primary md:text-[3.25rem]"
+                />
+                <span className="text-small text-muted">{s.label}</span>
+              </div>
+            );
+          })}
+        </div>
       </Container>
     </section>
   );
@@ -258,12 +272,15 @@ export function Process({ data, tone }) {
               <div className="flex items-center gap-3">
                 <span
                   aria-hidden="true"
-                  className="inline-flex size-11 shrink-0 items-center justify-center rounded-btn border border-primary font-data text-sm font-semibold text-primary"
+                  className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-primary font-display text-lg text-primary-ink shadow-primary ring-4 ring-[color-mix(in_oklab,var(--c-primary)_10%,transparent)]"
                 >
-                  {String(i + 1).padStart(2, "0")}
+                  {i + 1}
                 </span>
                 {i < data.steps.length - 1 ? (
-                  <span aria-hidden="true" className="hidden h-px flex-1 bg-line lg:block" />
+                  <span
+                    aria-hidden="true"
+                    className="hidden h-0.5 flex-1 rounded-pill bg-[linear-gradient(90deg,color-mix(in_oklab,var(--c-primary)_35%,transparent),color-mix(in_oklab,var(--c-accent)_40%,transparent))] lg:block"
+                  />
                 ) : null}
               </div>
               <h3 className="text-h3">{step.title}</h3>
@@ -308,11 +325,15 @@ export function Faq({ data, tone }) {
 /* 15 — closing call to action */
 export function CtaBand({ data, ctx }) {
   return (
-    <Section tone="band">
-      <Container className="flex flex-col items-start gap-8 lg:flex-row lg:items-end lg:justify-between">
+    <Section tone="white">
+      <Container>
+        <div
+          data-reveal
+          className="relative flex flex-col items-start gap-8 overflow-hidden rounded-[calc(var(--r-card)+8px)] bg-band bg-[radial-gradient(70%_120%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_30%,transparent),transparent_60%),radial-gradient(60%_90%_at_0%_100%,color-mix(in_oklab,var(--c-band-ink)_8%,transparent),transparent_70%)] p-8 text-band-ink shadow-lg md:p-12 lg:flex-row lg:items-end lg:justify-between lg:p-16"
+        >
         <div className="flex max-w-2xl flex-col gap-4">
           {data.eyebrow ? <Eyebrow onBand>{data.eyebrow}</Eyebrow> : null}
-          <h2 className="text-h2">{data.title}</h2>
+          <h2 className="text-h2 text-band-ink">{data.title}</h2>
           {data.text ? <p className="text-band-ink/80">{data.text}</p> : null}
         </div>
         <div className="flex flex-wrap gap-3">
@@ -326,6 +347,7 @@ export function CtaBand({ data, ctx }) {
               <Phone aria-hidden="true" /> {ctx.contact.phone}
             </Button>
           ) : null}
+        </div>
         </div>
       </Container>
     </Section>

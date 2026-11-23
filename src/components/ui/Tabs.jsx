@@ -103,11 +103,17 @@ export function Accordion({ items, multiple = false, defaultOpen = [], headingLe
   }
 
   return (
-    <div className={cn("divide-y divide-line border-y border-line", className)}>
+    <div className={cn("flex flex-col gap-3", className)}>
       {items.map((item) => {
         const isOpen = open.has(item.id);
         return (
-          <div key={item.id}>
+          <div
+            key={item.id}
+            className={cn(
+              "surface-card px-5 transition-shadow duration-200 md:px-6",
+              isOpen && "shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_22%,transparent),var(--sh-md)]",
+            )}
+          >
             <H className="m-0">
               <button
                 type="button"
@@ -115,17 +121,21 @@ export function Accordion({ items, multiple = false, defaultOpen = [], headingLe
                 aria-expanded={isOpen}
                 aria-controls={`${base}-p-${item.id}`}
                 onClick={() => toggle(item.id)}
-                className="flex w-full items-center justify-between gap-6 py-5 text-left text-[1.0625rem] font-semibold text-ink transition-colors hover:text-primary"
+                className="flex w-full items-center justify-between gap-6 py-4.5 text-left text-[1.0625rem] font-semibold text-ink transition-colors hover:text-primary"
               >
                 <span>{item.title}</span>
-                <ChevronDown
+                <span
                   aria-hidden="true"
-                  strokeWidth={1.75}
                   className={cn(
-                    "size-5 shrink-0 text-muted transition-transform duration-200",
-                    isOpen && "rotate-180 text-primary",
+                    "inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-surface transition-colors duration-200",
+                    isOpen && "bg-primary text-primary-ink",
                   )}
-                />
+                >
+                  <ChevronDown
+                    strokeWidth={2}
+                    className={cn("size-4 transition-transform duration-200", isOpen && "rotate-180")}
+                  />
+                </span>
               </button>
             </H>
             <div
@@ -139,7 +149,7 @@ export function Accordion({ items, multiple = false, defaultOpen = [], headingLe
               inert={!isOpen || undefined}
             >
               <div className="overflow-hidden">
-                <div className="measure pb-6 text-muted">{item.content}</div>
+                <div className="measure pb-5 text-muted">{item.content}</div>
               </div>
             </div>
           </div>

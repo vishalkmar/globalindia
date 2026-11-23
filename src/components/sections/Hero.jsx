@@ -13,8 +13,8 @@ export async function Hero({ data, ctx }) {
   const image = data.imageId ? await getMedia(data.imageId) : null;
   const buttons = [data.primaryCta, data.secondaryCta].filter((b) => b?.text && b?.href);
   return (
-    <section className="border-b border-line bg-surface" aria-labelledby="hero-title">
-      <div className="container-site grid items-center gap-10 py-14 md:py-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14 lg:py-24">
+    <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="hero-title">
+      <div className="container-site relative grid items-center gap-10 py-14 md:py-20 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14 lg:py-24">
         <div className="flex flex-col items-start gap-6">
           {data.eyebrow ? (
             <p className="text-eyebrow">
@@ -38,13 +38,13 @@ export async function Hero({ data, ctx }) {
           ) : null}
           {data.trustFacts.length ? (
             <dl
-              className="mt-4 grid w-full grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3"
+              className="mt-6 grid w-full grid-cols-1 gap-4 rounded-card bg-[color-mix(in_oklab,var(--c-card)_70%,transparent)] p-5 shadow-[0_0_0_1px_var(--hairline)] backdrop-blur-sm sm:grid-cols-3"
               data-testid="trust-facts"
             >
               {data.trustFacts.map((f) => (
                 <div
                   key={f.label}
-                  className="flex flex-col gap-0.5 sm:border-l sm:border-line sm:pl-4 sm:first:border-l-0 sm:first:pl-0"
+                  className="flex flex-col gap-1 sm:border-l sm:border-hairline sm:pl-5 sm:first:border-l-0 sm:first:pl-0"
                 >
                   <dt className="order-2 text-small text-muted">{f.label}</dt>
                   <dd className="order-1 font-display text-[1.75rem] leading-none text-primary">{f.value}</dd>
@@ -65,22 +65,26 @@ export async function Hero({ data, ctx }) {
             />
           </div>
         ) : data.highlights.length ? (
-          <aside aria-label="In stock now" className="surface-card">
-            <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
+          <aside aria-label="In stock now" className="surface-card overflow-hidden shadow-[0_0_0_1px_var(--hairline),var(--sh-lg)]">
+            <div className="flex items-center justify-between gap-3 border-b border-hairline px-5 py-4">
               <p className="flex items-center gap-2 text-sm font-semibold text-primary">
+                <span aria-hidden="true" className="relative flex size-2">
+                  <span className="absolute inline-flex size-full rounded-full bg-success opacity-60 motion-safe:animate-ping" />
+                  <span className="relative inline-flex size-2 rounded-full bg-success" />
+                </span>
                 <PackageCheck aria-hidden="true" className="size-4" strokeWidth={1.75} /> In stock now
               </p>
               <span className="font-data text-[0.75rem] text-muted">{ctx.business.address.city}</span>
             </div>
-            <ul className="divide-y divide-line">
+            <ul className="divide-y divide-hairline">
               {data.highlights.map((h) => (
-                <li key={h.name} className="flex flex-col gap-0.5 px-5 py-3.5">
+                <li key={h.name} className="flex flex-col gap-0.5 px-5 py-3.5 transition-colors duration-200 hover:bg-[color-mix(in_oklab,var(--c-primary)_4%,transparent)]">
                   <span className="font-semibold text-ink">{h.name}</span>
                   <span className="font-data text-[0.8125rem] text-muted">{h.detail}</span>
                 </li>
               ))}
             </ul>
-            <div className="border-t border-line bg-surface px-5 py-3.5">
+            <div className="border-t border-hairline bg-[color-mix(in_oklab,var(--c-surface)_60%,var(--c-card))] px-5 py-3.5">
               <Link
                 href="/contact#quote"
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"

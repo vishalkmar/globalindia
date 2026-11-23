@@ -15,19 +15,19 @@ Status: [ ] to do, [x] done, [~] partly.
 - [x] 06 Section heading: eyebrow pill with accent dot, display title, lead text width
 - [x] 07 Badges and pills
 - [x] 08 Form fields: taller inputs, soft fill, focus glow, clear errors
-- [x] 09 Section rhythm: alternating tones, subtle background textures (no images), dividers
+- [~] 09 Section rhythm: alternating tones, subtle background textures (no images), dividers
 - [x] 10 Scroll reveal: fade-up on enter, once, CSS-only animation + tiny observer; off with reduced motion
-- [x] 11 Images: rounded, soft shadow, consistent aspect ratios
-- [x] 12 Tables: zebra-free clean rows, sticky header, tabular numbers
+- [~] 11 Images: rounded, soft shadow, consistent aspect ratios
+- [~] 12 Tables: zebra-free clean rows, sticky header, tabular numbers
 
 ## UI-01 Site frame
-- [ ] 01 Top bar  - [ ] 02 Header (glass on scroll)  - [ ] 03 Mega menu  - [ ] 04 Mobile drawer
-- [ ] 05 Footer (dark band, columns, newsletter)  - [ ] 06 Floating contact  - [ ] 07 Cookie banner  - [ ] 08 Breadcrumbs
+- [x] 01 Top bar  - [x] 02 Header (glass on scroll)  - [x] 03 Mega menu  - [x] 04 Mobile drawer
+- [x] 05 Footer (dark band, columns, newsletter)  - [x] 06 Floating contact  - [x] 07 Cookie banner  - [x] 08 Breadcrumbs
 
 ## UI-02 Home (14 sections)
-- [ ] 01 Hero  - [ ] 02 Feature triad  - [ ] 03 About teaser  - [ ] 04 Product families
-- [ ] 05 Featured products  - [ ] 06 Industries  - [ ] 07 Numbered values  - [ ] 08 Stats
-- [ ] 09 Process  - [ ] 10 Client logos / testimonials  - [ ] 11 Insights  - [ ] 12 FAQ  - [ ] 13 CTA band
+- [x] 01 Hero  - [x] 02 Feature triad  - [x] 03 About teaser  - [x] 04 Product families
+- [x] 05 Featured products  - [x] 06 Industries  - [x] 07 Numbered values  - [x] 08 Stats
+- [x] 09 Process  - [x] 10 Client logos / testimonials  - [x] 11 Insights  - [x] 12 FAQ  - [x] 13 CTA band
 
 ## UI-03 Products hub (/products)
 - [ ] 01 Page hero  - [ ] 02 Family filter chips  - [ ] 03 Category cards  - [ ] 04 Search box
