@@ -1,9 +1,9 @@
 import { ArrowRight, FileSearch } from "lucide-react";
-import Link from "next/link";
 
 import { SearchLauncher } from "@/components/site/SearchLauncher";
 import { Button } from "@/components/ui/Button";
 import { Container, Section } from "@/components/ui/Layout";
+import Link from "@/components/ui/SmartLink";
 import { IconBox } from "@/components/ui/Static";
 import { getMenu } from "@/lib/site-data";
 

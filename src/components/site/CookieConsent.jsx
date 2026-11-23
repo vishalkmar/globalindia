@@ -1,10 +1,10 @@
 "use client";
 
 import { Cookie } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import Link from "@/components/ui/SmartLink";
 
 /** Tell the analytics loader (and anything else) what the visitor chose. */
 function announce(analytics) {

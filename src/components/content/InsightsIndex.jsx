@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
+import Link from "@/components/ui/SmartLink";
 import { cn } from "@/lib/utils";
 
 import { PostCard } from "./PostList";

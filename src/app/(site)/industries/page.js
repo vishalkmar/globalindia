@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
 
 import { CtaBand } from "@/components/sections/ContentSections";
 import { SimpleHero } from "@/components/site/SimpleHero";
 import { Container, Section } from "@/components/ui/Layout";
+import Link from "@/components/ui/SmartLink";
 import { IconBox } from "@/components/ui/Static";
 import { getIndustries } from "@/lib/content/data";
 import { iconFor } from "@/lib/sections/icons";

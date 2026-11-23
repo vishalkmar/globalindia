@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowRight, Newspaper } from "lucide-react";
-import Link from "next/link";
 
 import { MediaImage } from "@/components/ui/MediaImage";
+import Link from "@/components/ui/SmartLink";
 import { cn } from "@/lib/utils";
 
 const fmt = (d) =>

@@ -1,8 +1,8 @@
 import { ArrowUpRight } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 import { MediaImage } from "@/components/ui/MediaImage";
+import Link from "@/components/ui/SmartLink";
 import { cropFor, imageForProduct } from "@/lib/stockImages";
 
 /**
@@ -45,11 +45,11 @@ export function ProductCard({ product }) {
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-1/2 bg-[linear-gradient(180deg,transparent,rgb(0_0_0/0.45))]"
         />
-        <span className="absolute bottom-3 left-3 max-w-[75%] truncate rounded-pill bg-white/92 px-3 py-1 text-xs font-bold text-primary shadow-sm backdrop-blur">
+        <span className="absolute bottom-3 left-3 max-w-[75%] truncate rounded-pill bg-white/92 px-3 py-1 text-xs font-bold text-primary shadow-sm">
           {product.category.name}
         </span>
         {product.casNo ? (
-          <span className="absolute top-3 left-3 rounded-pill bg-[color-mix(in_oklab,var(--c-band)_85%,transparent)] px-2.5 py-1 text-[0.6875rem] font-semibold tracking-wide text-white tabular-nums backdrop-blur">
+          <span className="absolute top-3 left-3 rounded-pill bg-[color-mix(in_oklab,var(--c-band)_85%,transparent)] px-2.5 py-1 text-[0.6875rem] font-semibold tracking-wide text-white tabular-nums">
             CAS {product.casNo}
           </span>
         ) : null}

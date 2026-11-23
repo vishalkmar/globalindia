@@ -1,6 +1,5 @@
 import { ArrowRight, ChevronDown, FileCheck, Phone } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 
 import { CtaBand, Faq } from "@/components/sections/ContentSections";
@@ -9,6 +8,7 @@ import { ProductCard } from "@/components/site/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Card";
 import { Container, Section } from "@/components/ui/Layout";
+import Link from "@/components/ui/SmartLink";
 import { Table } from "@/components/ui/Table";
 import { findRedirect, getCategoryPage, getCategorySlugs } from "@/lib/catalogue/data";
 import { familyByKey } from "@/lib/catalogue/families";

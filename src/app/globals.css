@@ -366,13 +366,11 @@
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(32px) scale(0.98);
-    filter: blur(6px);
+    transform: translate3d(0, 28px, 0) scale(0.985);
   }
   to {
     opacity: 1;
     transform: none;
-    filter: none;
   }
 }
 @keyframes hero-rise {

@@ -1,10 +1,10 @@
 "use client";
 
 import { CornerDownLeft, FolderTree, LoaderCircle, Package, Search, X } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
 
+import Link from "@/components/ui/SmartLink";
 import { cn } from "@/lib/utils";
 
 /**

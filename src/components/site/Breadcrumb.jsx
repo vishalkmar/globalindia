@@ -1,6 +1,6 @@
 import { ChevronRight, House } from "lucide-react";
-import Link from "next/link";
 
+import Link from "@/components/ui/SmartLink";
 import { siteUrl } from "@/lib/env";
 import { jsonLd } from "@/lib/seo/jsonLd";
 import { cn } from "@/lib/utils";

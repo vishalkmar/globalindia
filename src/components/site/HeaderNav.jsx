@@ -2,12 +2,12 @@
 
 import { ArrowUpRight, ChevronDown, Menu, Phone, Search } from "lucide-react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Drawer } from "@/components/ui/Dialog";
+import Link from "@/components/ui/SmartLink";
 import { cn } from "@/lib/utils";
 
 import { WhatsAppIcon } from "./icons";
@@ -32,7 +32,7 @@ function NavLink({ item, className, onClick, children }) {
     );
   }
   return (
-    <Link href={item.href} className={className} onClick={onClick}>
+    <Link href={item.href} prefetch className={className} onClick={onClick}>
       {children ?? item.label}
     </Link>
   );

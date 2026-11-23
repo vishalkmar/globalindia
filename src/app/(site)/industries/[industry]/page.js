@@ -1,5 +1,4 @@
 import { ArrowRight, Check } from "lucide-react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { CtaBand, Faq } from "@/components/sections/ContentSections";
@@ -8,6 +7,7 @@ import { SimpleHero } from "@/components/site/SimpleHero";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Card";
 import { Container, Section } from "@/components/ui/Layout";
+import Link from "@/components/ui/SmartLink";
 import { IconBox } from "@/components/ui/Static";
 import { getIndustries, getIndustryPage } from "@/lib/content/data";
 import { iconFor } from "@/lib/sections/icons";

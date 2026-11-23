@@ -1,10 +1,10 @@
 "use client";
 
 import { Check, ListPlus } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
+import Link from "@/components/ui/SmartLink";
 import { addToBasket, onBasketChange, readBasket } from "@/lib/client/quoteBasket";
 
 /**

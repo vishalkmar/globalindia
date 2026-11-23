@@ -1,6 +1,6 @@
 import { LoaderCircle } from "lucide-react";
-import Link from "next/link";
 
+import Link from "@/components/ui/SmartLink";
 import { cn } from "@/lib/utils";
 
 const base =

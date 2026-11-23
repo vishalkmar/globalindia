@@ -1,11 +1,11 @@
 import { ArrowRight, Quote } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 import { ProductCard } from "@/components/site/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Container, Section, SectionHeading } from "@/components/ui/Layout";
 import { MediaImage } from "@/components/ui/MediaImage";
+import Link from "@/components/ui/SmartLink";
 import { getClientLogos, getFeaturedProducts, getLatestPosts, getTestimonials } from "@/lib/sections/data";
 import { COVER_ROTATION } from "@/lib/stockImages";
 

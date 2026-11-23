@@ -2,11 +2,11 @@
 
 import { ArrowRight, Search, X } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useDeferredValue, useMemo, useState } from "react";
 
 import { ProductCard } from "@/components/site/ProductCard";
+import Link from "@/components/ui/SmartLink";
 import { FAMILIES } from "@/lib/catalogue/families";
 import { FAMILY_IMAGE, STOCK } from "@/lib/stockImages";
 import { cn } from "@/lib/utils";

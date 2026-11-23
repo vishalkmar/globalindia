@@ -1,7 +1,7 @@
 import { ArrowUpRight, Clock, Mail, MapPin, Phone, Receipt } from "lucide-react";
-import Link from "next/link";
 
 import { FooterNewsletter } from "@/components/content/FooterNewsletter";
+import Link from "@/components/ui/SmartLink";
 import { currentYear } from "@/lib/site-chrome";
 
 import { CookieSettingsButton } from "./CookieConsent";

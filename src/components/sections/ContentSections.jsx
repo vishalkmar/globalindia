@@ -1,12 +1,12 @@
 import { ArrowRight, Phone, Quote } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Card";
 import { Container, Section, SectionHeading } from "@/components/ui/Layout";
 import { MediaImage } from "@/components/ui/MediaImage";
 import { CountUp } from "@/components/ui/Motion";
+import Link from "@/components/ui/SmartLink";
 import { IconBox } from "@/components/ui/Static";
 import { Accordion } from "@/components/ui/Tabs";
 import { familyByKey } from "@/lib/catalogue/families";
