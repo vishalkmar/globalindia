@@ -1,11 +1,12 @@
 "use client";
 
-import { ArrowRight, FlaskConical, Search, X } from "lucide-react";
+import { ArrowRight, Search, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useDeferredValue, useMemo, useState } from "react";
 
+import { ProductCard } from "@/components/site/ProductCard";
 import { FAMILIES } from "@/lib/catalogue/families";
 import { FAMILY_IMAGE, STOCK } from "@/lib/stockImages";
 import { cn } from "@/lib/utils";
@@ -113,75 +114,44 @@ export function CatalogueBrowser({ categories, family = null }) {
       </div>
 
       {shown.length ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-16">
           {shown.map((c) => {
             const photo = FAMILY_IMAGE[c.family] ?? STOCK.labPipette;
             return (
-              <section
-                key={c.id}
-                aria-labelledby={`cat-${c.slug}`}
-                className="grid overflow-hidden rounded-[calc(var(--r-card)+4px)] bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-sm)] lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]"
-                data-testid="hub-category"
-                data-reveal
-              >
-                <div className="group/cat relative isolate flex min-h-72 flex-col justify-end gap-2 overflow-hidden p-6 pt-16 text-white">
-                  <Image
-                    src={photo.src}
-                    alt=""
-                    fill
-                    sizes="(min-width: 1024px) 352px, 100vw"
-                    className="-z-20 object-cover transition-transform duration-700 ease-[var(--ease-standard)] motion-safe:group-hover/cat:scale-105"
-                  />
-                  <span
-                    aria-hidden="true"
-                    className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.1),color-mix(in_oklab,var(--c-band)_92%,black)_92%)]"
-                  />
-                  <span className="absolute top-4 left-4 rounded-pill bg-white/90 px-3 py-1 text-xs font-bold text-primary shadow-sm">
-                    {c.products.length} {c.products.length === 1 ? "product" : "products"}
-                  </span>
-                  <h2 id={`cat-${c.slug}`} className="text-h3 text-white">
-                    <Link href={`/products/${c.slug}`} className="after:absolute after:inset-0">
-                      {c.name}
-                    </Link>
-                  </h2>
-                  {c.intro ? <p className="line-clamp-3 text-sm leading-relaxed text-white/80">{c.intro}</p> : null}
-                  <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-bold">
+              <section key={c.id} aria-labelledby={`cat-${c.slug}`} className="flex flex-col gap-6" data-testid="hub-category">
+                <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-10">
+                  <div className="flex items-start gap-4">
+                    <span className="relative size-16 shrink-0 overflow-hidden rounded-full shadow-md ring-4 ring-[color-mix(in_oklab,var(--c-primary)_10%,transparent)]">
+                      <Image src={photo.src} alt="" fill sizes="64px" className="object-cover" />
+                    </span>
+                    <div className="flex max-w-2xl flex-col gap-1.5">
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        <h2 id={`cat-${c.slug}`} className="text-h3">
+                          <Link href={`/products/${c.slug}`} className="hover:text-primary">
+                            {c.name}
+                          </Link>
+                        </h2>
+                        <span className="rounded-pill bg-[color-mix(in_oklab,var(--c-primary)_9%,transparent)] px-2.5 py-0.5 text-xs font-bold text-primary">
+                          {c.products.length} {c.products.length === 1 ? "product" : "products"}
+                        </span>
+                      </div>
+                      {c.intro ? <p className="line-clamp-2 text-[0.9375rem] text-muted">{c.intro}</p> : null}
+                    </div>
+                  </div>
+                  <Link
+                    href={`/products/${c.slug}`}
+                    className="group/cat inline-flex shrink-0 items-center gap-2 self-start text-sm font-bold text-primary md:self-auto"
+                  >
                     View category
-                    <span className="inline-flex size-7 items-center justify-center rounded-full bg-white text-primary transition-transform duration-300 group-hover/cat:translate-x-1">
+                    <span className="inline-flex size-8 items-center justify-center rounded-full bg-primary text-primary-ink shadow-primary transition-transform duration-300 group-hover/cat:translate-x-1">
                       <ArrowRight aria-hidden="true" className="size-4" />
                     </span>
-                  </span>
+                  </Link>
                 </div>
-                <ul className="grid content-start gap-2 p-3 sm:grid-cols-2 md:p-4">
+                <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   {c.products.map((p) => (
-                    <li key={p.id}>
-                      <Link
-                        href={`/products/${c.slug}/${p.slug}`}
-                        className="group/p relative flex h-full items-start gap-3 rounded-[calc(var(--r-btn)+4px)] px-3.5 py-3 pr-10 transition-[background-color,box-shadow] duration-200 hover:bg-[color-mix(in_oklab,var(--c-primary)_5%,var(--c-card))] hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_20%,transparent)]"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_22%,var(--c-card)))] text-primary"
-                        >
-                          <FlaskConical className="size-4" strokeWidth={1.75} />
-                        </span>
-                        <span className="flex min-w-0 flex-col gap-1">
-                          <span className="font-semibold text-ink group-hover/p:text-primary">{p.name}</span>
-                          <span className="flex flex-wrap gap-1.5 text-xs text-muted">
-                            {p.casNo ? (
-                              <span className="rounded-pill bg-surface px-2 py-0.5 font-semibold tabular-nums">CAS {p.casNo}</span>
-                            ) : null}
-                            {p.grade ? <span className="rounded-pill bg-surface px-2 py-0.5">{p.grade}</span> : null}
-                            {p.packSizes?.length ? (
-                              <span className="rounded-pill bg-surface px-2 py-0.5">{p.packSizes.slice(0, 2).join(", ")}</span>
-                            ) : null}
-                          </span>
-                        </span>
-                        <ArrowRight
-                          aria-hidden="true"
-                          className="absolute top-4 right-3.5 size-4 text-primary opacity-0 transition-[opacity,transform] duration-200 group-hover/p:translate-x-0.5 group-hover/p:opacity-100"
-                        />
-                      </Link>
+                    <li key={p.id} data-reveal>
+                      <ProductCard product={{ ...p, category: { slug: c.slug, name: c.name, family: c.family } }} />
                     </li>
                   ))}
                 </ul>
