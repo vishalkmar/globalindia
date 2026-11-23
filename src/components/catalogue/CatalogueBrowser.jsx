@@ -1,11 +1,13 @@
 "use client";
 
-import { ArrowRight, Search, X } from "lucide-react";
+import { ArrowRight, FlaskConical, Search, X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useDeferredValue, useMemo, useState } from "react";
 
 import { FAMILIES } from "@/lib/catalogue/families";
+import { FAMILY_IMAGE, STOCK } from "@/lib/stockImages";
 import { cn } from "@/lib/utils";
 
 const norm = (s) => (s ?? "").toLowerCase();
@@ -112,55 +114,80 @@ export function CatalogueBrowser({ categories, family = null }) {
 
       {shown.length ? (
         <div className="flex flex-col gap-6">
-          {shown.map((c) => (
-            <section
-              key={c.id}
-              aria-labelledby={`cat-${c.slug}`}
-              className="surface-card"
-              data-testid="hub-category"
-            >
-              <div className="flex flex-col gap-2 p-5 pb-3 md:flex-row md:items-end md:justify-between md:gap-8 md:p-7 md:pb-4">
-                <div className="flex max-w-3xl flex-col gap-1.5">
-                  <h2 id={`cat-${c.slug}`} className="text-h3">
-                    <Link
-                      href={`/products/${c.slug}`}
-                      className="hover:underline hover:decoration-1 hover:underline-offset-4"
-                    >
+          {shown.map((c) => {
+            const photo = FAMILY_IMAGE[c.family] ?? STOCK.labPipette;
+            return (
+              <section
+                key={c.id}
+                aria-labelledby={`cat-${c.slug}`}
+                className="grid overflow-hidden rounded-[calc(var(--r-card)+4px)] bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-sm)] lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]"
+                data-testid="hub-category"
+                data-reveal
+              >
+                <div className="group/cat relative isolate flex min-h-72 flex-col justify-end gap-2 overflow-hidden p-6 pt-16 text-white">
+                  <Image
+                    src={photo.src}
+                    alt=""
+                    fill
+                    sizes="(min-width: 1024px) 352px, 100vw"
+                    className="-z-20 object-cover transition-transform duration-700 ease-[var(--ease-standard)] motion-safe:group-hover/cat:scale-105"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(0_0_0/0.1),color-mix(in_oklab,var(--c-band)_92%,black)_92%)]"
+                  />
+                  <span className="absolute top-4 left-4 rounded-pill bg-white/90 px-3 py-1 text-xs font-bold text-primary shadow-sm">
+                    {c.products.length} {c.products.length === 1 ? "product" : "products"}
+                  </span>
+                  <h2 id={`cat-${c.slug}`} className="text-h3 text-white">
+                    <Link href={`/products/${c.slug}`} className="after:absolute after:inset-0">
                       {c.name}
                     </Link>
                   </h2>
-                  {c.intro ? <p className="text-[0.9375rem] text-muted">{c.intro}</p> : null}
+                  {c.intro ? <p className="line-clamp-3 text-sm leading-relaxed text-white/80">{c.intro}</p> : null}
+                  <span className="mt-1 inline-flex items-center gap-1.5 text-sm font-bold">
+                    View category
+                    <span className="inline-flex size-7 items-center justify-center rounded-full bg-white text-primary transition-transform duration-300 group-hover/cat:translate-x-1">
+                      <ArrowRight aria-hidden="true" className="size-4" />
+                    </span>
+                  </span>
                 </div>
-                <Link
-                  href={`/products/${c.slug}`}
-                  className="group/cat inline-flex shrink-0 items-center gap-1.5 rounded-pill bg-[color-mix(in_oklab,var(--c-primary)_7%,transparent)] px-3.5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-[color-mix(in_oklab,var(--c-primary)_12%,transparent)]"
-                >
-                  View category <ArrowRight aria-hidden="true" className="size-4" />
-                </Link>
-              </div>
-              <ul className="grid gap-2.5 p-3 pt-1 sm:grid-cols-2 md:p-4 md:pt-1 lg:grid-cols-3">
-                {c.products.map((p) => (
-                  <li key={p.id}>
-                    <Link
-                      href={`/products/${c.slug}/${p.slug}`}
-                      className="group/p relative flex h-full flex-col gap-1 rounded-[calc(var(--r-btn)+4px)] bg-[color-mix(in_oklab,var(--c-surface)_55%,var(--c-card))] px-4 py-3.5 pr-10 transition-[background-color,box-shadow] duration-200 hover:bg-card hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_25%,transparent),var(--sh-sm)]"
-                    >
-                      <ArrowRight
-                        aria-hidden="true"
-                        className="absolute top-4 right-3.5 size-4 text-primary opacity-0 transition-[opacity,transform] duration-200 group-hover/p:translate-x-0.5 group-hover/p:opacity-100"
-                      />
-                      <span className="font-semibold text-ink group-hover/p:text-primary">{p.name}</span>
-                      <span className="flex flex-wrap gap-x-3 gap-y-0.5 text-[0.8125rem] text-muted">
-                        {p.casNo ? <span className="font-data">CAS {p.casNo}</span> : null}
-                        {p.grade ? <span>{p.grade}</span> : null}
-                        {p.packSizes?.length ? <span>{p.packSizes.slice(0, 2).join(", ")}</span> : null}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          ))}
+                <ul className="grid content-start gap-2 p-3 sm:grid-cols-2 md:p-4">
+                  {c.products.map((p) => (
+                    <li key={p.id}>
+                      <Link
+                        href={`/products/${c.slug}/${p.slug}`}
+                        className="group/p relative flex h-full items-start gap-3 rounded-[calc(var(--r-btn)+4px)] px-3.5 py-3 pr-10 transition-[background-color,box-shadow] duration-200 hover:bg-[color-mix(in_oklab,var(--c-primary)_5%,var(--c-card))] hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_20%,transparent)]"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="mt-0.5 inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_22%,var(--c-card)))] text-primary"
+                        >
+                          <FlaskConical className="size-4" strokeWidth={1.75} />
+                        </span>
+                        <span className="flex min-w-0 flex-col gap-1">
+                          <span className="font-semibold text-ink group-hover/p:text-primary">{p.name}</span>
+                          <span className="flex flex-wrap gap-1.5 text-xs text-muted">
+                            {p.casNo ? (
+                              <span className="rounded-pill bg-surface px-2 py-0.5 font-semibold tabular-nums">CAS {p.casNo}</span>
+                            ) : null}
+                            {p.grade ? <span className="rounded-pill bg-surface px-2 py-0.5">{p.grade}</span> : null}
+                            {p.packSizes?.length ? (
+                              <span className="rounded-pill bg-surface px-2 py-0.5">{p.packSizes.slice(0, 2).join(", ")}</span>
+                            ) : null}
+                          </span>
+                        </span>
+                        <ArrowRight
+                          aria-hidden="true"
+                          className="absolute top-4 right-3.5 size-4 text-primary opacity-0 transition-[opacity,transform] duration-200 group-hover/p:translate-x-0.5 group-hover/p:opacity-100"
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
         </div>
       ) : (
         <div className="flex flex-col items-start gap-3 rounded-card border border-dashed border-[color-mix(in_oklab,var(--c-ink)_18%,transparent)] bg-card/60 p-8">

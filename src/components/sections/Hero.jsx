@@ -39,7 +39,7 @@ export async function Hero({ data, ctx }) {
         className="absolute inset-0 -z-10 bg-[radial-gradient(60%_80%_at_0%_100%,color-mix(in_oklab,var(--c-accent)_22%,transparent),transparent_60%)]"
       />
 
-      <div className="container-site grid items-center gap-12 pt-14 pb-24 md:pt-20 md:pb-32 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16 lg:pt-24 lg:pb-36">
+      <div className="container-site hero-in grid items-center gap-12 pt-14 pb-24 md:pt-20 md:pb-32 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-16 lg:pt-24 lg:pb-36">
         <div className="flex flex-col items-start gap-6">
           {data.eyebrow ? (
             <p className="text-eyebrow">

@@ -366,11 +366,25 @@
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(32px) scale(0.98);
+    filter: blur(6px);
   }
   to {
     opacity: 1;
     transform: none;
+    filter: none;
+  }
+}
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
   }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -378,8 +392,27 @@
     [data-reveal] {
       animation: reveal-up linear both;
       animation-timeline: view();
-      animation-range: entry 5% entry 45%;
+      animation-range: entry 0% cover 28%;
     }
+    /* Cards in a row arrive one after another (stagger by column). */
+    [data-reveal]:nth-child(3n + 2) {
+      animation-range: entry 6% cover 32%;
+    }
+    [data-reveal]:nth-child(3n + 3) {
+      animation-range: entry 12% cover 36%;
+    }
+  }
+  /* Hero text rises in on load, line by line (time-based, not scroll). */
+  .hero-in > div:first-child > * {
+    animation: hero-rise 0.8s var(--ease-standard, ease-out) both;
+  }
+  .hero-in > div:first-child > :nth-child(2) { animation-delay: 0.08s; }
+  .hero-in > div:first-child > :nth-child(3) { animation-delay: 0.16s; }
+  .hero-in > div:first-child > :nth-child(4) { animation-delay: 0.24s; }
+  .hero-in > div:first-child > :nth-child(5) { animation-delay: 0.32s; }
+  .hero-in > div:first-child > :nth-child(n + 6) { animation-delay: 0.4s; }
+  .hero-in > div:nth-child(2) {
+    animation: hero-rise 1s var(--ease-standard, ease-out) 0.25s both;
   }
 }
 

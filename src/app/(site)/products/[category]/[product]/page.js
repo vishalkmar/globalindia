@@ -1,10 +1,11 @@
-import { ArrowRight, Download, FileLock2, FlaskConical, Phone } from "lucide-react";
+import { ArrowRight, Download, FileLock2, Phone } from "lucide-react";
+import Image from "next/image";
 import { notFound, permanentRedirect } from "next/navigation";
 
 import { ProductAnchorNav } from "@/components/catalogue/ProductAnchorNav";
 import { AddToQuote } from "@/components/enquiry/AddToQuote";
 import { CtaBand, Faq } from "@/components/sections/ContentSections";
-import { Breadcrumb } from "@/components/site/Breadcrumb";
+import { PhotoHero } from "@/components/site/PhotoHero";
 import { ProductCard } from "@/components/site/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow, Tag } from "@/components/ui/Card";
@@ -19,6 +20,7 @@ import { siteUrl } from "@/lib/env";
 import { SECTIONS } from "@/lib/sections/registry";
 import { jsonLd } from "@/lib/seo/jsonLd";
 import { getSiteChrome } from "@/lib/site-chrome";
+import { imageForProduct, STOCK } from "@/lib/stockImages";
 import { formatBytes } from "@/lib/utils";
 import { SLUG_RE } from "@/lib/validation/catalogue";
 
@@ -97,6 +99,7 @@ export default async function ProductPage({ params }) {
   const base = siteUrl();
   const url = `${base}/products/${p.category.slug}/${p.slug}`;
   const quote = `/contact?product=${encodeURIComponent(p.slug)}#quote`;
+  const productPhoto = imageForProduct(p);
 
   const facts = [
     ["CAS number", p.casNo, true],
@@ -147,108 +150,88 @@ export default async function ProductPage({ params }) {
 
   return (
     <>
-      {/* Hero (todos 01-04) */}
-      <section className="border-b border-line bg-surface" aria-labelledby="product-title">
-        <Container className="grid gap-10 py-10 md:py-14 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-start">
-          <div className="flex flex-col items-start gap-5">
-            <Breadcrumb
-              items={[
-                { label: "Products", href: "/products" },
-                { label: p.category.name, href: `/products/${p.category.slug}` },
-                { label: p.name },
-              ]}
-            />
-            <Eyebrow>Supplied from Delhi</Eyebrow>
-            <h1 id="product-title" className="measure text-display">
-              {p.name}
-            </h1>
-            <h2 className="font-sans text-[1.0625rem] font-semibold text-primary">
-              {p.name} Supplier in Delhi, India
-            </h2>
-            <p className="measure text-lead">{introFor(p)}</p>
-            <div className="flex flex-wrap gap-3">
-              <Button href={quote} size="lg">
-                Request quotation <ArrowRight aria-hidden="true" />
-              </Button>
-              <AddToQuote slug={p.slug} />
-            </div>
-            {chrome.contact.phone ? (
-              <a
-                href={chrome.contact.phoneHref}
-                className="inline-flex items-center gap-2 font-semibold text-primary hover:underline"
-              >
-                <Phone aria-hidden="true" className="size-4" /> Call {chrome.contact.phone}
-              </a>
-            ) : null}
-            {p.brandNote ? <p className="text-sm text-muted">{p.brandNote}</p> : null}
-          </div>
-          <div
-            className={p.image || p.gallery.length ? "flex flex-col gap-3" : "hidden flex-col gap-3 lg:flex"}
-          >
-            {p.image ? (
-              <MediaImage
-                asset={p.image}
-                aspect="4:3"
-                priority
-                sizes="(min-width: 1024px) 460px, 100vw"
-                className="w-full surface-card shadow-[0_0_0_1px_var(--hairline),var(--sh-lg)]"
-              />
-            ) : (
-              <div className="relative flex aspect-[4/3] w-full flex-col justify-end gap-2 overflow-hidden rounded-card bg-[radial-gradient(90%_120%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_26%,transparent),transparent_60%),linear-gradient(160deg,color-mix(in_oklab,var(--c-primary)_12%,var(--c-card)),var(--c-card))] p-7 shadow-[0_0_0_1px_var(--hairline),var(--sh-lg)]">
-                <FlaskConical
-                  aria-hidden="true"
-                  className="absolute top-8 right-8 size-32 -rotate-12 text-primary/10"
-                  strokeWidth={0.9}
+      {/* Hero (todos 01-04): photo band, product photo on the right, fact strip rising over the edge */}
+      <PhotoHero
+        photo={STOCK.warehouseFloor}
+        titleId="product-title"
+        crumbs={[
+          { label: "Products", href: "/products" },
+          { label: p.category.name, href: `/products/${p.category.slug}` },
+          { label: p.name },
+        ]}
+        eyebrow="Supplied from Delhi"
+        title={p.name}
+        aside={
+          <div className="flex flex-col gap-3">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[calc(var(--r-card)+6px)] shadow-[0_30px_80px_-20px_rgb(0_0_0/0.6)] ring-1 ring-white/20">
+              {p.image ? (
+                <MediaImage asset={p.image} aspect="4:3" priority sizes="(min-width: 1024px) 460px, 100vw" className="h-full w-full" />
+              ) : (
+                <Image
+                  src={productPhoto.src}
+                  alt={productPhoto.alt}
+                  fill
+                  priority
+                  sizes="(min-width: 1024px) 460px, 100vw"
+                  className="object-cover"
                 />
-                {p.casNo ? (
-                  <span className="absolute top-6 left-6 rounded-pill bg-primary px-3 py-1 font-data text-[0.75rem] font-semibold text-primary-ink">
-                    CAS {p.casNo}
-                  </span>
-                ) : null}
-                <p className="font-display text-2xl text-primary">{p.name}</p>
-                <p className="text-sm text-muted">
-                  {[p.category.name, family?.name].filter(Boolean).join(" · ")}
-                </p>
-              </div>
-            )}
+              )}
+              {p.casNo ? (
+                <span className="absolute top-4 left-4 rounded-pill bg-white/92 px-3 py-1 text-xs font-bold text-primary tabular-nums shadow-sm">
+                  CAS {p.casNo}
+                </span>
+              ) : null}
+              <span className="absolute right-4 bottom-4 inline-flex items-center gap-1.5 rounded-pill bg-[color-mix(in_oklab,var(--c-band)_85%,transparent)] px-3 py-1 text-xs font-semibold text-white backdrop-blur">
+                <span className="size-1.5 rounded-full bg-success" aria-hidden="true" /> In stock
+              </span>
+            </div>
             {p.gallery.length ? (
               <ul className="grid grid-cols-4 gap-2" aria-label="More photos">
                 {p.gallery.slice(0, 4).map((g) => (
                   <li key={g.url}>
-                    <MediaImage
-                      asset={g}
-                      aspect="1:1"
-                      sizes="110px"
-                      className="w-full rounded-btn shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)]"
-                    />
+                    <MediaImage asset={g} aspect="1:1" sizes="110px" className="w-full rounded-btn ring-1 ring-white/20" />
                   </li>
                 ))}
               </ul>
             ) : null}
           </div>
-        </Container>
-        {facts.length ? (
-          <div className="relative pb-2">
-            <Container>
-              <dl
-                className="grid grid-cols-2 overflow-hidden rounded-card bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-md)] sm:grid-cols-3 lg:grid-cols-4"
-                data-testid="fact-strip"
-              >
-                {facts.map(([k, v, mono]) => (
-                  <div key={k} className="flex flex-col gap-1 px-5 py-4 shadow-[inset_-1px_-1px_0_var(--hairline)]">
-                    <dt className="text-[0.6875rem] font-bold tracking-[0.1em] text-muted uppercase">{k}</dt>
-                    <dd
-                      className={mono ? "font-data text-[0.9375rem] text-ink" : "text-[0.9375rem] text-ink"}
-                    >
-                      {v}
-                    </dd>
-                  </div>
-                ))}
-              </dl>
-            </Container>
-          </div>
+        }
+      >
+        <p className="text-[1.0625rem] font-semibold text-accent">{p.name} Supplier in Delhi, India</p>
+        <p className="max-w-2xl text-lead text-[color-mix(in_oklab,var(--c-band-ink)_78%,transparent)]">{introFor(p)}</p>
+        <div className="flex flex-wrap gap-3 pt-1">
+          <Button href={quote} size="lg" variant="onBand">
+            Request quotation <ArrowRight aria-hidden="true" />
+          </Button>
+          <AddToQuote slug={p.slug} />
+        </div>
+        {chrome.contact.phone ? (
+          <a
+            href={chrome.contact.phoneHref}
+            className="inline-flex items-center gap-2 font-semibold text-band-ink hover:underline"
+          >
+            <Phone aria-hidden="true" className="size-4" /> Call {chrome.contact.phone}
+          </a>
         ) : null}
-      </section>
+        {p.brandNote ? <p className="text-sm text-band-ink/70">{p.brandNote}</p> : null}
+      </PhotoHero>
+      {facts.length ? (
+        <div className="relative z-10 -mt-8 md:-mt-10">
+          <Container>
+            <dl
+              className="grid grid-cols-2 overflow-hidden rounded-[calc(var(--r-card)+4px)] bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-lg)] sm:grid-cols-3 lg:grid-cols-4"
+              data-testid="fact-strip"
+            >
+              {facts.map(([k, v]) => (
+                <div key={k} className="flex flex-col gap-1 px-5 py-4 shadow-[inset_-1px_-1px_0_var(--hairline)]">
+                  <dt className="text-[0.6875rem] font-bold tracking-[0.1em] text-muted uppercase">{k}</dt>
+                  <dd className="text-[0.9375rem] font-semibold text-ink tabular-nums">{v}</dd>
+                </div>
+              ))}
+            </dl>
+          </Container>
+        </div>
+      ) : null}
 
       <ProductAnchorNav items={nav} />
 
@@ -428,9 +411,9 @@ export default async function ProductPage({ params }) {
                   <a
                     href={`/d/${d.media.id}`}
                     rel="nofollow"
-                    className="lift flex items-center gap-4 surface-card px-5 py-4 transition-colors "
+                    className="group lift flex items-center gap-4 surface-card px-5 py-4"
                   >
-                    <Download aria-hidden="true" className="size-5 shrink-0 text-primary" />
+                    <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_22%,var(--c-card)))] text-primary transition-colors group-hover:bg-primary group-hover:text-primary-ink"><Download aria-hidden="true" className="size-5" /></span>
                     <span className="flex flex-1 flex-col">
                       <span className="font-semibold text-ink">{d.label || DOC_NAMES[d.type]}</span>
                       <span className="text-[0.8125rem] text-muted">PDF · {formatBytes(d.media.bytes)}</span>
@@ -441,9 +424,9 @@ export default async function ProductPage({ params }) {
                 <li key={d.id}>
                   <a
                     href={`/contact?product=${encodeURIComponent(p.slug)}&doc=${d.type}#quote`}
-                    className="lift flex items-center gap-4 surface-card px-5 py-4 transition-colors "
+                    className="group lift flex items-center gap-4 surface-card px-5 py-4"
                   >
-                    <FileLock2 aria-hidden="true" className="size-5 shrink-0 text-primary" />
+                    <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_22%,var(--c-card)))] text-primary transition-colors group-hover:bg-primary group-hover:text-primary-ink"><FileLock2 aria-hidden="true" className="size-5" /></span>
                     <span className="flex flex-1 flex-col">
                       <span className="font-semibold text-ink">{d.label || DOC_NAMES[d.type]}</span>
                       <span className="text-[0.8125rem] text-muted">Sent on request with your enquiry</span>
@@ -456,9 +439,9 @@ export default async function ProductPage({ params }) {
               <li>
                 <a
                   href={`/contact?product=${encodeURIComponent(p.slug)}&doc=COA#quote`}
-                  className="flex items-center gap-4 rounded-card border border-dashed border-line px-5 py-4 transition-colors hover:border-primary"
+                  className="group lift flex items-center gap-4 surface-card px-5 py-4"
                 >
-                  <FileLock2 aria-hidden="true" className="size-5 shrink-0 text-primary" />
+                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_22%,var(--c-card)))] text-primary transition-colors group-hover:bg-primary group-hover:text-primary-ink"><FileLock2 aria-hidden="true" className="size-5" /></span>
                   <span className="flex flex-col">
                     <span className="font-semibold text-ink">Certificate of Analysis (COA)</span>
                     <span className="text-[0.8125rem] text-muted">Batch COA sent with your quote</span>
@@ -470,9 +453,9 @@ export default async function ProductPage({ params }) {
               <li>
                 <a
                   href={`/contact?product=${encodeURIComponent(p.slug)}&doc=SDS#quote`}
-                  className="flex items-center gap-4 rounded-card border border-dashed border-line px-5 py-4 transition-colors hover:border-primary"
+                  className="group lift flex items-center gap-4 surface-card px-5 py-4"
                 >
-                  <FileLock2 aria-hidden="true" className="size-5 shrink-0 text-primary" />
+                  <span className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-[linear-gradient(135deg,color-mix(in_oklab,var(--c-primary)_14%,var(--c-card)),color-mix(in_oklab,var(--c-accent)_22%,var(--c-card)))] text-primary transition-colors group-hover:bg-primary group-hover:text-primary-ink"><FileLock2 aria-hidden="true" className="size-5" /></span>
                   <span className="flex flex-col">
                     <span className="font-semibold text-ink">Safety Data Sheet (SDS)</span>
                     <span className="text-[0.8125rem] text-muted">Sent on request</span>

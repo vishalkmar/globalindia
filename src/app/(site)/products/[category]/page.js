@@ -1,13 +1,14 @@
-import { ArrowRight, FileCheck, Phone } from "lucide-react";
+import { ArrowRight, ChevronDown, FileCheck, Phone } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
 
 import { CtaBand, Faq } from "@/components/sections/ContentSections";
-import { Breadcrumb } from "@/components/site/Breadcrumb";
+import { PhotoHero } from "@/components/site/PhotoHero";
+import { ProductCard } from "@/components/site/ProductCard";
 import { Button } from "@/components/ui/Button";
 import { Eyebrow } from "@/components/ui/Card";
 import { Container, Section } from "@/components/ui/Layout";
-import { MediaImage } from "@/components/ui/MediaImage";
 import { Table } from "@/components/ui/Table";
 import { findRedirect, getCategoryPage, getCategorySlugs } from "@/lib/catalogue/data";
 import { familyByKey } from "@/lib/catalogue/families";
@@ -16,6 +17,7 @@ import { SECTIONS } from "@/lib/sections/registry";
 import { sanitizeRichText } from "@/lib/security/sanitize";
 import { jsonLd } from "@/lib/seo/jsonLd";
 import { getSiteChrome } from "@/lib/site-chrome";
+import { FAMILY_IMAGE, imageForText, STOCK } from "@/lib/stockImages";
 import { SLUG_RE } from "@/lib/validation/catalogue";
 
 /**
@@ -92,75 +94,91 @@ export default async function CategoryPage({ params }) {
 
   return (
     <>
-      <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
-        <Container
-          className={
-            c.image
-              ? "grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
-              : "py-12 md:py-16"
-          }
-        >
-          <div className="flex flex-col items-start gap-5">
-            <Breadcrumb
-              items={[
-                { label: "Products", href: "/products" },
-                { label: family?.name ?? "Family", href: `/products?family=${family?.slug ?? ""}` },
-                { label: c.name },
-              ]}
-            />
-            <Eyebrow>{family?.name}</Eyebrow>
-            <h1 id="page-title" className="measure text-display">
-              {c.name}
-            </h1>
-            {c.intro ? <p className="measure text-lead">{c.intro}</p> : null}
-            <div className="flex flex-wrap gap-3">
-              <Button href={QUOTE}>
-                Request a quote <ArrowRight aria-hidden="true" />
-              </Button>
-              {chrome.contact.phone ? (
-                <Button href={chrome.contact.phoneHref} variant="secondary">
-                  <Phone aria-hidden="true" /> {chrome.contact.phone}
-                </Button>
-              ) : null}
-            </div>
-          </div>
-          {c.image ? (
-            <MediaImage
-              asset={c.image}
-              aspect="4:3"
-              priority
-              sizes="(min-width: 1024px) 480px, 100vw"
-              className="w-full surface-card"
-            />
+      <PhotoHero
+        photo={c.image ? { src: c.image.url } : (FAMILY_IMAGE[c.family] ?? STOCK.labPipette)}
+        crumbs={[
+          { label: "Products", href: "/products" },
+          { label: family?.name ?? "Family", href: `/products?family=${family?.slug ?? ""}` },
+          { label: c.name },
+        ]}
+        eyebrow={family?.name}
+        title={c.name}
+        lead={c.intro}
+        aside={
+          <dl className="hidden grid-cols-2 gap-3 sm:grid">
+            {[
+              [String(c.products.length), c.products.length === 1 ? "Product in stock" : "Products in stock"],
+              ["COA", "With every batch"],
+              ["25 kg+", "Pack sizes"],
+              ["7 days", "Usual dispatch"],
+            ].map(([v, k]) => (
+              <div
+                key={k}
+                className="flex flex-col gap-1 rounded-card bg-white/10 p-5 ring-1 ring-white/15 backdrop-blur"
+              >
+                <dt className="order-2 text-sm text-band-ink/70">{k}</dt>
+                <dd className="order-1 text-[1.75rem] leading-none font-extrabold tracking-tight text-band-ink">{v}</dd>
+              </div>
+            ))}
+          </dl>
+        }
+      >
+        <div className="flex flex-wrap gap-3 pt-1">
+          <Button href={QUOTE} variant="onBand" size="lg">
+            Request a quote <ArrowRight aria-hidden="true" />
+          </Button>
+          {chrome.contact.phone ? (
+            <Button href={chrome.contact.phoneHref} variant="onBandOutline" size="lg">
+              <Phone aria-hidden="true" /> {chrome.contact.phone}
+            </Button>
           ) : null}
-        </Container>
-      </section>
+        </div>
+      </PhotoHero>
 
       <Section aria-labelledby="products-title">
-        <Container className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <h2 id="products-title" className="text-h2">
-              {c.products.length === 1 ? "1 product" : `${c.products.length} products`} in this category
-            </h2>
-            <p className="flex items-center gap-2 text-sm text-muted">
-              <FileCheck aria-hidden="true" className="size-4 text-primary" /> COA and SDS available on
-              request
+        <Container className="flex flex-col gap-8">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div className="flex flex-col gap-3">
+              <Eyebrow>In this category</Eyebrow>
+              <h2 id="products-title" className="text-h2">
+                {c.products.length === 1 ? "1 product" : `${c.products.length} products`}, ready to quote.
+              </h2>
+            </div>
+            <p className="inline-flex items-center gap-2 self-start rounded-pill bg-[color-mix(in_oklab,var(--c-success)_10%,transparent)] px-3.5 py-2 text-sm font-semibold text-success md:self-auto">
+              <FileCheck aria-hidden="true" className="size-4" /> COA and SDS available on request
             </p>
           </div>
           {c.products.length ? (
-            <Table
-              caption={`${c.name} products`}
-              columns={[
-                { key: "name", label: "Product", width: "28%" },
-                { key: "cas", label: "CAS", data: true },
-                { key: "grade", label: "Grade / purity" },
-                { key: "form", label: "Form" },
-                { key: "packs", label: "Packs" },
-                { key: "moq", label: "MOQ", data: true },
-              ]}
-              rows={rows}
-              note="Specifications are indicative. Confirm the exact values on the COA supplied with your batch."
-            />
+            <>
+              <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {c.products.map((p) => (
+                  <li key={p.id} data-reveal>
+                    <ProductCard product={{ ...p, category: { slug: c.slug, name: c.name, family: c.family } }} />
+                  </li>
+                ))}
+              </ul>
+              <details className="group overflow-hidden rounded-card bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-3 px-5 py-4 font-semibold text-ink hover:text-primary">
+                  Compare all {c.products.length} side by side
+                  <ChevronDown aria-hidden="true" className="size-5 transition-transform group-open:rotate-180" />
+                </summary>
+                <div className="border-t border-hairline p-3 md:p-4">
+                  <Table
+                    caption={`${c.name} products`}
+                    columns={[
+                      { key: "name", label: "Product", width: "28%" },
+                      { key: "cas", label: "CAS", data: true },
+                      { key: "grade", label: "Grade / purity" },
+                      { key: "form", label: "Form" },
+                      { key: "packs", label: "Packs" },
+                      { key: "moq", label: "MOQ", data: true },
+                    ]}
+                    rows={rows}
+                    note="Specifications are indicative. Confirm the exact values on the COA supplied with your batch."
+                  />
+                </div>
+              </details>
+            </>
           ) : (
             <p className="text-muted">
               Products in this category are being updated. Call us for current stock.
@@ -196,20 +214,32 @@ export default async function CategoryPage({ params }) {
             <h2 id="related-title" className="text-h3">
               More in {family?.name}
             </h2>
-            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {c.related.map((r) => (
-                <li key={r.slug}>
+                <li key={r.slug} data-reveal>
                   <Link
                     href={`/products/${r.slug}`}
-                    className="lift flex items-center justify-between gap-3 surface-card px-5 py-4 transition-colors "
+                    className="group lift flex items-center gap-4 surface-card p-3 pr-5"
                   >
-                    <span className="flex flex-col">
-                      <span className="font-semibold text-primary">{r.name}</span>
+                    <span className="relative size-16 shrink-0 overflow-hidden rounded-btn">
+                      <Image
+                        src={imageForText(r.name, FAMILY_IMAGE[c.family] ?? STOCK.labPipette).src}
+                        alt=""
+                        fill
+                        sizes="64px"
+                        className="object-cover transition-transform duration-500 motion-safe:group-hover:scale-110"
+                      />
+                    </span>
+                    <span className="flex flex-1 flex-col">
+                      <span className="font-semibold text-ink group-hover:text-primary">{r.name}</span>
                       <span className="text-[0.8125rem] text-muted">
                         {r._count.products === 1 ? "1 product" : `${r._count.products} products`}
                       </span>
                     </span>
-                    <ArrowRight aria-hidden="true" className="size-4 shrink-0 text-primary" />
+                    <ArrowRight
+                      aria-hidden="true"
+                      className="size-4 shrink-0 text-primary transition-transform group-hover:translate-x-1"
+                    />
                   </Link>
                 </li>
               ))}

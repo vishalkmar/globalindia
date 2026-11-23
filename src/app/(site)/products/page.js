@@ -2,14 +2,14 @@ import { Suspense } from "react";
 
 import { CatalogueBrowser, CatalogueBrowserWithUrl } from "@/components/catalogue/CatalogueBrowser";
 import { CtaBand } from "@/components/sections/ContentSections";
-import { Breadcrumb } from "@/components/site/Breadcrumb";
-import { Eyebrow } from "@/components/ui/Card";
+import { PhotoHero } from "@/components/site/PhotoHero";
 import { Container, Section } from "@/components/ui/Layout";
 import { getCatalogue } from "@/lib/catalogue/data";
 import { siteUrl } from "@/lib/env";
 import { SECTIONS } from "@/lib/sections/registry";
 import { jsonLd } from "@/lib/seo/jsonLd";
 import { getSiteChrome } from "@/lib/site-chrome";
+import { STOCK } from "@/lib/stockImages";
 
 export const metadata = {
   title: "Products: Chemical Raw Materials in Delhi",
@@ -37,21 +37,31 @@ export default async function ProductsPage() {
 
   return (
     <>
-      <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
-        <Container className="flex flex-col items-start gap-5 py-12 md:py-16">
-          <Breadcrumb items={[{ label: "Products" }]} />
-          <Eyebrow>Product catalogue</Eyebrow>
-          <h1 id="page-title" className="measure text-display">
-            {total
-              ? `${total} raw materials, ${categories.length} categories, one supplier.`
-              : "Our product catalogue."}
-          </h1>
-          <p className="measure text-lead">
-            Pick a family or type what you are looking for. Every product page lists the grade, CAS number,
-            pack sizes and minimum order. Ask for the COA and SDS with your quote.
-          </p>
-        </Container>
-      </section>
+      <PhotoHero
+        photo={STOCK.warehouseFloor}
+        crumbs={[{ label: "Products" }]}
+        eyebrow="Product catalogue"
+        title={
+          total ? `${total} raw materials, ${categories.length} categories, one supplier.` : "Our product catalogue."
+        }
+        lead="Pick a family or type what you are looking for. Every product page lists the grade, CAS number, pack sizes and minimum order. Ask for the COA and SDS with your quote."
+      >
+        <ul className="mt-2 flex flex-wrap gap-2" aria-label="Catalogue at a glance">
+          {[
+            `${total} products`,
+            `${categories.length} categories`,
+            "COA and SDS on request",
+            "25 kg to 200 L packs",
+          ].map((t) => (
+            <li
+              key={t}
+              className="rounded-pill bg-white/10 px-3.5 py-1.5 text-sm font-semibold text-band-ink ring-1 ring-white/20 backdrop-blur"
+            >
+              {t}
+            </li>
+          ))}
+        </ul>
+      </PhotoHero>
       <Section>
         <Container>
           {categories.length ? (

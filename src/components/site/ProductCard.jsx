@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { MediaImage } from "@/components/ui/MediaImage";
-import { imageForProduct } from "@/lib/stockImages";
+import { cropFor, imageForProduct } from "@/lib/stockImages";
 
 /**
  * Product card (Design.md §6): photo, name, grade, pack sizes, MOQ. No price — prices are quoted on
@@ -19,6 +19,7 @@ export function ProductCard({ product }) {
     product.moq ? ["MOQ", product.moq] : null,
   ].filter(Boolean);
   const stock = product.image ? null : imageForProduct(product);
+  const crop = cropFor(product.slug);
 
   return (
     <article className="group relative flex h-full flex-col overflow-hidden rounded-[calc(var(--r-card)+2px)] bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-sm)] transition-[box-shadow,transform] duration-300 ease-[var(--ease-standard)] hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_25%,transparent),var(--sh-lg)] motion-safe:hover:-translate-y-1">
@@ -36,7 +37,8 @@ export function ProductCard({ product }) {
             alt=""
             fill
             sizes="(min-width: 1024px) 380px, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-700 ease-[var(--ease-standard)] motion-safe:group-hover:scale-105"
+            style={{ objectPosition: crop.objectPosition, transformOrigin: crop.objectPosition, scale: crop.scale }}
+            className="object-cover transition-[scale] duration-700 ease-[var(--ease-standard)]"
           />
         )}
         <span

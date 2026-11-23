@@ -55,3 +55,12 @@ export function imageForProduct(product) {
 
 /** Rotating defaults for article covers. */
 export const COVER_ROTATION = [STOCK.labPipette, STOCK.warehouseFloor, STOCK.cosmetics, STOCK.trucks];
+
+const CROPS = ["30% 40%", "70% 30%", "50% 70%", "20% 75%", "80% 65%", "55% 20%"];
+
+/** A stable, slug-based crop so cards sharing a default photo do not look identical. */
+export function cropFor(key = "") {
+  let h = 0;
+  for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return { objectPosition: CROPS[h % CROPS.length], scale: 1.25 + (h % 3) * 0.12 };
+}
