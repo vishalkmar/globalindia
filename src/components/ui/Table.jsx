@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * Data table for specifications, comparisons and product lists.
- * Zebra rows use the surface colour; columns marked `data: true` use the mono data font (CAS, %, MOQ).
+ * Clean rows with hairline dividers and a hover tint; `data: true` columns use tabular figures (CAS, %, MOQ).
  * Scrolls horizontally on small screens instead of squashing columns.
  *
  * @param {{
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  *  stackOnMobile?: boolean   // below 640 px each row becomes a card with column labels (no sideways scroll)
  * }} props
  */
-export function Table({ columns, rows, caption, note, zebra = true, className, stackOnMobile = false }) {
+export function Table({ columns, rows, caption, note, zebra = false, className, stackOnMobile = false }) {
   const stack = stackOnMobile;
   return (
     <figure className={cn("flex flex-col gap-3", className)}>
@@ -30,14 +30,14 @@ export function Table({ columns, rows, caption, note, zebra = true, className, s
         >
           {caption ? <caption className="sr-only">{caption}</caption> : null}
           <thead className={stack ? "max-sm:sr-only" : undefined}>
-            <tr className="border-b border-line bg-card">
+            <tr className="border-b border-hairline bg-[color-mix(in_oklab,var(--c-surface)_70%,var(--c-card))]">
               {columns.map((col) => (
                 <th
                   key={col.key}
                   scope="col"
                   style={col.width ? { width: col.width } : undefined}
                   className={cn(
-                    "px-4 py-3 text-[0.75rem] font-bold tracking-[0.08em] text-muted uppercase",
+                    "px-5 py-3.5 text-[0.6875rem] font-bold tracking-[0.1em] text-muted uppercase",
                     col.align === "right" && "text-right",
                   )}
                 >
@@ -51,7 +51,7 @@ export function Table({ columns, rows, caption, note, zebra = true, className, s
               <tr
                 key={row.id ?? i}
                 className={cn(
-                  "border-b border-line last:border-b-0",
+                  "border-b border-hairline transition-colors duration-150 last:border-b-0 hover:bg-[color-mix(in_oklab,var(--c-primary)_4%,var(--c-card))]",
                   zebra && i % 2 === 1 ? "bg-surface" : "bg-card",
                   stack && "max-sm:block max-sm:py-2",
                 )}
@@ -64,7 +64,7 @@ export function Table({ columns, rows, caption, note, zebra = true, className, s
                       scope={ci === 0 ? "row" : undefined}
                       data-label={stack && ci > 0 ? col.label : undefined}
                       className={cn(
-                        "px-4 py-3 align-top",
+                        "px-5 py-3.5 align-top",
                         stack && "max-sm:block max-sm:py-1.5",
                         stack &&
                           ci > 0 &&

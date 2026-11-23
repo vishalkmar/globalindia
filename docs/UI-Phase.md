@@ -30,14 +30,14 @@ Status: [ ] to do, [x] done, [~] partly.
 - [x] 09 Process  - [x] 10 Client logos / testimonials  - [x] 11 Insights  - [x] 12 FAQ  - [x] 13 CTA band
 
 ## UI-03 Products hub (/products)
-- [ ] 01 Page hero  - [ ] 02 Family filter chips  - [ ] 03 Category cards  - [ ] 04 Search box
+- [x] 01 Page hero  - [x] 02 Family filter chips  - [x] 03 Category cards  - [x] 04 Search box
 
 ## UI-04 Category page
-- [ ] 01 Hero with image  - [ ] 02 Product table/cards  - [ ] 03 Buying guide  - [ ] 04 FAQ  - [ ] 05 Related categories
+- [x] 01 Hero with image  - [x] 02 Product table/cards  - [x] 03 Buying guide  - [x] 04 FAQ  - [x] 05 Related categories
 
 ## UI-05 Product page
-- [ ] 01 Hero (gallery + key facts)  - [ ] 02 Sticky section nav  - [ ] 03 Spec table  - [ ] 04 Applications
-- [ ] 05 Packaging/MOQ cards  - [ ] 06 Documents  - [ ] 07 FAQ  - [ ] 08 Quote CTA / add to quote
+- [x] 01 Hero (gallery + key facts)  - [x] 02 Sticky section nav  - [x] 03 Spec table  - [x] 04 Applications
+- [x] 05 Packaging/MOQ cards  - [x] 06 Documents  - [x] 07 FAQ  - [x] 08 Quote CTA / add to quote
 
 ## UI-06 Company pages
 - [ ] 01 About (timeline, facts, proprietor)  - [ ] 02 Why us  - [ ] 03 Quality  - [ ] 04 Gallery

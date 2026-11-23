@@ -191,12 +191,21 @@ export default async function ProductPage({ params }) {
                 aspect="4:3"
                 priority
                 sizes="(min-width: 1024px) 460px, 100vw"
-                className="w-full surface-card"
+                className="w-full surface-card shadow-[0_0_0_1px_var(--hairline),var(--sh-lg)]"
               />
             ) : (
-              <div className="flex aspect-[4/3] w-full flex-col justify-end gap-2 surface-card p-6">
-                <FlaskConical aria-hidden="true" className="size-8 text-primary/40" strokeWidth={1.25} />
-                <p className="font-display text-xl text-primary">{p.name}</p>
+              <div className="relative flex aspect-[4/3] w-full flex-col justify-end gap-2 overflow-hidden rounded-card bg-[radial-gradient(90%_120%_at_100%_0%,color-mix(in_oklab,var(--c-accent)_26%,transparent),transparent_60%),linear-gradient(160deg,color-mix(in_oklab,var(--c-primary)_12%,var(--c-card)),var(--c-card))] p-7 shadow-[0_0_0_1px_var(--hairline),var(--sh-lg)]">
+                <FlaskConical
+                  aria-hidden="true"
+                  className="absolute top-8 right-8 size-32 -rotate-12 text-primary/10"
+                  strokeWidth={0.9}
+                />
+                {p.casNo ? (
+                  <span className="absolute top-6 left-6 rounded-pill bg-primary px-3 py-1 font-data text-[0.75rem] font-semibold text-primary-ink">
+                    CAS {p.casNo}
+                  </span>
+                ) : null}
+                <p className="font-display text-2xl text-primary">{p.name}</p>
                 <p className="text-sm text-muted">
                   {[p.category.name, family?.name].filter(Boolean).join(" · ")}
                 </p>
@@ -210,7 +219,7 @@ export default async function ProductPage({ params }) {
                       asset={g}
                       aspect="1:1"
                       sizes="110px"
-                      className="w-full rounded-btn border border-line"
+                      className="w-full rounded-btn shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)]"
                     />
                   </li>
                 ))}
@@ -219,15 +228,15 @@ export default async function ProductPage({ params }) {
           </div>
         </Container>
         {facts.length ? (
-          <div className="border-t border-line bg-card">
+          <div className="relative pb-2">
             <Container>
               <dl
-                className="grid grid-cols-2 divide-line py-2 sm:grid-cols-3 lg:grid-cols-4"
+                className="grid grid-cols-2 overflow-hidden rounded-card bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-md)] sm:grid-cols-3 lg:grid-cols-4"
                 data-testid="fact-strip"
               >
                 {facts.map(([k, v, mono]) => (
-                  <div key={k} className="flex flex-col gap-0.5 px-1 py-3 sm:px-3">
-                    <dt className="text-[0.75rem] font-bold tracking-[0.08em] text-muted uppercase">{k}</dt>
+                  <div key={k} className="flex flex-col gap-1 px-5 py-4 shadow-[inset_-1px_-1px_0_var(--hairline)]">
+                    <dt className="text-[0.6875rem] font-bold tracking-[0.1em] text-muted uppercase">{k}</dt>
                     <dd
                       className={mono ? "font-data text-[0.9375rem] text-ink" : "text-[0.9375rem] text-ink"}
                     >

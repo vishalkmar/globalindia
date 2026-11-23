@@ -60,15 +60,18 @@ export function CatalogueBrowser({ categories, family = null }) {
                 scroll={false}
                 aria-current={active ? "true" : undefined}
                 className={cn(
-                  "inline-flex h-10 items-center gap-2 rounded-btn border px-3.5 text-sm font-semibold transition-colors",
+                  "inline-flex h-10 items-center gap-2 rounded-pill px-4 text-sm font-semibold transition-[background-color,box-shadow,color] duration-200",
                   active
-                    ? "border-primary bg-primary text-primary-ink"
-                    : "border-line bg-card text-ink hover:border-primary",
+                    ? "bg-primary text-primary-ink shadow-primary"
+                    : "bg-card text-ink shadow-[0_0_0_1px_var(--hairline),var(--sh-xs)] hover:text-primary hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_35%,transparent),var(--sh-sm)]",
                 )}
               >
                 {f.name}
                 <span
-                  className={cn("font-data text-[0.75rem]", active ? "text-primary-ink/80" : "text-muted")}
+                  className={cn(
+                    "rounded-pill px-1.5 py-0.5 font-data text-[0.6875rem] leading-none",
+                    active ? "bg-[color-mix(in_oklab,var(--c-primary-ink)_18%,transparent)] text-primary-ink" : "bg-surface text-muted",
+                  )}
                 >
                   {count}
                 </span>
@@ -87,7 +90,7 @@ export function CatalogueBrowser({ categories, family = null }) {
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter by name, CAS number, grade or use"
             aria-label="Filter products"
-            className="h-12 w-full rounded-btn border border-line bg-card pr-10 pl-10 text-[0.9375rem] text-ink placeholder:text-muted focus-visible:border-primary"
+            className="h-12 w-full rounded-pill border border-[color-mix(in_oklab,var(--c-ink)_12%,transparent)] bg-card pr-10 pl-10 text-[0.9375rem] text-ink shadow-xs transition-[border-color,box-shadow] duration-200 placeholder:text-muted focus:border-primary focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--c-primary)_14%,transparent)] focus:outline-none"
           />
           {query ? (
             <button
@@ -116,7 +119,7 @@ export function CatalogueBrowser({ categories, family = null }) {
               className="surface-card"
               data-testid="hub-category"
             >
-              <div className="flex flex-col gap-2 border-b border-line p-5 md:flex-row md:items-end md:justify-between md:gap-8 md:p-6">
+              <div className="flex flex-col gap-2 p-5 pb-3 md:flex-row md:items-end md:justify-between md:gap-8 md:p-7 md:pb-4">
                 <div className="flex max-w-3xl flex-col gap-1.5">
                   <h2 id={`cat-${c.slug}`} className="text-h3">
                     <Link
@@ -130,22 +133,23 @@ export function CatalogueBrowser({ categories, family = null }) {
                 </div>
                 <Link
                   href={`/products/${c.slug}`}
-                  className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-primary"
+                  className="group/cat inline-flex shrink-0 items-center gap-1.5 rounded-pill bg-[color-mix(in_oklab,var(--c-primary)_7%,transparent)] px-3.5 py-2 text-sm font-semibold text-primary transition-colors hover:bg-[color-mix(in_oklab,var(--c-primary)_12%,transparent)]"
                 >
                   View category <ArrowRight aria-hidden="true" className="size-4" />
                 </Link>
               </div>
-              <ul className="grid divide-line sm:grid-cols-2 lg:grid-cols-3">
+              <ul className="grid gap-2.5 p-3 pt-1 sm:grid-cols-2 md:p-4 md:pt-1 lg:grid-cols-3">
                 {c.products.map((p) => (
-                  <li
-                    key={p.id}
-                    className="border-b border-line sm:odd:border-r lg:border-r lg:[&:nth-child(3n)]:border-r-0"
-                  >
+                  <li key={p.id}>
                     <Link
                       href={`/products/${c.slug}/${p.slug}`}
-                      className="flex h-full flex-col gap-1 px-5 py-4 transition-colors hover:bg-surface"
+                      className="group/p relative flex h-full flex-col gap-1 rounded-[calc(var(--r-btn)+4px)] bg-[color-mix(in_oklab,var(--c-surface)_55%,var(--c-card))] px-4 py-3.5 pr-10 transition-[background-color,box-shadow] duration-200 hover:bg-card hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_25%,transparent),var(--sh-sm)]"
                     >
-                      <span className="font-semibold text-ink">{p.name}</span>
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="absolute top-4 right-3.5 size-4 text-primary opacity-0 transition-[opacity,transform] duration-200 group-hover/p:translate-x-0.5 group-hover/p:opacity-100"
+                      />
+                      <span className="font-semibold text-ink group-hover/p:text-primary">{p.name}</span>
                       <span className="flex flex-wrap gap-x-3 gap-y-0.5 text-[0.8125rem] text-muted">
                         {p.casNo ? <span className="font-data">CAS {p.casNo}</span> : null}
                         {p.grade ? <span>{p.grade}</span> : null}
@@ -159,7 +163,7 @@ export function CatalogueBrowser({ categories, family = null }) {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-start gap-3 rounded-card border border-dashed border-line p-8">
+        <div className="flex flex-col items-start gap-3 rounded-card border border-dashed border-[color-mix(in_oklab,var(--c-ink)_18%,transparent)] bg-card/60 p-8">
           <p className="font-semibold text-ink">Nothing matches “{query.trim()}”.</p>
           <p className="text-sm text-muted">
             We source many materials that are not listed. Tell us what you need and we will check with our

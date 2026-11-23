@@ -37,7 +37,7 @@ export default async function ProductsPage() {
 
   return (
     <>
-      <section className="border-b border-line bg-surface" aria-labelledby="page-title">
+      <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
         <Container className="flex flex-col items-start gap-5 py-12 md:py-16">
           <Breadcrumb items={[{ label: "Products" }]} />
           <Eyebrow>Product catalogue</Eyebrow>

@@ -92,7 +92,7 @@ export default async function CategoryPage({ params }) {
 
   return (
     <>
-      <section className="border-b border-line bg-surface" aria-labelledby="page-title">
+      <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
         <Container
           className={
             c.image
@@ -175,7 +175,7 @@ export default async function CategoryPage({ params }) {
             <div className="flex flex-col gap-3">
               <Eyebrow>Buying guide</Eyebrow>
               <h2 id="guide-title" className="text-h2">
-                What to check before you order {c.name.toLowerCase()}.
+                What to check before you order {c.name}.
               </h2>
             </div>
             <div className="prose-site measure" dangerouslySetInnerHTML={{ __html: guide }} />

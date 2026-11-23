@@ -29,7 +29,7 @@ const CtaButton = ({ cta, variant = "primary" }) =>
 export async function PageHero({ data, ctx }) {
   const image = data.imageId ? await getMedia(data.imageId) : null;
   return (
-    <section className="border-b border-line bg-surface" aria-labelledby="page-title">
+    <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
       <Container
         className={cn(
           "grid gap-10 py-12 md:py-16",

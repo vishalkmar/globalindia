@@ -5,7 +5,7 @@ import { Container } from "@/components/ui/Layout";
 /** Page header for fixed routes (industries, insights, FAQ): breadcrumb, eyebrow, H1, intro. */
 export function SimpleHero({ crumbs, eyebrow, title, intro, children }) {
   return (
-    <section className="border-b border-line bg-surface" aria-labelledby="page-title">
+    <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
       <Container className="flex flex-col items-start gap-5 py-12 md:py-16">
         <Breadcrumb items={crumbs} />
         {eyebrow ? <Eyebrow>{eyebrow}</Eyebrow> : null}
