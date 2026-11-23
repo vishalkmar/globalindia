@@ -3,7 +3,7 @@ import { after } from "next/server";
 import { audit } from "@/lib/audit";
 import { BREACHED_MESSAGE, isBreachedPassword } from "@/lib/auth/breached";
 import { setSessionCookies } from "@/lib/auth/cookies";
-import { requireAdmin } from "@/lib/auth/guard";
+import { requireAdmin, setupPending } from "@/lib/auth/guard";
 import { notifySecurityChange } from "@/lib/auth/notify";
 import { hashPassword, passwordPolicyError, verifyPassword } from "@/lib/auth/password";
 import { createSession, revokeAllForUser } from "@/lib/auth/session";
@@ -61,7 +61,7 @@ export const POST = route(async (req) => {
   await audit({ actorId: me.id, action: "auth.password.changed", ipHash });
   const headers = req.headers;
   after(() => notifySecurityChange(me.id, headers, "Your admin password was changed"));
-  return setSessionCookies(json({ ok: true, next: fresh.mfaSetupAt ? "/admin" : "/admin/setup" }), {
+  return setSessionCookies(json({ ok: true, next: setupPending(fresh) ? "/admin/setup" : "/admin" }), {
     accessToken,
     refreshToken,
   });

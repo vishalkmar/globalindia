@@ -17,9 +17,18 @@ const stamp = Date.now();
 const email = `e2e-${stamp}@test.local`;
 const firstPassword = `First-Pass-${stamp}`;
 const newPassword = `Burari-Road-419-${stamp}`;
-const approvalInbox = (process.env.SEED_ADMIN_EMAIL ?? "admin@globalindia.local").toLowerCase();
+// Same rule as defaultAdminContact() in lib/auth/mfa.js: the security setting, else the oldest
+// active super admin of THIS database (never the .env seed address, which may point at production).
+let approvalInbox = "";
 
 test.beforeAll(async () => {
+  const security = await db.siteSetting.findUnique({ where: { key: "security" } });
+  const owner = await db.adminUser.findFirst({
+    where: { role: "SUPER_ADMIN", status: "ACTIVE" },
+    orderBy: { createdAt: "asc" },
+    select: { email: true },
+  });
+  approvalInbox = String(security?.value?.defaultAdminEmail || owner?.email || "").toLowerCase();
   await db.adminUser.create({
     data: {
       email,

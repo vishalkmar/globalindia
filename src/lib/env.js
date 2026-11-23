@@ -42,6 +42,15 @@ export function optionalEnv(name, fallback = undefined) {
 export const isProduction = process.env.NODE_ENV === "production";
 export const isTest = process.env.NODE_ENV === "test" || process.env.VITEST === "true";
 
+/**
+ * TEMPORARY owner switch: ADMIN_PASSWORD_ONLY=true signs admins in with the password alone and skips
+ * the authenticator step of first-login setup. Only for getting in while email delivery is broken;
+ * remove the variable (and redeploy) as soon as email works. Every such sign-in is audited.
+ */
+export function passwordOnlyLogin() {
+  return optionalEnv("ADMIN_PASSWORD_ONLY") === "true";
+}
+
 export function siteUrl() {
   return optionalEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000").replace(/\/+$/, "");
 }

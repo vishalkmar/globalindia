@@ -3,8 +3,9 @@ import "server-only";
 import { COOKIE, setMfaPendingCookie } from "@/lib/auth/cookies";
 import { hmac } from "@/lib/auth/crypto";
 import { availableMethods, checkPassword, GENERIC_LOGIN_ERROR } from "@/lib/auth/login";
+import { completeLogin } from "@/lib/auth/mfa";
 import { signMfaTicket } from "@/lib/auth/mfaPending";
-import { authEnv } from "@/lib/env";
+import { authEnv, passwordOnlyLogin } from "@/lib/env";
 import { assertSameOrigin, errorResponse, json, readJson, route } from "@/lib/http";
 import { clientIp, hashIp } from "@/lib/security/ip";
 import { rateLimit } from "@/lib/security/rateLimit";
@@ -31,6 +32,13 @@ export const POST = route(async (req) => {
 
   const result = await checkPassword(email, password, { ipHash });
   if (!result.ok) return errorResponse(401, GENERIC_LOGIN_ERROR);
+
+  // Temporary owner switch (lib/env.js): no second step while email delivery is broken.
+  if (passwordOnlyLogin()) {
+    const res = await completeLogin(result.user, req, "password_only");
+    res.cookies.set(COOKIE.mfaPending, "", { path: "/", maxAge: 0 });
+    return res;
+  }
 
   const ticket = await signMfaTicket({ userId: result.user.id, tv: result.user.tokenVersion });
   const methods = await availableMethods(result.user);

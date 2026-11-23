@@ -52,6 +52,12 @@ export function LoginForm() {
       setPassword("");
       return;
     }
+    // Password-only mode: the session already exists, go straight in (setup first if pending).
+    if (!res.data.methods && res.data.next) {
+      router.replace(res.data.next === "/admin" ? next : res.data.next);
+      router.refresh();
+      return;
+    }
     const q = new URLSearchParams({ next, m: (res.data.methods ?? ["email"]).join(",") });
     router.push(`/admin/verify?${q.toString()}`);
   }

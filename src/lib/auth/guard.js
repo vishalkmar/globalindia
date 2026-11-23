@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { audit } from "@/lib/audit";
 import { db } from "@/lib/db";
+import { passwordOnlyLogin } from "@/lib/env";
 import { HttpError } from "@/lib/http";
 
 import { COOKIE } from "./cookies";
@@ -58,7 +59,7 @@ export async function getAdmin() {
 
 /** Whether the account still has to finish first-login setup (new password + authenticator + recovery codes). */
 export function setupPending(user) {
-  return user.mustChangePassword || !user.mfaSetupAt;
+  return user.mustChangePassword || (!user.mfaSetupAt && !passwordOnlyLogin());
 }
 
 /**

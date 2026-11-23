@@ -11,6 +11,7 @@ import { HttpError, json } from "@/lib/http";
 import { clientIp, hashIp } from "@/lib/security/ip";
 
 import { COOKIE, setSessionCookies } from "./cookies";
+import { setupPending } from "./guard";
 import { verifyMfaTicket } from "./mfaPending";
 import { notifyNewLogin } from "./notify";
 import { issueOtp } from "./otp";
@@ -36,7 +37,7 @@ export async function userFromMfaTicket() {
 
 /** Where to go after sign-in: unfinished accounts go to setup first. */
 export function nextPathFor(user) {
-  return user.mustChangePassword || !user.mfaSetupAt ? "/admin/setup" : "/admin";
+  return setupPending(user) ? "/admin/setup" : "/admin";
 }
 
 /** Both factors passed: create the session, set cookies, audit, alert. */

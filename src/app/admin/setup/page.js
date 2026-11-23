@@ -2,6 +2,7 @@ import { Suspense } from "react";
 
 import { AuthSkeleton } from "@/components/admin/auth/AuthCard";
 import { requireAdminPage } from "@/lib/auth/guard";
+import { passwordOnlyLogin } from "@/lib/env";
 
 import { SetupWizard } from "./SetupWizard";
 
@@ -9,7 +10,13 @@ export const metadata = { title: "Account setup" };
 
 async function SetupContent() {
   const user = await requireAdminPage({ allowSetup: true, next: "/admin/setup" });
-  return <SetupWizard mustChangePassword={user.mustChangePassword} mfaSetupDone={Boolean(user.mfaSetupAt)} />;
+  // With the temporary password-only switch the authenticator step is skipped (lib/env.js).
+  return (
+    <SetupWizard
+      mustChangePassword={user.mustChangePassword}
+      mfaSetupDone={Boolean(user.mfaSetupAt) || passwordOnlyLogin()}
+    />
+  );
 }
 
 export default function SetupPage() {
