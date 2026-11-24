@@ -26,6 +26,12 @@ export const STOCK = {
   labCorridor: img("lab-corridor", "Quality control laboratory"),
   microscopes: img("microscopes", "Row of microscopes in a testing lab"),
   scientist: img("scientist", "Chemist wearing safety goggles"),
+  drumsWarehouse: { src: "/images/contact/warehouse.webp", alt: "Warehouse with drums and bagged stock on racks" },
+  ibcStore: { src: "/images/industries/warehouse.webp", alt: "Racks of IBC tanks and drums in our store" },
+  tanks: { src: "/images/insights/tanks.webp", alt: "Bulk storage tanks at a producer site" },
+  labBench: { src: "/images/industries/hero.webp", alt: "Laboratory flasks and a powder sample on a bench" },
+  coa: { src: "/images/insights/coa.webp", alt: "Certificate of Analysis on a clipboard" },
+  labGlass: { src: "/images/insights/lab.webp", alt: "Clean laboratory glassware" },
 };
 
 export const FAMILY_IMAGE = {

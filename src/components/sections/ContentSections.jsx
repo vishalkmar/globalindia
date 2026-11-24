@@ -372,8 +372,77 @@ export async function Stats({ data, ctx }) {
   );
 }
 
+/* Quality: the life of a batch as a gently curved journey with a dot per stage. */
+function Journey({ data, tone }) {
+  const last = data.steps.length - 1;
+  return (
+    <Section tone={tone}>
+      <Container className="flex flex-col gap-10">
+        <div data-reveal className="flex flex-col gap-3">
+          <p className="flex items-center gap-3 text-sm font-bold text-primary">
+            <span aria-hidden="true" className="h-1 w-8 rounded-pill bg-accent" />
+            {data.eyebrow || "Our process"}
+          </p>
+          <h2 className="text-h2">{data.title || "From the producer to your plant."}</h2>
+          {data.intro ? <p className="measure text-muted">{data.intro}</p> : null}
+        </div>
+        <div className="relative">
+          <svg
+            aria-hidden="true"
+            viewBox="0 0 1000 32"
+            preserveAspectRatio="none"
+            className="absolute inset-x-0 top-[4.6rem] hidden h-8 w-full lg:block"
+          >
+            <path
+              d="M0 16 C 125 4, 250 28, 375 16 S 625 4, 750 16 S 925 28, 1000 16"
+              fill="none"
+              stroke="var(--c-accent)"
+              strokeWidth="2"
+              strokeOpacity="0.55"
+              vectorEffect="non-scaling-stroke"
+            />
+          </svg>
+          <ol
+            className={cn(
+              "relative grid gap-8 sm:grid-cols-2",
+              data.steps.length >= 5 ? "lg:grid-cols-5" : "lg:grid-cols-4",
+            )}
+          >
+            {data.steps.map((step, i) => (
+              <li key={step.title} data-reveal className="flex flex-col gap-2 lg:items-center lg:text-center">
+                <span
+                  className={cn(
+                    "w-fit rounded-btn px-2.5 py-1 text-sm font-extrabold tracking-tight",
+                    i === last
+                      ? "bg-band text-band-ink"
+                      : "bg-[color-mix(in_oklab,var(--c-accent)_20%,transparent)] text-ink",
+                  )}
+                >
+                  Step {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="text-h4">{step.title}</h3>
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "my-3 hidden rounded-full ring-4 lg:block",
+                    i === last
+                      ? "size-6 bg-band ring-[color-mix(in_oklab,var(--c-accent)_60%,transparent)]"
+                      : "size-5 bg-accent ring-[color-mix(in_oklab,var(--c-accent)_25%,transparent)]",
+                  )}
+                />
+                {step.text ? <p className="text-sm leading-relaxed text-muted">{step.text}</p> : null}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </Container>
+    </Section>
+  );
+}
+
 /* 10 — how ordering works */
-export function Process({ data, tone }) {
+export function Process({ data, tone, ctx }) {
+  if (ctx?.page?.slug === "quality") return <Journey data={data} tone={tone} />;
   return (
     <Section tone={tone}>
       <Container className="flex flex-col gap-10">
@@ -459,6 +528,44 @@ export function Faq({ data, tone }) {
 
 /* 15 — closing call to action */
 export function CtaBand({ data, ctx }) {
+  if (ctx?.page?.slug === "quality") {
+    return (
+      <Section tone="white" spacing="tight">
+        <Container>
+          <div
+            data-reveal
+            className="relative isolate grid items-center gap-6 overflow-hidden rounded-[calc(var(--r-card)+6px)] bg-band px-8 py-8 text-band-ink shadow-lg md:px-12 lg:grid-cols-[minmax(0,4fr)_minmax(0,4fr)_auto]"
+          >
+            <Image src={STOCK.plantPipes.src} alt="" fill sizes="100vw" className="-z-20 object-cover opacity-20" />
+            <div>
+              <h2 className="text-h2 text-band-ink">{data.title}</h2>
+              <span
+                aria-hidden="true"
+                className="mt-3 block h-0.5 w-40 rounded-pill bg-[linear-gradient(90deg,var(--c-accent),transparent)]"
+              />
+            </div>
+            {data.text ? (
+              <p className="text-band-ink/80 lg:border-l lg:border-white/15 lg:pl-8">{data.text}</p>
+            ) : (
+              <span />
+            )}
+            <div className="flex flex-wrap gap-3">
+              {data.cta?.text && data.cta?.href ? (
+                <Button href={data.cta.href} variant="onBand">
+                  {data.cta.text} <ArrowRight aria-hidden="true" />
+                </Button>
+              ) : null}
+              {data.showPhone && ctx.contact.phone ? (
+                <Button href={ctx.contact.phoneHref} variant="onBandOutline">
+                  <Phone aria-hidden="true" /> {ctx.contact.phone}
+                </Button>
+              ) : null}
+            </div>
+          </div>
+        </Container>
+      </Section>
+    );
+  }
   return (
     <Section tone="white">
       <Container>

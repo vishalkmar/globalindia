@@ -541,3 +541,10 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Handwritten-style signature (proprietor note): system script faces only, no web font download. */
+@utility font-signature {
+  font-family: "Segoe Script", "Brush Script MT", "Snell Roundhand", "Apple Chancery", cursive;
+  font-style: italic;
+  font-weight: 600;
+}
