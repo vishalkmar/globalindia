@@ -60,19 +60,43 @@ export function imageForText(text, fallback = STOCK.labPipette) {
   return KEYWORDS.find(([re]) => re.test(text ?? ""))?.[1] ?? fallback;
 }
 
-/** Default photo for a product card: by family, then by category name. */
+const pic = (src, alt) => ({ src, alt });
+
+/** Several photos per family so neighbouring cards do not all show the same picture. */
+const FAMILY_POOL = {
+  FOOD: [STOCK.food, pic("/images/industries/food.webp", "Food-grade powder in a scoop")],
+  PERSONAL_CARE: [STOCK.cosmetics, pic("/images/industries/cosmetics.webp", "Cosmetic cream base")],
+  DETERGENT: [STOCK.cleaning, pic("/images/industries/cleaning.webp", "Foaming surfactant liquid"), STOCK.soap],
+  PARAFFINS_OILS_GLYCOLS: [
+    STOCK.oils,
+    pic("/images/insights/paraffin.webp", "Drum of light liquid paraffin"),
+    STOCK.tanks,
+  ],
+  INDUSTRIAL_LAB: [STOCK.labPipette, STOCK.labFlasks, STOCK.labGlass, STOCK.labBench, STOCK.microscopes],
+  HOME_AUTO_CARE: [STOCK.carCare, pic("/images/industries/automotive.webp", "Car tyre"), STOCK.cleaning],
+};
+
+const hash = (key = "") => {
+  let h = 0;
+  for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+  return h;
+};
+
+/** Default photo for a product card: a stable pick from the family's photos, else by category name. */
 export function imageForProduct(product) {
-  return FAMILY_IMAGE[product?.category?.family] ?? imageForText(product?.category?.name);
+  const pool = FAMILY_POOL[product?.category?.family];
+  if (pool) return pool[hash(product.slug) % pool.length];
+  return imageForText(product?.category?.name);
 }
 
 /** Rotating defaults for article covers. */
 export const COVER_ROTATION = [STOCK.labPipette, STOCK.warehouseFloor, STOCK.cosmetics, STOCK.trucks];
 
-const CROPS = ["30% 40%", "70% 30%", "50% 70%", "20% 75%", "80% 65%", "55% 20%"];
+const CROPS = ["50% 50%", "38% 45%", "62% 55%", "45% 62%", "56% 38%", "50% 70%"];
 
 /** A stable, slug-based crop so cards sharing a default photo do not look identical. */
 export function cropFor(key = "") {
   let h = 0;
   for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-  return { objectPosition: CROPS[h % CROPS.length], scale: 1.25 + (h % 3) * 0.12 };
+  return { objectPosition: CROPS[h % CROPS.length], scale: 1.04 + (h % 3) * 0.06 };
 }

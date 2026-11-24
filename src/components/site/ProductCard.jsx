@@ -83,3 +83,51 @@ export function ProductCard({ product }) {
     </article>
   );
 }
+
+/**
+ * Compact horizontal card for carousels: square photo on the left, name and key facts on the right.
+ */
+export function ProductRowCard({ product }) {
+  const href = `/products/${product.category.slug}/${product.slug}`;
+  const stock = product.image ? null : imageForProduct(product);
+  const crop = cropFor(product.slug);
+  return (
+    <article className="group relative flex h-full items-stretch gap-4 overflow-hidden rounded-[calc(var(--r-card)+2px)] bg-card p-3 shadow-[0_0_0_1px_var(--hairline),var(--sh-sm)] transition-[box-shadow,transform] duration-300 hover:shadow-[0_0_0_1px_color-mix(in_oklab,var(--c-primary)_25%,transparent),var(--sh-md)] motion-safe:hover:-translate-y-0.5">
+      <div className="relative w-28 shrink-0 overflow-hidden rounded-[var(--r-card)] bg-surface">
+        {product.image ? (
+          <MediaImage asset={product.image} aspect="1:1" sizes="112px" className="h-full w-full" />
+        ) : (
+          <Image
+            src={stock.src}
+            alt=""
+            fill
+            sizes="112px"
+            style={{ objectPosition: crop.objectPosition, transformOrigin: crop.objectPosition, scale: crop.scale }}
+            className="object-cover"
+          />
+        )}
+      </div>
+      <div className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 py-1 pr-8">
+        {product.casNo ? (
+          <span className="w-fit rounded-pill bg-[color-mix(in_oklab,var(--c-primary)_8%,transparent)] px-2 py-0.5 text-[0.6875rem] font-bold text-primary tabular-nums">
+            CAS {product.casNo}
+          </span>
+        ) : null}
+        <h3 className="line-clamp-2 text-[1rem] leading-snug font-bold tracking-tight text-ink">
+          <Link href={href} className="after:absolute after:inset-0 group-hover:text-primary">
+            {product.name}
+          </Link>
+        </h3>
+        <p className="truncate text-[0.8125rem] text-muted">
+          {[product.grade, product.packSizes?.slice(0, 2).join(", ")].filter(Boolean).join(" · ")}
+        </p>
+      </div>
+      <span
+        aria-hidden="true"
+        className="absolute top-3 right-3 inline-flex size-7 items-center justify-center rounded-full bg-surface text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-primary-ink"
+      >
+        <ArrowUpRight className="size-4" strokeWidth={2} />
+      </span>
+    </article>
+  );
+}

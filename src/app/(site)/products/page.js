@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 
 import { CatalogueBrowser, CatalogueBrowserWithUrl } from "@/components/catalogue/CatalogueBrowser";
+import { ProductShowcase } from "@/components/catalogue/ProductShowcase";
 import { CtaBand } from "@/components/sections/ContentSections";
 import { PhotoHero } from "@/components/site/PhotoHero";
 import { Container, Section } from "@/components/ui/Layout";
@@ -65,8 +66,16 @@ export default async function ProductsPage() {
       <Section>
         <Container>
           {categories.length ? (
-            <Suspense fallback={<CatalogueBrowser categories={categories} />}>
-              <CatalogueBrowserWithUrl categories={categories} />
+            <Suspense
+                fallback={
+                  <CatalogueBrowser categories={categories}>
+                    <ProductShowcase categories={categories} />
+                  </CatalogueBrowser>
+                }
+              >
+              <CatalogueBrowserWithUrl categories={categories}>
+                <ProductShowcase categories={categories} />
+              </CatalogueBrowserWithUrl>
             </Suspense>
           ) : (
             <p className="text-muted">The catalogue is being updated. Please call us for current stock.</p>
