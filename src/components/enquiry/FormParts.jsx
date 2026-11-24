@@ -46,10 +46,11 @@ export function Person({
   showCity = true,
 }) {
   return (
-    <div className="grid gap-4 sm:grid-cols-2">
+    <div className="gi-contact-field-group grid gap-4 sm:grid-cols-2">
       <Field label="Your name" required error={f.errors.name}>
         <Input
           value={f.values.name}
+          placeholder="Your full name"
           onChange={(e) => f.set("name", e.target.value)}
           autoComplete="name"
           maxLength={80}
@@ -58,6 +59,7 @@ export function Person({
       <Field label="Company" error={f.errors.company}>
         <Input
           value={f.values.company}
+          placeholder="Company or business name"
           onChange={(e) => f.set("company", e.target.value)}
           autoComplete="organization"
           maxLength={120}
@@ -66,6 +68,7 @@ export function Person({
       <Field label="Email" required error={f.errors.email}>
         <Input
           type="email"
+          placeholder="you@company.com"
           value={f.values.email}
           onChange={(e) => f.set("email", e.target.value)}
           autoComplete="email"
@@ -80,6 +83,7 @@ export function Person({
       >
         <Input
           type="tel"
+          placeholder="e.g. 98100 12345"
           value={f.values.phone}
           onChange={(e) => f.set("phone", e.target.value)}
           autoComplete="tel"
@@ -91,6 +95,7 @@ export function Person({
         <Field label={cityLabel} required={cityRequired} error={f.errors.city}>
           <Input
             value={f.values.city}
+            placeholder="Your city"
             onChange={(e) => f.set("city", e.target.value)}
             autoComplete="address-level2"
             maxLength={80}

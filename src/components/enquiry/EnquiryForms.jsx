@@ -1,13 +1,12 @@
 "use client";
 
-import { ArrowLeft, ArrowRight, Plus, Send, Trash2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Plus, Trash2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/Button";
 import { Field, Input, Select, Textarea } from "@/components/ui/Field";
-import { Alert } from "@/components/ui/Static";
 import { readBasket } from "@/lib/client/quoteBasket";
 import { cn } from "@/lib/utils";
 
@@ -73,10 +72,10 @@ function QuoteForm({ products, initialItems, initialMessage }) {
         if (step < STEPS.length - 1) go(step + 1);
         else f.submit();
       }}
-      className="relative flex flex-col gap-6"
+      className="gi-contact-form relative flex flex-col gap-5"
       aria-label="Request a quote"
     >
-      <ol className="flex flex-wrap gap-2 text-sm" aria-label="Steps">
+      <ol className="gi-contact-steps" aria-label="Steps">
         {STEPS.map((s, i) => (
           <li
             key={s.title}
@@ -94,9 +93,18 @@ function QuoteForm({ products, initialItems, initialMessage }) {
           </li>
         ))}
       </ol>
-      <h3 ref={headingRef} tabIndex={-1} className="text-h3 outline-none">
-        Step {step + 1} of {STEPS.length}: {STEPS[step].title}
-      </h3>
+      <div className="gi-contact-form-heading">
+        <h3 ref={headingRef} tabIndex={-1} className="text-h3 outline-none">
+          Step {step + 1} of {STEPS.length}: {STEPS[step].title}
+        </h3>
+        <p>
+          {step === 0
+            ? "Add the product(s) you need a quote for. You can include grade, quantity and pack size."
+            : step === 1
+              ? "Tell us where the material is going and any delivery requirements."
+              : "Share your contact details so our sales team can send your written quote."}
+        </p>
+      </div>
 
       {step === 0 ? (
         <fieldset className="flex flex-col gap-4">
@@ -104,25 +112,33 @@ function QuoteForm({ products, initialItems, initialMessage }) {
           {f.values.items.map((it, i) => {
             const packs = bySlug.get(it.slug)?.packSizes ?? [];
             return (
-              <div
-                key={i}
-                className="grid gap-3 surface-card bg-surface p-4 md:grid-cols-[1.6fr_1fr_1fr_auto] md:items-start"
-                data-testid="quote-item"
-              >
+              <div key={i} className="gi-contact-product-row" data-testid="quote-item">
                 <ProductSelect
                   products={products}
                   label={`Product ${i + 1}`}
                   value={it.slug}
-                  onChange={(v) => setItem(i, { slug: v, packSize: "" })}
+                  onChange={(v) => setItem(i, { slug: v, packSize: "", grade: "" })}
                   error={f.errors[`items.${i}.slug`]}
                 />
                 <Field
-                  label="Quantity"
-                  required
-                  error={f.errors[`items.${i}.quantity`]}
-                  hint="e.g. 500 kg, 2 drums"
+                  label={
+                    <>
+                      Grade <span className="gi-contact-optional">(optional)</span>
+                    </>
+                  }
+                  error={f.errors[`items.${i}.grade`]}
                 >
+                  <Select value={it.grade ?? ""} onChange={(e) => setItem(i, { grade: e.target.value })}>
+                    <option value="">Select grade</option>
+                    {bySlug.get(it.slug)?.grade ? (
+                      <option value={bySlug.get(it.slug).grade}>{bySlug.get(it.slug).grade}</option>
+                    ) : null}
+                    <option value="Please advise">Please advise</option>
+                  </Select>
+                </Field>
+                <Field label="Quantity" required error={f.errors[`items.${i}.quantity`]}>
                   <Input
+                    placeholder="e.g. 500 kg, 2 drums"
                     value={it.quantity}
                     onChange={(e) => setItem(i, { quantity: e.target.value })}
                     maxLength={60}
@@ -142,7 +158,7 @@ function QuoteForm({ products, initialItems, initialMessage }) {
                   <Button
                     size="icon"
                     variant="ghost"
-                    className="md:mt-7"
+                    className="gi-contact-remove-product"
                     aria-label={`Remove product ${i + 1}`}
                     onClick={() =>
                       f.set(
@@ -173,7 +189,7 @@ function QuoteForm({ products, initialItems, initialMessage }) {
       ) : null}
 
       {step === 1 ? (
-        <div className="grid gap-4">
+        <div className="gi-contact-field-group grid gap-4">
           <Field
             label="Delivery city"
             required
@@ -181,6 +197,7 @@ function QuoteForm({ products, initialItems, initialMessage }) {
             hint="We quote freight to your city separately."
           >
             <Input
+              placeholder="e.g. Delhi, Jaipur, Pune"
               value={f.values.city}
               onChange={(e) => f.set("city", e.target.value)}
               autoComplete="address-level2"
@@ -193,6 +210,7 @@ function QuoteForm({ products, initialItems, initialMessage }) {
             hint="Grade, documents you need, delivery date, monthly use."
           >
             <Textarea
+              placeholder="Tell us about any specific documents, timings or regular requirements."
               rows={4}
               value={f.values.message}
               onChange={(e) => f.set("message", e.target.value)}
@@ -281,7 +299,11 @@ export function EnquiryForms({ products }) {
         ? (i + 1) % TABS.length
         : e.key === "ArrowLeft"
           ? (i - 1 + TABS.length) % TABS.length
-          : null;
+          : e.key === "Home"
+            ? 0
+            : e.key === "End"
+              ? TABS.length - 1
+              : null;
     if (next === null) return;
     e.preventDefault();
     select(TABS[next].id);
@@ -289,13 +311,8 @@ export function EnquiryForms({ products }) {
   }
 
   return (
-    <div className="flex flex-col gap-6" id="quote-forms">
-      <div
-        role="tablist"
-        aria-label="Type of enquiry"
-        className="flex flex-wrap gap-1 self-start rounded-[calc(var(--r-btn)+6px)] bg-surface p-1.5 shadow-[inset_0_0_0_1px_var(--hairline)]"
-        onKeyDown={onKeyDown}
-      >
+    <div className="gi-contact-form-card" id="quote-forms">
+      <div role="tablist" aria-label="Type of enquiry" className="gi-contact-tabs" onKeyDown={onKeyDown}>
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -321,7 +338,7 @@ export function EnquiryForms({ products }) {
         role="tabpanel"
         id={`${tabsId}-${tab}-panel`}
         aria-labelledby={`${tabsId}-${tab}`}
-        className="surface-card p-5 md:p-8"
+        className="gi-contact-panel"
       >
         {tab === "quote" ? (
           basket === null ? (

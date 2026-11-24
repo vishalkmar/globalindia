@@ -1,4 +1,4 @@
-import { ArrowRight, Phone, Quote } from "lucide-react";
+import { ArrowRight, Boxes, CalendarDays, FileCheck2, FlaskConical, Handshake, MapPin, Package, Phone, Quote, Users } from "lucide-react";
 import Image from "next/image";
 
 import { Button } from "@/components/ui/Button";
@@ -231,40 +231,51 @@ export function Industries({ data, tone }) {
   );
 }
 
+const VALUE_ICONS = [FlaskConical, Boxes, FileCheck2, Handshake];
+const STAT_ICONS = { years: CalendarDays, products: Package, categories: Boxes, team: Users };
+
 /* 08 — numbered values 01-04 */
 export function NumberedValues({ data, tone }) {
   return (
     <Section tone={tone}>
       <Container className="grid gap-10 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-14">
-        <div className="flex flex-col gap-8 lg:sticky lg:top-28 lg:self-start">
+        <div className="flex flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
           <Heading d={data} />
-          <div className="relative hidden aspect-[4/3] overflow-hidden rounded-card shadow-md lg:block">
-            <Image src={STOCK.gloves.src} alt={STOCK.gloves.alt} fill sizes="400px" className="object-cover" />
+          <span aria-hidden="true" className="h-1 w-16 rounded-pill bg-[linear-gradient(90deg,var(--c-accent),transparent)]" />
+          <div className="relative hidden aspect-[4/3] overflow-hidden rounded-[calc(var(--r-card)+6px)] shadow-lg lg:block">
+            <Image src={STOCK.labFlasks.src} alt={STOCK.labFlasks.alt} fill sizes="400px" className="object-cover" />
           </div>
         </div>
-        <ol className="grid gap-4 sm:grid-cols-2">
-          {data.items.map((item, i) => (
-            <li
-              data-reveal
-              key={item.title}
-              className="group relative flex flex-col gap-3 overflow-hidden surface-card p-6 md:p-7"
-            >
-              <span
-                aria-hidden="true"
-                className="absolute top-4 right-5 font-display text-[3.5rem] leading-none font-extrabold tracking-tight text-[color-mix(in_oklab,var(--c-primary)_9%,transparent)] select-none"
-              >
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <span
-                aria-hidden="true"
-                className="inline-flex size-9 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-ink shadow-primary"
-              >
-                {i + 1}
-              </span>
-              <h3 className="text-h3">{item.title}</h3>
-              {item.text ? <p className="text-[0.9375rem] leading-relaxed text-muted">{item.text}</p> : null}
-            </li>
-          ))}
+        {/* Timeline: a soft vertical rail with a dot per promise, each promise a card with an icon tile. */}
+        <ol className="relative flex flex-col gap-4 pl-8 before:absolute before:top-6 before:bottom-6 before:left-[0.6875rem] before:w-0.5 before:rounded-pill before:bg-[linear-gradient(180deg,color-mix(in_oklab,var(--c-primary)_45%,transparent),color-mix(in_oklab,var(--c-accent)_55%,transparent))] md:pl-10">
+          {data.items.map((item, i) => {
+            const Icon = VALUE_ICONS[i % VALUE_ICONS.length];
+            return (
+              <li data-reveal key={item.title} className="relative">
+                <span
+                  aria-hidden="true"
+                  className="absolute top-1/2 -left-8 inline-flex size-6 -translate-y-1/2 items-center justify-center rounded-full bg-bg ring-2 ring-primary md:-left-10"
+                >
+                  <span className="size-2 rounded-full bg-primary" />
+                </span>
+                <div className="group relative flex items-start gap-5 overflow-hidden surface-card p-5 transition-[box-shadow,transform] duration-300 hover:shadow-lg motion-safe:hover:translate-x-1 md:p-6">
+                  <span className="inline-flex size-14 shrink-0 items-center justify-center rounded-[calc(var(--r-btn)+4px)] bg-[linear-gradient(140deg,color-mix(in_oklab,var(--c-primary)_80%,white),var(--c-primary))] text-primary-ink shadow-primary">
+                    <Icon aria-hidden="true" className="size-6" strokeWidth={1.75} />
+                  </span>
+                  <div className="flex flex-1 flex-col gap-1.5 pr-12">
+                    <h3 className="text-h3">{item.title}</h3>
+                    {item.text ? <p className="text-[0.9375rem] leading-relaxed text-muted">{item.text}</p> : null}
+                  </div>
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-4 right-5 text-[2.75rem] leading-none font-extrabold tracking-tight text-[color-mix(in_oklab,var(--c-primary)_10%,transparent)] select-none"
+                  >
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+              </li>
+            );
+          })}
         </ol>
       </Container>
     </Section>
@@ -280,6 +291,48 @@ export async function Stats({ data, ctx }) {
     categories: totals.categories,
     team: ctx.business.teamSize,
   };
+  // Straight after a dark band or a page header the numbers become a white card that rises over it.
+  if (ctx.prev === "iconCards" || ctx.prev === "pageHero") {
+    return (
+      <section aria-label="Global India in numbers" className="relative z-10 bg-bg pb-4">
+        <Container>
+          <div
+            data-reveal
+            className="-mt-12 grid grid-cols-2 overflow-hidden rounded-[calc(var(--r-card)+6px)] bg-card shadow-[0_0_0_1px_var(--hairline),var(--sh-lg)] md:-mt-14 md:grid-cols-4"
+          >
+            {data.items.map((s, i) => {
+              const live = s.source !== "manual" && auto[s.source] > 0 ? auto[s.source] : s.value;
+              const Icon = STAT_ICONS[s.source] ?? MapPin;
+              return (
+                <div
+                  key={s.label}
+                  className={cn(
+                    "flex items-center gap-4 p-5 md:p-7",
+                    i % 2 === 1 && "border-l border-hairline",
+                    i >= 2 && "border-t border-hairline md:border-t-0",
+                    i === 2 && "md:border-l",
+                  )}
+                >
+                  <span className="hidden size-12 shrink-0 items-center justify-center rounded-full bg-[color-mix(in_oklab,var(--c-primary)_9%,transparent)] text-primary sm:inline-flex">
+                    <Icon aria-hidden="true" className="size-6" strokeWidth={1.75} />
+                  </span>
+                  <span className="flex flex-col gap-1">
+                    <CountUp
+                      value={live}
+                      suffix={s.suffix}
+                      group={s.source !== "years"}
+                      className="text-[2rem] leading-none font-extrabold tracking-tight text-primary md:text-[2.5rem]"
+                    />
+                    <span className="text-sm font-medium text-muted">{s.label}</span>
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </Container>
+      </section>
+    );
+  }
   return (
     <section
       className="relative isolate overflow-hidden bg-band py-14 text-band-ink md:py-20"
@@ -381,7 +434,22 @@ export function Faq({ data, tone }) {
   return (
     <Section tone={tone}>
       <Container className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
-        <Heading d={data} />
+        <div className="flex flex-col gap-6 lg:sticky lg:top-28 lg:self-start">
+          <Heading d={data} />
+          <div className="relative hidden aspect-[16/10] overflow-hidden rounded-[calc(var(--r-card)+6px)] shadow-md lg:block">
+            <Image src={STOCK.labPipette.src} alt={STOCK.labPipette.alt} fill sizes="440px" className="object-cover" />
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 bg-[linear-gradient(180deg,transparent_40%,color-mix(in_oklab,var(--c-band)_70%,transparent))]"
+            />
+            <Link
+              href="/contact#contact"
+              className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-pill bg-white/95 px-4 py-2 text-sm font-bold text-primary shadow-md hover:bg-white"
+            >
+              Still have a question? Ask us <ArrowRight aria-hidden="true" className="size-4" />
+            </Link>
+          </div>
+        </div>
         <Accordion items={data.items.map((i, n) => ({ id: `q${n}`, title: i.q, content: i.a }))} />
       </Container>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
@@ -394,32 +462,41 @@ export function CtaBand({ data, ctx }) {
   return (
     <Section tone="white">
       <Container>
+        {/* Split panel: copy and actions on the dark side, a warehouse photo on the right with a soft diagonal edge. */}
         <div
           data-reveal
-          className="relative isolate flex flex-col items-start gap-8 overflow-hidden rounded-[calc(var(--r-card)+8px)] bg-band p-8 text-band-ink shadow-lg md:p-12 lg:flex-row lg:items-end lg:justify-between lg:p-16"
+          className="relative isolate grid overflow-hidden rounded-[calc(var(--r-card)+8px)] bg-band text-band-ink shadow-lg lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
         >
-          <Image src={STOCK.warehouseFloor.src} alt="" fill sizes="(min-width: 1280px) 1200px, 100vw" className="-z-20 object-cover" />
           <div
             aria-hidden="true"
-            className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,var(--c-band)_25%,color-mix(in_oklab,var(--c-band)_80%,transparent)_65%,color-mix(in_oklab,var(--c-band)_55%,transparent))]"
+            className="absolute inset-0 -z-10 bg-[radial-gradient(60%_90%_at_0%_100%,color-mix(in_oklab,var(--c-accent)_22%,transparent),transparent_60%)]"
           />
-        <div className="flex max-w-2xl flex-col gap-4">
-          {data.eyebrow ? <Eyebrow onBand>{data.eyebrow}</Eyebrow> : null}
-          <h2 className="text-h2 text-band-ink">{data.title}</h2>
-          {data.text ? <p className="text-band-ink/80">{data.text}</p> : null}
-        </div>
-        <div className="flex flex-wrap gap-3">
-          {data.cta?.text && data.cta?.href ? (
-            <Button href={data.cta.href} variant="onBand" size="lg">
-              {data.cta.text}
-            </Button>
-          ) : null}
-          {data.showPhone && ctx.contact.phone ? (
-            <Button href={ctx.contact.phoneHref} variant="onBandOutline" size="lg">
-              <Phone aria-hidden="true" /> {ctx.contact.phone}
-            </Button>
-          ) : null}
-        </div>
+          <div className="flex flex-col items-start gap-5 p-8 md:p-12 lg:p-14">
+            {data.eyebrow ? <Eyebrow onBand>{data.eyebrow}</Eyebrow> : null}
+            <h2 className="max-w-xl text-h2 text-band-ink">{data.title}</h2>
+            {data.text ? <p className="text-band-ink/80">{data.text}</p> : null}
+            <div className="flex flex-wrap gap-3 pt-2">
+              {data.cta?.text && data.cta?.href ? (
+                <Button href={data.cta.href} variant="onBand" size="lg">
+                  {data.cta.text} <ArrowRight aria-hidden="true" />
+                </Button>
+              ) : null}
+              {data.showPhone && ctx.contact.phone ? (
+                <Button href={ctx.contact.phoneHref} variant="onBandOutline" size="lg">
+                  <Phone aria-hidden="true" /> {ctx.contact.phone}
+                </Button>
+              ) : null}
+            </div>
+          </div>
+          <div className="relative min-h-56 lg:min-h-full lg:[clip-path:polygon(14%_0,100%_0,100%_100%,0_100%)]">
+            <Image
+              src={STOCK.warehousePallets.src}
+              alt=""
+              fill
+              sizes="(min-width: 1024px) 480px, 100vw"
+              className="object-cover"
+            />
+          </div>
         </div>
       </Container>
     </Section>

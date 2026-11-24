@@ -105,7 +105,14 @@ export async function submitEnquiry(data, { ip }) {
         .filter(Boolean)
         .join("; ")
         .slice(0, 300),
-      message: data.message ?? "",
+      message: [
+        data.message ?? "",
+        ...items
+          .filter((item) => item.grade)
+          .map((item) => `Requested grade for ${item.name}: ${item.grade}`),
+      ]
+        .filter(Boolean)
+        .join("\n"),
       source: data.source ?? "",
       spamScore: spam.score,
       ipHash: ipKey,

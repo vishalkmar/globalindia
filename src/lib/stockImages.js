@@ -20,6 +20,12 @@ export const STOCK = {
   warehouseFloor: img("warehouse-floor", "Busy warehouse floor with packed goods"),
   trucks: img("trucks", "Delivery trucks parked at a depot"),
   gloves: img("gloves", "Hands in protective gloves"),
+  warehousePallets: img("warehouse-pallets", "Warehouse racks loaded with pallets of packed stock"),
+  plantPipes: img("plant-pipes", "Stainless steel process plant with pipework"),
+  labFlasks: img("lab-flasks", "Liquids being mixed in laboratory flasks"),
+  labCorridor: img("lab-corridor", "Quality control laboratory"),
+  microscopes: img("microscopes", "Row of microscopes in a testing lab"),
+  scientist: img("scientist", "Chemist wearing safety goggles"),
 };
 
 export const FAMILY_IMAGE = {

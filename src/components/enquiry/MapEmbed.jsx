@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin } from "lucide-react";
+import { ExternalLink, MapPin } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/Button";
@@ -37,8 +37,8 @@ export function MapEmbed({ embedUrl, openUrl, address }) {
         <Button variant="secondary" size="sm" onClick={() => setShow(true)}>
           Show map
         </Button>
-        <Button href={openUrl} variant="link" size="sm">
-          Open in Google Maps
+        <Button href={openUrl} external variant="secondary" size="sm">
+          Open in Google Maps <ExternalLink aria-hidden="true" />
         </Button>
       </div>
       <p className="text-[0.75rem] text-muted">The map is loaded from Google only when you ask for it.</p>

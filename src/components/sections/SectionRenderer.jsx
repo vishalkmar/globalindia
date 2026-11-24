@@ -66,7 +66,7 @@ const COMPONENTS = {
 };
 
 /** Sections that draw their own background; the rest alternate white / surface down the page. */
-const SELF_TONED = new Set(["hero", "pageHero", "stats", "ctaBand"]);
+const SELF_TONED = new Set(["hero", "pageHero", "stats", "ctaBand", "iconCards"]);
 
 /**
  * Renders a page's sections in order. Backgrounds alternate automatically so editors can reorder

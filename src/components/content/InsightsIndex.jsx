@@ -3,38 +3,38 @@
 import { useSearchParams } from "next/navigation";
 
 import Link from "@/components/ui/SmartLink";
-import { cn } from "@/lib/utils";
 
-import { PostCard } from "./PostList";
+import { InsightsArticleCard } from "./InsightsArticleCard";
+import { Pager } from "./PostList";
 
 /**
  * Category filter for the insights list (Phase 15 todo 04). Filters are links (?category=) so they work
  * before hydration; the server HTML lists the page's posts for crawlers.
  */
-export function InsightsIndex({ posts, firstPage, categories, basePath = "/insights" }) {
+export function InsightsIndex({ posts, firstPage, categories, pages = 1, basePath = "/insights" }) {
   const active = useSearchParams().get("category");
   // A topic shows every post in it; no topic shows the first page (the pager covers the rest).
   const shown = active ? posts.filter((p) => p.category === active) : firstPage;
-  return <InsightsGrid posts={shown} categories={categories} active={active} basePath={basePath} />;
+  return (
+    <>
+      <InsightsGrid posts={shown} categories={categories} active={active} basePath={basePath} />
+      {!active ? <Pager page={1} pages={pages} /> : null}
+    </>
+  );
 }
 
 export function InsightsGrid({ posts, categories, active = null, basePath = "/insights" }) {
   return (
-    <div className="flex flex-col gap-8">
+    <div className="gi-insights-index">
       {categories.length > 1 ? (
-        <div role="group" aria-label="Topics" className="flex flex-wrap gap-2">
+        <div role="group" aria-label="Topics" className="gi-insights-topics">
           {[null, ...categories].map((c) => (
             <Link
               key={c ?? "all"}
               href={c ? `${basePath}?category=${encodeURIComponent(c)}` : basePath}
               scroll={false}
               aria-current={(c ?? null) === (active ?? null) ? "true" : undefined}
-              className={cn(
-                "inline-flex h-9 items-center rounded-btn border px-3.5 text-sm font-semibold",
-                (c ?? null) === (active ?? null)
-                  ? "border-primary bg-primary text-primary-ink"
-                  : "border-line bg-card text-ink hover:border-primary",
-              )}
+              className="gi-insights-topic"
             >
               {c ?? "All topics"}
             </Link>
@@ -42,15 +42,17 @@ export function InsightsGrid({ posts, categories, active = null, basePath = "/in
         </div>
       ) : null}
       {posts.length ? (
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="gi-insights-grid">
           {posts.map((p) => (
             <li key={p.id}>
-              <PostCard post={p} />
+              <InsightsArticleCard post={p} />
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-muted">No articles in this topic yet.</p>
+        <p className="gi-insights-empty" role="status">
+          No articles in this topic yet.
+        </p>
       )}
     </div>
   );

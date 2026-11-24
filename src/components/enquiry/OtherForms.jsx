@@ -23,10 +23,14 @@ export function SampleForm({ products, initialSlug }) {
     <form
       noValidate
       onSubmit={(e) => (e.preventDefault(), f.submit())}
-      className="relative flex flex-col gap-5"
+      className="gi-contact-form relative flex flex-col gap-5"
       aria-label="Ask for a sample"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="gi-contact-form-heading">
+        <h3>Try a sample before you order.</h3>
+        <p>Tell us what you are making. We will confirm the right grade, sample size and delivery details.</p>
+      </div>
+      <div className="gi-contact-field-group grid gap-4 sm:grid-cols-2">
         <ProductSelect
           products={products}
           label="Product"
@@ -36,25 +40,29 @@ export function SampleForm({ products, initialSlug }) {
         />
         <Field label="Sample size" hint="Usually 250 g to 1 kg, or 500 ml.">
           <Input
+            placeholder="e.g. 500 g or 500 ml"
             value={item.quantity}
             onChange={(e) => f.set("items", [{ ...item, quantity: e.target.value }])}
             maxLength={60}
           />
         </Field>
+        <div className="sm:col-span-2">
+          <Field
+            label="What will you test it for?"
+            required
+            error={f.errors.message}
+            hint="Your product and the batch size you plan, so we send the right grade."
+          >
+            <Textarea
+              placeholder="Tell us about your application and the trial batch you are planning."
+              rows={3}
+              value={f.values.message}
+              onChange={(e) => f.set("message", e.target.value)}
+              maxLength={1000}
+            />
+          </Field>
+        </div>
       </div>
-      <Field
-        label="What will you test it for?"
-        required
-        error={f.errors.message}
-        hint="Your product and the batch size you plan, so we send the right grade."
-      >
-        <Textarea
-          rows={3}
-          value={f.values.message}
-          onChange={(e) => f.set("message", e.target.value)}
-          maxLength={1000}
-        />
-      </Field>
       <Person f={f} phoneRequired cityRequired cityLabel="Delivery city" />
       <Footer f={f} label="Ask for a sample" />
     </form>
@@ -75,12 +83,19 @@ export function CallbackForm() {
     <form
       noValidate
       onSubmit={(e) => (e.preventDefault(), f.submit())}
-      className="relative flex flex-col gap-5"
+      className="gi-contact-form relative flex flex-col gap-5"
       aria-label="Request a callback"
     >
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="gi-contact-form-heading">
+        <h3>Let us call you back.</h3>
+        <p>
+          Leave your number and a convenient time. Our sales team will get in touch during business hours.
+        </p>
+      </div>
+      <div className="gi-contact-field-group grid gap-4 sm:grid-cols-2">
         <Field label="Your name" required error={f.errors.name}>
           <Input
+            placeholder="Your full name"
             value={f.values.name}
             onChange={(e) => f.set("name", e.target.value)}
             autoComplete="name"
@@ -90,6 +105,7 @@ export function CallbackForm() {
         <Field label="Phone" required error={f.errors.phone}>
           <Input
             type="tel"
+            placeholder="e.g. 98100 12345"
             value={f.values.phone}
             onChange={(e) => f.set("phone", e.target.value)}
             autoComplete="tel"
@@ -100,6 +116,7 @@ export function CallbackForm() {
         <Field label="Company" error={f.errors.company}>
           <Input
             value={f.values.company}
+            placeholder="Company or business name"
             onChange={(e) => f.set("company", e.target.value)}
             autoComplete="organization"
             maxLength={120}
@@ -112,6 +129,7 @@ export function CallbackForm() {
         >
           <Input
             value={f.values.message}
+            placeholder="Product, question or preferred call time"
             onChange={(e) => f.set("message", e.target.value)}
             maxLength={300}
           />
@@ -136,18 +154,25 @@ export function ContactForm({ initialMessage }) {
     <form
       noValidate
       onSubmit={(e) => (e.preventDefault(), f.submit())}
-      className="relative flex flex-col gap-5"
+      className="gi-contact-form relative flex flex-col gap-5"
       aria-label="Send a message"
     >
+      <div className="gi-contact-form-heading">
+        <h3>How can we help?</h3>
+        <p>Ask us about a product, documents or an existing order. We usually reply the same working day.</p>
+      </div>
       <Person f={f} />
-      <Field label="Message" required error={f.errors.message}>
+      <div className="gi-contact-field-group">
+        <Field label="Message" required error={f.errors.message}>
         <Textarea
           rows={5}
+          placeholder="Tell us what you need help with. Include a product name or order reference, if you have one."
           value={f.values.message}
           onChange={(e) => f.set("message", e.target.value)}
           maxLength={2000}
         />
-      </Field>
+        </Field>
+      </div>
       <Footer f={f} label="Send message" />
     </form>
   );

@@ -136,6 +136,12 @@ describe("spam score", () => {
 });
 
 describe("enquiry schemas", () => {
+  it("accepts an optional grade but refuses markup and oversized values", () => {
+    const withGrade = (grade) => quote({ items: [{ ...quote().items[0], grade }] });
+    expect(quoteSchema.parse(withGrade("IP")).items[0].grade).toBe("IP");
+    expect(quoteSchema.safeParse(withGrade("<script>")).success).toBe(false);
+    expect(quoteSchema.safeParse(withGrade("x".repeat(81))).success).toBe(false);
+  });
   it("quote needs products, delivery city and a phone; rejects markup and bad phones", () => {
     expect(quoteSchema.safeParse(quote()).success).toBe(true);
     expect(quoteSchema.safeParse(quote({ items: [] })).success).toBe(false);
@@ -165,6 +171,21 @@ describe("enquiry schemas", () => {
 });
 
 describe("public enquiry API", () => {
+  it("preserves the requested grade in the saved enquiry and sales notification", async () => {
+    const payload = quote({
+      email: `grade-${stamp}@example.in`,
+      items: [{ ...quote().items[0], grade: "IP" }],
+    });
+    const res = await (await enquiryRoute()).POST(post("/api/public/enquiry", payload));
+    expect(res.status).toBe(201);
+    const saved = await db.enquiry.findFirst({ where: { email: payload.email } });
+    expect(saved.message).toContain(payload.message);
+    expect(saved.message).toContain(`Requested grade for ${product.name}: IP`);
+    await tick();
+    expect(sentMail().find((mail) => mail.tags.includes("enquiry-admin")).text).toContain(
+      `Requested grade for ${product.name}: IP`,
+    );
+  });
   it("saves a quote as NEW with a product snapshot, emails the team and the customer", async () => {
     const res = await (await enquiryRoute()).POST(post("/api/public/enquiry", quote()));
     expect(res.status).toBe(201);

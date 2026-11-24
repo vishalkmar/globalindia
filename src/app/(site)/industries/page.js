@@ -1,3 +1,5 @@
+import "./industries.css";
+
 import {
   ArrowRight,
   Bubbles,
@@ -21,8 +23,6 @@ import { getIndustries } from "@/lib/content/data";
 import { iconFor } from "@/lib/sections/icons";
 import { getSiteChrome } from "@/lib/site-chrome";
 import { imageForText } from "@/lib/stockImages";
-
-import "./industries.css";
 
 export const metadata = {
   title: "Industries We Supply",

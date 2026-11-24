@@ -54,6 +54,7 @@ export const QUOTE_ITEM = z.strictObject({
   slug,
   quantity: required(60, "Enter the quantity, e.g. 500 kg."),
   packSize: text(40, "Pack size").default(""),
+  grade: text(80, "Grade").optional(),
 });
 
 export const ENQUIRY_TYPES = ["QUOTE", "CONTACT", "SAMPLE", "CALLBACK"];

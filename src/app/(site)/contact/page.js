@@ -1,11 +1,13 @@
-import { Clock, Mail, MapPin, MessageCircle, Phone, ReceiptText } from "lucide-react";
+import "./contact.css";
+
+import { ArrowRight, Clock, Mail, MapPin, MessageCircle, Phone, ReceiptText, Truck, Zap } from "lucide-react";
+import Image from "next/image";
 import { Suspense } from "react";
 
 import { LazyEnquiryForms } from "@/components/enquiry/LazyEnquiryForms";
 import { MapEmbed } from "@/components/enquiry/MapEmbed";
 import { Breadcrumb } from "@/components/site/Breadcrumb";
-import { Eyebrow } from "@/components/ui/Card";
-import { Container, Section } from "@/components/ui/Layout";
+import { Button } from "@/components/ui/Button";
 import { getCatalogue } from "@/lib/catalogue/data";
 import { getSetting } from "@/lib/site-data";
 
@@ -18,7 +20,7 @@ export const metadata = {
 
 function Tile({ icon: Icon, title, children }) {
   return (
-    <div className="flex gap-4 surface-card p-5">
+    <div className="gi-contact-tile">
       <Icon aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-primary" strokeWidth={1.75} />
       <div className="flex flex-col gap-1">
         <h2 className="text-sm font-bold tracking-wide text-muted uppercase">{title}</h2>
@@ -36,39 +38,90 @@ export default async function ContactPage() {
     .filter(Boolean)
     .join(", ");
   const products = catalogue.flatMap((c) =>
-    c.products.map((p) => ({ slug: p.slug, name: p.name, category: c.name, packSizes: p.packSizes })),
+    c.products.map((p) => ({
+      slug: p.slug,
+      name: p.name,
+      category: c.name,
+      packSizes: p.packSizes,
+      grade: p.grade,
+    })),
   );
   const query = encodeURIComponent(`${business.name}, ${address}`);
   const embedUrl = business.mapUrl || `https://www.google.com/maps?q=${query}&output=embed`;
   const openUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
   const whatsapp = business.whatsapp ? `https://wa.me/${business.whatsapp.replace(/\D/g, "")}` : "";
+  const phone = business.phones[0]?.number;
+  const phoneHref = phone ? `tel:${phone.replace(/[^\d+]/g, "")}` : "";
 
   return (
-    <>
-      <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
-        <Container className="flex flex-col items-start gap-5 py-12 md:py-16">
-          <Breadcrumb items={[{ label: "Contact" }]} />
-          <Eyebrow>Contact and quotes</Eyebrow>
-          <h1 id="page-title" className="measure text-display">
-            Tell us what you need. We reply the same working day.
-          </h1>
-          <p className="measure text-lead">
-            Send the product, grade, quantity and delivery city and you will get a written quote with GST and
-            freight shown separately. For anything urgent, call us.
-          </p>
-        </Container>
+    <div className="gi-contact-page">
+      <section className="gi-contact-hero" aria-labelledby="page-title">
+        <div className="gi-contact-hero-photo">
+          <Image
+            src="/images/contact/warehouse.webp"
+            alt="Blue chemical drums and white sacks stocked in a clean warehouse"
+            fill
+            priority
+            sizes="(max-width: 700px) 100vw, 50vw"
+          />
+        </div>
+        <div className="gi-contact-hero-inner">
+          <div className="gi-contact-hero-copy">
+            <Breadcrumb items={[{ label: "Contact" }]} />
+            <p className="gi-contact-eyebrow">
+              <span aria-hidden="true" />
+              Contact and quotes
+            </p>
+            <h1 id="page-title">Tell us what you need. We reply the same working day.</h1>
+            <p className="gi-contact-intro">
+              Send the product, grade, quantity and delivery city and you will get a written quote with GST
+              and freight shown separately. For anything urgent, call us.
+            </p>
+            <div className="gi-contact-hero-actions">
+              <Button href="#quote" size="lg">
+                Request a quote <ArrowRight aria-hidden="true" />
+              </Button>
+              {phone ? (
+                <Button href={phoneHref} variant="secondary" size="lg">
+                  <Phone aria-hidden="true" />
+                  Call sales
+                </Button>
+              ) : null}
+            </div>
+            <ul className="gi-contact-benefits" aria-label="Our service">
+              <li>
+                <span>
+                  <Zap aria-hidden="true" />
+                </span>
+                Same-day response
+              </li>
+              <li>
+                <span>
+                  <ReceiptText aria-hidden="true" />
+                </span>
+                GST invoice
+              </li>
+              <li>
+                <span>
+                  <Truck aria-hidden="true" />
+                </span>
+                Pan-India supply
+              </li>
+            </ul>
+          </div>
+        </div>
       </section>
 
-      <Section>
-        <Container className="grid gap-10 lg:grid-cols-[minmax(0,8fr)_minmax(0,4fr)] lg:gap-12">
+      <section className="gi-contact-enquiry" aria-label="Contact and enquiry forms">
+        <div className="gi-contact-enquiry-grid">
           {/* Height reserved for the lazily loaded forms so nothing below jumps (CLS, Phase 31 todo 16). */}
-          <div id="quote" className="min-h-[44.5rem] scroll-mt-28 md:min-h-[30.5rem]">
+          <div id="quote" className="gi-contact-form-wrap">
             <h2 className="sr-only">Enquiry forms</h2>
             <Suspense fallback={<p className="text-muted">Loading the form…</p>}>
               <LazyEnquiryForms products={products} />
             </Suspense>
           </div>
-          <aside className="flex flex-col gap-3" aria-label="Contact details">
+          <aside className="gi-contact-details" aria-label="Contact details">
             {business.phones.length ? (
               <Tile icon={Phone} title="Call">
                 <ul className="flex flex-col gap-1">
@@ -129,22 +182,28 @@ export default async function ContactPage() {
               </Tile>
             ) : null}
           </aside>
-        </Container>
-      </Section>
+        </div>
+      </section>
 
-      <Section tone="surface" aria-labelledby="map-title">
-        <Container className="grid gap-8 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
-          <div className="flex flex-col gap-3">
-            <Eyebrow>Visit or collect</Eyebrow>
-            <h2 id="map-title" className="text-h2">
-              Burari Road, North Delhi.
+      <section className="gi-contact-visit" aria-labelledby="map-title">
+        <div className="gi-contact-visit-grid">
+          <div className="gi-contact-visit-copy">
+            <p className="gi-contact-eyebrow">
+              <span aria-hidden="true" />
+              Visit or collect
+            </p>
+            <h2 id="map-title">
+              Burari Road,
+              <br /> North Delhi.
             </h2>
             <p className="text-muted">
               Collecting material yourself? Call ahead so the order is packed and the invoice is ready when
               you arrive.
             </p>
           </div>
-          <MapEmbed embedUrl={embedUrl} openUrl={openUrl} address={address} />
+          <div className="gi-contact-map">
+            <MapEmbed embedUrl={embedUrl} openUrl={openUrl} address={address} />
+          </div>
           {business.googleBusinessUrl ? (
             <a
               href={business.googleBusinessUrl}
@@ -155,8 +214,8 @@ export default async function ContactPage() {
               Our Google Business Profile: directions, photos and hours
             </a>
           ) : null}
-        </Container>
-      </Section>
-    </>
+        </div>
+      </section>
+    </div>
   );
 }

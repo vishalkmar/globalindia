@@ -1,0 +1,697 @@
+.gi-contact-page {
+  --contact-pine: #073e3e;
+  color: #253234;
+  background: #fff;
+}
+.gi-contact-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(110deg, #faf8f4, #f2eee6);
+}
+.gi-contact-hero-inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 48px 28px 42px;
+  min-height: 555px;
+}
+.gi-contact-hero-copy {
+  position: relative;
+  width: 60%;
+}
+.gi-contact-hero-photo {
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 0 auto;
+  width: 47%;
+  clip-path: polygon(35% 0, 100% 0, 100% 100%, 35% 100%, 0 78%);
+}
+.gi-contact-hero-photo img {
+  object-fit: cover;
+  object-position: 65% 50%;
+}
+.gi-contact-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 8px;
+  padding: 5px 13px;
+  margin-top: 23px;
+  border: 1px solid #e7d8ba;
+  border-radius: 30px;
+  background: #efe5d2;
+  color: #895b17;
+  font-size: 12px;
+  line-height: 1.5;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.gi-contact-eyebrow > span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ac8133;
+}
+.gi-contact-hero h1 {
+  max-width: 700px;
+  margin: 17px 0 20px;
+  font-size: clamp(36px, 4.15vw, 58px);
+  line-height: 1.1;
+  letter-spacing: -0.045em;
+  font-weight: 800;
+  color: var(--contact-pine);
+  text-wrap: initial;
+}
+.gi-contact-intro {
+  max-width: 620px;
+  color: #5c6d70;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.gi-contact-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 28px;
+}
+.gi-contact-page [data-btn="primary"] {
+  background: linear-gradient(130deg, #285c5b, #003b3b);
+  border: 1px solid #184847;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow:
+    0 5px 10px #003b3b24,
+    inset 0 1px 2px #ffffff28;
+}
+.gi-contact-page [data-btn="primary"]:hover {
+  background: #003432;
+}
+.gi-contact-page [data-btn="secondary"] {
+  background: #fff;
+  border: 1px solid #d4d9d8;
+  border-radius: 8px;
+  color: var(--contact-pine);
+  box-shadow: 0 2px 5px #002e3310;
+}
+.gi-contact-page [data-btn="secondary"]:hover {
+  border-color: #8daea8;
+  background: #f3f8f6;
+}
+.gi-contact-benefits {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin-top: 36px;
+}
+.gi-contact-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #164647;
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.gi-contact-benefits li + li {
+  padding-left: 26px;
+  border-left: 1px solid #d5d9d4;
+}
+.gi-contact-benefits li > span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #eee5d6;
+}
+.gi-contact-benefits svg {
+  width: 26px;
+  height: 26px;
+  stroke-width: 1.5;
+}
+.gi-contact-enquiry {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 70px 26px 50px;
+}
+.gi-contact-enquiry-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 38px;
+}
+.gi-contact-form-wrap {
+  min-width: 0;
+  min-height: 540px;
+  scroll-margin-top: 110px;
+}
+.gi-contact-details {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.gi-contact-tile {
+  display: flex;
+  align-items: flex-start;
+  gap: 25px;
+  padding: 22px;
+  border: 1px solid #e1e5e4;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #fff, #fdfdfc);
+  box-shadow: 0 2px 4px #103e3e06;
+}
+.gi-contact-tile > svg {
+  width: 25px;
+  height: 25px;
+  margin-top: 3px;
+}
+.gi-contact-tile h2 {
+  font-size: 14px;
+  color: #616d6e;
+  font-weight: 700;
+}
+.gi-contact-tile > div {
+  min-width: 0;
+  line-height: 1.5;
+  font-size: 17px;
+}
+.gi-contact-tile a[href^="tel:"] {
+  font-size: 19px;
+}
+.gi-contact-form-card {
+  overflow: hidden;
+  border: 1px solid #e0e5e2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow:
+    0 3px 5px #123d3d08,
+    0 10px 18px -15px #123d3d20;
+}
+.gi-contact-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  padding: 5px 12px;
+  background: linear-gradient(115deg, #f1eee7, #f7f5f1);
+}
+.gi-contact-tabs [role="tab"] {
+  height: auto;
+  min-height: 45px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  color: #355456;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+.gi-contact-tabs [role="tab"][aria-selected="true"] {
+  color: #fff;
+  background: linear-gradient(130deg, #235b59, #003d3d);
+  box-shadow:
+    inset 0 1px 2px #ffffff30,
+    0 2px 4px #003b3b20;
+}
+.gi-contact-tabs [role="tab"]:hover {
+  background-color: #e7eeea;
+}
+.gi-contact-panel {
+  padding: 36px 34px 26px;
+}
+.gi-contact-steps {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  margin-bottom: 1px;
+  font-size: 14px;
+}
+.gi-contact-steps::before {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  left: 20px;
+  right: 20px;
+  top: 50%;
+  height: 1px;
+  background: #c9d0cd;
+}
+.gi-contact-steps li {
+  gap: 13px;
+  padding: 9px 18px;
+  color: #365757;
+  background: #f2f0ea;
+  box-shadow: none;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.gi-contact-steps li[aria-current="step"] {
+  background: linear-gradient(120deg, #215b57, #003c3b);
+  color: #fff;
+}
+.gi-contact-steps li > span {
+  font-size: 13px;
+}
+.gi-contact-form-heading h3 {
+  margin: 0;
+  color: var(--contact-pine);
+  font-size: 25px;
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+.gi-contact-form-heading > p {
+  margin-top: 8px;
+  color: #667477;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.gi-contact-product-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  gap: 18px 26px;
+  padding: 18px 21px;
+  border: 1px solid #e7e4dd;
+  border-radius: 12px;
+  background: linear-gradient(125deg, #f5f2ec, #f7f5f1);
+}
+.gi-contact-field-group {
+  padding: 22px;
+  border: 1px solid #e7e4dd;
+  border-radius: 12px;
+  background: linear-gradient(125deg, #f7f5ef, #f9f8f5);
+}
+.gi-contact-form label {
+  color: #242c2c;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.gi-contact-optional {
+  font-size: 12px;
+  font-weight: 400;
+}
+.gi-contact-form input:not([type="checkbox"]),
+.gi-contact-form select,
+.gi-contact-form textarea {
+  min-width: 0;
+  border: 1px solid #d5d7d4;
+  border-radius: 8px;
+  background: #fffefa;
+  color: #263232;
+  box-shadow: inset 0 1px 2px #123d3d04;
+  font-size: 15px;
+}
+.gi-contact-form input:not([type="checkbox"]),
+.gi-contact-form select {
+  height: 43px;
+}
+.gi-contact-form input::placeholder,
+.gi-contact-form textarea::placeholder {
+  color: #778182;
+  opacity: 1;
+}
+.gi-contact-form input:focus,
+.gi-contact-form select:focus,
+.gi-contact-form textarea:focus {
+  border-color: #417c70;
+  background: #fff;
+  box-shadow: 0 0 0 3px #0e5c4d14;
+}
+.gi-contact-form [aria-invalid="true"] {
+  border-color: #a3352b !important;
+}
+.gi-contact-form [role="alert"] {
+  font-size: 13px;
+}
+.gi-contact-remove-product {
+  grid-column: 1 / -1;
+  justify-self: end;
+}
+.gi-contact-form [data-btn] {
+  max-width: 100%;
+}
+.gi-contact-visit {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(115deg, #f6f2eb, #faf8f5 55%, #f5f2ed);
+}
+.gi-contact-visit::before {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 220px;
+  background: #e7dccb50;
+  left: -95px;
+  bottom: -140px;
+  border-radius: 35px;
+  transform: rotate(44deg);
+}
+.gi-contact-visit-grid {
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.6fr);
+  align-items: start;
+  gap: 60px;
+  padding: 42px 32px 48px;
+}
+.gi-contact-visit-copy .gi-contact-eyebrow {
+  margin: 0;
+}
+.gi-contact-visit h2 {
+  margin: 18px 0 20px;
+  color: var(--contact-pine);
+  font-size: clamp(34px, 4vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+.gi-contact-visit-copy > p:last-child {
+  max-width: 380px;
+  color: #617176;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.gi-contact-map {
+  min-width: 0;
+}
+.gi-contact-map > div,
+.gi-contact-map > iframe {
+  aspect-ratio: auto;
+  height: 350px;
+  border: 1px solid #dedfd8;
+  border-radius: 17px;
+  box-shadow: 0 4px 7px #2532220c;
+}
+.gi-contact-map > div {
+  gap: 12px;
+  padding: 28px 34px 20px;
+  background-color: #faf8f4;
+}
+.gi-contact-map > div > p:first-of-type {
+  max-width: 530px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.gi-contact-map [data-btn] {
+  font-size: 13px;
+}
+.gi-contact-map > div > p:last-child {
+  font-size: 12px;
+}
+@media (max-width: 1100px) {
+  .gi-contact-hero-inner {
+    min-height: 490px;
+    padding: 38px 24px 35px;
+  }
+  .gi-contact-hero h1 {
+    font-size: 44px;
+  }
+  .gi-contact-intro {
+    font-size: 16px;
+    max-width: 510px;
+  }
+  .gi-contact-hero-actions {
+    gap: 24px;
+  }
+  .gi-contact-benefits {
+    gap: 18px;
+  }
+  .gi-contact-benefits li {
+    font-size: 12px;
+    gap: 9px;
+  }
+  .gi-contact-benefits li + li {
+    padding-left: 18px;
+  }
+  .gi-contact-benefits li > span {
+    width: 35px;
+    height: 35px;
+  }
+  .gi-contact-enquiry {
+    padding: 58px 22px 44px;
+  }
+  .gi-contact-enquiry-grid {
+    gap: 30px;
+  }
+  .gi-contact-tabs {
+    padding: 5px 10px;
+    gap: 3px;
+  }
+  .gi-contact-tabs [role="tab"] {
+    font-size: 12px;
+    padding: 8px 5px;
+  }
+  .gi-contact-panel {
+    padding: 30px 27px 24px;
+  }
+  .gi-contact-steps {
+    gap: 7px;
+    font-size: 12px;
+  }
+  .gi-contact-steps li {
+    padding: 8px 14px;
+    gap: 10px;
+  }
+  .gi-contact-form-heading h3 {
+    font-size: 22px;
+  }
+  .gi-contact-form-heading > p {
+    font-size: 13px;
+  }
+  .gi-contact-product-row {
+    gap: 16px 22px;
+    padding: 16px 18px;
+  }
+  .gi-contact-tile {
+    padding: 19px;
+    gap: 20px;
+  }
+  .gi-contact-tile h2 {
+    font-size: 13px;
+  }
+  .gi-contact-tile > div {
+    font-size: 15px;
+  }
+  .gi-contact-tile a[href^="tel:"] {
+    font-size: 16px;
+  }
+  .gi-contact-visit-grid {
+    gap: 40px;
+    padding: 36px 27px 40px;
+  }
+  .gi-contact-map > div,
+  .gi-contact-map > iframe {
+    height: 300px;
+  }
+  .gi-contact-visit-copy > p:last-child {
+    font-size: 16px;
+  }
+}
+@media (max-width: 900px) {
+  .gi-contact-hero-copy {
+    width: 63%;
+  }
+  .gi-contact-hero h1 {
+    font-size: 39px;
+  }
+  .gi-contact-benefits {
+    gap: 10px;
+  }
+  .gi-contact-benefits li + li {
+    padding-left: 10px;
+  }
+  .gi-contact-benefits li {
+    font-size: 11px;
+    gap: 7px;
+  }
+  .gi-contact-enquiry-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gi-contact-form-wrap {
+    min-height: 0;
+  }
+  .gi-contact-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .gi-contact-tabs [role="tab"] {
+    font-size: 14px;
+  }
+  .gi-contact-panel {
+    padding: 30px;
+  }
+  .gi-contact-steps {
+    font-size: 14px;
+  }
+  .gi-contact-visit-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+  .gi-contact-visit-copy > p:last-child {
+    max-width: 550px;
+  }
+  .gi-contact-visit h2 {
+    font-size: 40px;
+  }
+  .gi-contact-map > div,
+  .gi-contact-map > iframe {
+    height: 340px;
+  }
+}
+@media (max-width: 700px) {
+  .gi-contact-hero {
+    display: flex;
+    flex-direction: column;
+  }
+  .gi-contact-hero-inner {
+    order: -1;
+    width: 100%;
+    padding: 28px 22px 24px;
+    min-height: initial;
+  }
+  .gi-contact-hero-copy {
+    width: 100%;
+  }
+  .gi-contact-hero h1 {
+    font-size: clamp(35px, 6.3vw, 44px);
+    max-width: 620px;
+  }
+  .gi-contact-intro {
+    max-width: 570px;
+    font-size: 16px;
+  }
+  .gi-contact-hero-photo {
+    position: relative;
+    z-index: 0;
+    inset: auto;
+    width: 100%;
+    height: 260px;
+    clip-path: polygon(12% 0, 100% 0, 100% 100%, 0 100%, 0 22%);
+  }
+  .gi-contact-hero-photo img {
+    object-position: 65% 60%;
+  }
+  .gi-contact-hero-actions {
+    gap: 14px;
+  }
+  .gi-contact-hero-actions [data-btn] {
+    height: 48px;
+    padding: 0 20px;
+    font-size: 14px;
+  }
+  .gi-contact-benefits {
+    margin-top: 25px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .gi-contact-benefits li {
+    font-size: 12px;
+  }
+  .gi-contact-benefits li + li {
+    padding-left: 0;
+    border: 0;
+  }
+  .gi-contact-enquiry {
+    padding: 32px 18px 36px;
+  }
+  .gi-contact-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 8px;
+    gap: 6px;
+  }
+  .gi-contact-panel {
+    padding: 25px 20px;
+  }
+  .gi-contact-steps {
+    font-size: 11px;
+    gap: 5px;
+  }
+  .gi-contact-steps li {
+    padding: 8px 10px;
+    gap: 7px;
+  }
+  .gi-contact-steps li > span {
+    font-size: 11px;
+  }
+  .gi-contact-form input:not([type="checkbox"]),
+  .gi-contact-form select,
+  .gi-contact-form textarea {
+    font-size: 16px;
+  }
+  .gi-contact-form-heading h3 {
+    font-size: 23px;
+  }
+  .gi-contact-form-heading > p {
+    font-size: 14px;
+  }
+  .gi-contact-product-row {
+    padding: 18px;
+    gap: 18px;
+  }
+  .gi-contact-field-group {
+    padding: 18px;
+  }
+  .gi-contact-details {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gi-contact-tile {
+    padding: 22px;
+  }
+  .gi-contact-visit-grid {
+    padding: 32px 22px;
+  }
+  .gi-contact-map > div {
+    padding: 25px 23px 20px;
+  }
+  .gi-contact-map > div,
+  .gi-contact-map > iframe {
+    height: 350px;
+  }
+  .gi-contact-map > div > p:first-of-type {
+    font-size: 14px;
+  }
+}
+@media (max-width: 520px) {
+  .gi-contact-product-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .gi-contact-map [data-btn] {
+    padding: 0 12px;
+    font-size: 12px;
+  }
+}
+@media (max-width: 360px) {
+  .gi-contact-hero-inner {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .gi-contact-hero h1 {
+    font-size: 33px;
+  }
+  .gi-contact-panel {
+    padding: 24px 16px;
+  }
+  .gi-contact-steps li {
+    padding: 8px;
+    gap: 4px;
+    font-size: 10px;
+  }
+  .gi-contact-tabs [role="tab"] {
+    font-size: 12px;
+  }
+  .gi-contact-form-heading h3 {
+    font-size: 21px;
+  }
+  .gi-contact-hero-actions [data-btn] {
+    padding: 0 16px;
+    font-size: 13px;
+  }
+}

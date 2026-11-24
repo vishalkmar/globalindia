@@ -1,4 +1,5 @@
-import { ArrowRight, Check, FileDown, ImageIcon, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, BadgeCheck, Check, FileDown, ImageIcon, Mail, MapPin, Phone } from "lucide-react";
+import Image from "next/image";
 
 import { Breadcrumb } from "@/components/site/Breadcrumb";
 import { Button } from "@/components/ui/Button";
@@ -10,6 +11,7 @@ import { getGalleryItems } from "@/lib/sections/data";
 import { iconFor } from "@/lib/sections/icons";
 import { sanitizeRichText } from "@/lib/security/sanitize";
 import { getMedia } from "@/lib/site-data";
+import { STOCK } from "@/lib/stockImages";
 import { cn, formatBytes } from "@/lib/utils";
 
 import { GalleryGrid } from "./GalleryGrid";
@@ -26,33 +28,74 @@ const CtaButton = ({ cta, variant = "primary" }) =>
   ) : null;
 
 /* Page header with breadcrumb (todo 01) */
+/** Photo trio per company page (an uploaded hero photo replaces the large one). */
+const HERO_TRIOS = {
+  "why-us": [STOCK.plantPipes, STOCK.labFlasks, STOCK.scientist],
+  about: [STOCK.warehouseFloor, STOCK.microscopes, STOCK.trucks],
+  quality: [STOCK.labCorridor, STOCK.microscopes, STOCK.labPipette],
+  default: [STOCK.warehousePallets, STOCK.labFlasks, STOCK.trucks],
+};
+
+/* Page header (todo 01): editorial split — text on the left, a staggered photo trio on the right. */
 export async function PageHero({ data, ctx }) {
   const image = data.imageId ? await getMedia(data.imageId) : null;
+  const [big, small, tall] = HERO_TRIOS[ctx.page.slug] ?? HERO_TRIOS.default;
+  const since = ctx.business?.established;
   return (
-    <section className="hero-backdrop relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
-      <Container
-        className={cn(
-          "grid gap-10 py-12 md:py-16",
-          image && "items-center lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]",
-        )}
-      >
+    <section className="relative isolate overflow-hidden bg-surface" aria-labelledby="page-title">
+      <div
+        aria-hidden="true"
+        className="absolute -top-40 -right-40 -z-10 size-[42rem] rounded-full bg-[radial-gradient(closest-side,color-mix(in_oklab,var(--c-accent)_22%,transparent),transparent)]"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 -z-10 h-24 w-full bg-[linear-gradient(180deg,transparent,var(--c-bg))]"
+      />
+      <Container className="hero-in grid items-center gap-12 py-12 md:py-16 lg:grid-cols-[minmax(0,6fr)_minmax(0,6fr)] lg:gap-16 lg:py-20">
         <div className="flex flex-col items-start gap-5">
           <Breadcrumb items={[{ label: ctx.page.title }]} />
           {data.eyebrow ? <Eyebrow>{data.eyebrow}</Eyebrow> : null}
-          <h1 id="page-title" className="measure text-display">
+          <h1 id="page-title" className="max-w-[16ch] text-display">
             {data.title}
           </h1>
+          <span aria-hidden="true" className="h-1 w-16 rounded-pill bg-[linear-gradient(90deg,var(--c-accent),transparent)]" />
           {data.intro ? <p className="measure text-lead">{data.intro}</p> : null}
+          <div className="flex flex-wrap gap-3 pt-1">
+            <Button href="/contact#quote" size="lg">
+              Request a quote <ArrowRight aria-hidden="true" />
+            </Button>
+            <Button href="/products" size="lg" variant="secondary">
+              See the products
+            </Button>
+          </div>
         </div>
-        {image ? (
-          <MediaImage
-            asset={image}
-            aspect="4:3"
-            priority
-            sizes="(min-width: 1024px) 480px, 100vw"
-            className="w-full surface-card"
-          />
-        ) : null}
+
+        <div className="relative hidden h-[30rem] sm:block" aria-hidden={image ? undefined : "true"}>
+          <div className="absolute top-0 right-0 h-[72%] w-[78%] overflow-hidden rounded-[calc(var(--r-card)+10px)] shadow-lg">
+            {image ? (
+              <MediaImage asset={image} aspect="4:3" priority sizes="(min-width: 1024px) 460px, 80vw" className="h-full w-full" />
+            ) : (
+              <Image src={big.src} alt="" fill priority sizes="(min-width: 1024px) 460px, 80vw" className="object-cover" />
+            )}
+          </div>
+          <div className="absolute bottom-0 left-0 h-[48%] w-[46%] overflow-hidden rounded-[calc(var(--r-card)+6px)] shadow-lg ring-8 ring-[var(--c-surface)]">
+            <Image src={small.src} alt="" fill sizes="280px" className="object-cover" />
+          </div>
+          <div className="absolute right-6 bottom-2 h-[34%] w-[30%] overflow-hidden rounded-[calc(var(--r-card)+4px)] shadow-lg ring-8 ring-[var(--c-surface)]">
+            <Image src={tall.src} alt="" fill sizes="200px" className="object-cover" />
+          </div>
+          {since ? (
+            <div className="absolute top-10 left-2 flex items-center gap-3 rounded-pill bg-card py-2 pr-5 pl-2 shadow-lg">
+              <span className="inline-flex size-11 items-center justify-center rounded-full bg-primary text-primary-ink">
+                <BadgeCheck className="size-5" strokeWidth={2} />
+              </span>
+              <span className="flex flex-col leading-tight">
+                <span className="text-xs font-semibold text-muted">Trusted since</span>
+                <span className="text-lg font-extrabold tracking-tight text-ink">{since}</span>
+              </span>
+            </div>
+          ) : null}
+        </div>
       </Container>
     </section>
   );
@@ -330,31 +373,49 @@ export function Packaging({ data, tone }) {
 }
 
 /* Icon cards (Why us benefits, documents) */
-export function IconCards({ data, tone }) {
+export function IconCards({ data }) {
+  // Dark photo band with glass cards: the page's "benefits" moment.
   return (
-    <Section tone={tone}>
+    <section className="relative isolate overflow-hidden bg-band py-16 text-band-ink md:py-24">
+      <Image src={STOCK.warehouseFloor.src} alt="" fill sizes="100vw" className="-z-20 object-cover" />
+      <div
+        aria-hidden="true"
+        className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,color-mix(in_oklab,var(--c-band)_94%,transparent),color-mix(in_oklab,var(--c-band)_80%,transparent))]"
+      />
       <Container className="flex flex-col gap-10">
-        <Heading d={data} />
+        {data.eyebrow || data.title || data.intro ? (
+          <div data-reveal className="flex max-w-3xl flex-col gap-4">
+            {data.eyebrow ? <Eyebrow onBand>{data.eyebrow}</Eyebrow> : null}
+            {data.title ? <h2 className="text-h2 text-band-ink">{data.title}</h2> : null}
+            <span aria-hidden="true" className="h-1 w-16 rounded-pill bg-accent" />
+            {data.intro ? <p className="text-lead text-band-ink/75">{data.intro}</p> : null}
+          </div>
+        ) : null}
         <ul
           className={cn(
-            "grid gap-5 sm:grid-cols-2",
+            "grid gap-4 sm:grid-cols-2",
             data.items.length % 3 === 0 ? "lg:grid-cols-3" : "lg:grid-cols-4",
           )}
         >
-          {data.items.map((c, i) => (
-            <li
-              key={c.title}
-              data-reveal
-              className="flex flex-col gap-3 surface-card p-6"
-            >
-              <IconBox icon={iconFor(c.icon)} />
-              <h3 className="text-h3">{c.title}</h3>
-              {c.text ? <p className="text-[0.9375rem] text-muted">{c.text}</p> : null}
-            </li>
-          ))}
+          {data.items.map((c) => {
+            const Icon = iconFor(c.icon);
+            return (
+              <li
+                key={c.title}
+                data-reveal
+                className="group flex flex-col gap-3 rounded-[calc(var(--r-card)+2px)] bg-white/[0.07] p-6 ring-1 ring-white/15 transition-[background-color,transform] duration-300 hover:bg-white/[0.12] motion-safe:hover:-translate-y-1"
+              >
+                <span className="inline-flex size-12 items-center justify-center rounded-btn bg-[color-mix(in_oklab,var(--c-accent)_22%,transparent)] text-accent ring-1 ring-[color-mix(in_oklab,var(--c-accent)_40%,transparent)]">
+                  <Icon aria-hidden="true" className="size-6" strokeWidth={1.75} />
+                </span>
+                <h3 className="text-h4 text-band-ink">{c.title}</h3>
+                {c.text ? <p className="text-[0.9375rem] leading-relaxed text-band-ink/75">{c.text}</p> : null}
+              </li>
+            );
+          })}
         </ul>
       </Container>
-    </Section>
+    </section>
   );
 }
 
